@@ -243,7 +243,8 @@
   textarea { resize: vertical; min-height: 70px; }
   .modal-footer { display: flex; gap: 8px; justify-content: flex-end; margin-top: 1.25rem; }
   .asiento-lineas { margin-top: 0.9rem; }
-  .linea-row { display: grid; grid-template-columns: 3fr 1.2fr 1.2fr 40px; gap: 8px; margin-bottom: 7px; align-items: center; }
+  .linea-row { display: grid; grid-template-columns: 3fr 1.2fr 1.2fr 40px; gap: 8px; margin-bottom: 7px; align-items: start; }
+  .linea-row > div:first-child { position: relative; }
   .linea-total { display: grid; grid-template-columns: 3fr 1.2fr 1.2fr 40px; gap: 8px; padding-top: 8px; border-top: 2px solid var(--border2); font-size: 0.85rem; font-family: 'DM Mono', monospace; }
   .btn-icon { width: 32px; height: 32px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg3); color: var(--red); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; transition: all 0.12s; }
   .btn-icon:hover { background: rgba(248,81,73,0.1); border-color: var(--red); }
@@ -484,6 +485,42 @@
   .badge-salida { background: rgba(248,81,73,0.12); color: var(--red); border: 1px solid rgba(248,81,73,0.25); }
   .badge-ajuste { background: rgba(210,153,34,0.15); color: var(--yellow); border: 1px solid rgba(210,153,34,0.3); }
 
+
+  /* ===== CONCILIACIONES ===== */
+  .conc-stats { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:1rem; margin-bottom:1.5rem; }
+  .conc-stat  { background:var(--bg2); border:1px solid var(--border); border-radius:10px; padding:1rem; }
+  .conc-stat-label { font-size:0.72rem; color:var(--text3); text-transform:uppercase; font-weight:600; letter-spacing:0.5px; }
+  .conc-stat-val   { font-family:'DM Mono',monospace; font-size:1.05rem; font-weight:700; margin-top:4px; }
+  .conc-item { display:flex; align-items:center; gap:10px; padding:10px 14px; border-bottom:1px solid var(--border); font-size:0.85rem; }
+  .conc-item:last-child { border-bottom:none; }
+  .conc-item-check { width:18px; height:18px; cursor:pointer; accent-color:var(--green); flex-shrink:0; }
+  .conc-item-fecha { color:var(--text3); font-family:'DM Mono',monospace; font-size:0.78rem; width:80px; flex-shrink:0; }
+  .conc-item-glosa { flex:1; }
+  .conc-item-monto { font-family:'DM Mono',monospace; font-weight:600; min-width:110px; text-align:right; }
+  .conc-item.conciliado { opacity:0.5; }
+  .conc-section { background:var(--bg2); border:1px solid var(--border); border-radius:12px; overflow:hidden; margin-bottom:1.5rem; }
+  .conc-section-header { padding:12px 16px; background:var(--bg3); border-bottom:1px solid var(--border); font-family:'Syne',sans-serif; font-weight:700; font-size:0.82rem; display:flex; justify-content:space-between; align-items:center; }
+  .conc-diff-ok  { color:var(--green); font-weight:700; }
+  .conc-diff-err { color:var(--red); font-weight:700; }
+
+  /* ===== TOAST NOTIFICATIONS ===== */
+  #toast-container { position:fixed; bottom:24px; right:24px; z-index:100000; display:flex; flex-direction:column; gap:8px; pointer-events:none; }
+  .toast-msg { background:var(--bg2); border:1px solid var(--border); border-radius:10px; padding:12px 18px; font-size:0.85rem; color:var(--text); box-shadow:0 6px 24px rgba(0,0,0,.35); animation:toastIn .25s ease; pointer-events:auto; max-width:320px; display:flex; gap:10px; align-items:center; }
+  .toast-msg.toast-success { border-color:var(--green); }
+  .toast-msg.toast-error   { border-color:var(--red); background:rgba(248,81,73,.08); }
+  .toast-msg.toast-info    { border-color:var(--blue); }
+  @keyframes toastIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes toastOut { to { opacity:0; transform:translateY(8px); } }
+
+  /* ===== CONCILIACIÓN BANCARIA ===== */
+  .concil-stats { display:grid; grid-template-columns:repeat(auto-fill,minmax(170px,1fr)); gap:1rem; margin-bottom:1.5rem; }
+  .concil-stat { background:var(--bg2); border:1px solid var(--border); border-radius:10px; padding:1rem; }
+  .concil-stat-label { font-size:0.72rem; color:var(--text3); text-transform:uppercase; font-weight:600; letter-spacing:.5px; }
+  .concil-stat-val { font-family:'DM Mono',monospace; font-size:1.05rem; font-weight:700; margin-top:4px; }
+  .badge-conciliado { background:rgba(63,185,80,.15); color:var(--green); border:1px solid rgba(63,185,80,.3); }
+  .badge-pendiente  { background:rgba(248,81,73,.12); color:var(--red); border:1px solid rgba(248,81,73,.25); }
+  .movtype-cargo { color:var(--red); } .movtype-abono { color:var(--green); }
+
   /* ===== AUXILIARES ===== */
   .aux-tipo-badge-cliente { background:rgba(31,139,236,0.12); color:#4dabf7; border:1px solid rgba(31,139,236,0.25); }
   .aux-tipo-badge-proveedor { background:rgba(240,136,62,0.12); color:var(--accent); border:1px solid rgba(240,136,62,0.3); }
@@ -496,6 +533,19 @@
   .antig-card-count { font-size:0.75rem; color:var(--text3); margin-top:2px; }
   .linea-aux-selector { font-size:0.78rem; padding:4px 8px; background:var(--bg3); border:1px solid var(--border); border-radius:5px; color:var(--text); font-family:'DM Sans',sans-serif; min-width:0; }
 
+
+  /* ===== TOAST NOTIFICATIONS ===== */
+  #toast-container { position:fixed; bottom:24px; right:24px; z-index:9999; display:flex; flex-direction:column-reverse; gap:8px; pointer-events:none; }
+  .toast { background:var(--bg2); border:1px solid var(--border); border-radius:10px; padding:12px 18px; font-size:0.85rem; color:var(--text); box-shadow:0 4px 20px rgba(0,0,0,0.35); pointer-events:auto; display:flex; align-items:center; gap:10px; min-width:260px; max-width:380px; animation: toastIn 0.25s ease; }
+  .toast.toast-ok   { border-left:3px solid var(--green); }
+  .toast.toast-err  { border-left:3px solid var(--red); }
+  .toast.toast-warn { border-left:3px solid var(--yellow); }
+  .toast.toast-info { border-left:3px solid var(--accent); }
+  .toast-icon { font-size:1.1rem; flex-shrink:0; }
+  .toast-msg  { flex:1; }
+  .toast-close { background:none; border:none; color:var(--text3); cursor:pointer; font-size:1rem; padding:0 2px; }
+  @keyframes toastIn { from { opacity:0; transform:translateX(30px); } to { opacity:1; transform:none; } }
+
   ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
@@ -505,19 +555,27 @@
 <body>
 
 <!-- PANTALLA SELECTOR DE EMPRESAS -->
+
+<div id="toast-container"></div>
 <div id="pantalla-empresas" style="display:none;">
   <div class="emp-selector-box">
     <div class="emp-selector-title">ContaCL</div>
     <div class="emp-selector-sub">Sistema Contable · Selecciona o crea una empresa para continuar</div>
     <div id="lista-empresas"></div>
-    <div id="form-nueva-empresa" style="display:none;margin-top:1rem;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:1rem;">
-      <div style="font-weight:700;font-size:0.85rem;margin-bottom:10px;color:var(--accent);">Nueva Empresa</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-        <div class="form-group full"><label>Nombre / Razón Social *</label><input type="text" id="ne-nombre" placeholder="Ej: Comercial Los Andes SpA"></div>
-        <div class="form-group"><label>RUT</label><input type="text" id="ne-rut" placeholder="76.123.456-7" oninput="formatRut(this)"></div>
-        <div class="form-group"><label>Giro</label><input type="text" id="ne-giro" placeholder="Comercio al por menor"></div>
+    <div id="form-nueva-empresa" style="display:none;margin-top:1rem;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:1.25rem;">
+      <div style="font-weight:700;font-size:0.88rem;margin-bottom:14px;color:var(--accent);">📋 Nueva Empresa — Datos Obligatorios</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="form-group full"><label>Nombre / Razón Social <span style="color:var(--red)">*</span></label><input type="text" id="ne-nombre" placeholder="Ej: Comercial Los Andes SpA"></div>
+        <div class="form-group"><label>RUT <span style="color:var(--red)">*</span></label><input type="text" id="ne-rut" placeholder="76.123.456-7" oninput="formatRut(this)"></div>
+        <div class="form-group"><label>Giro / Actividad <span style="color:var(--red)">*</span></label><input type="text" id="ne-giro" placeholder="Ej: Comercio al por menor"></div>
+        <div class="form-group"><label>Dirección <span style="color:var(--red)">*</span></label><input type="text" id="ne-direccion" placeholder="Ej: Av. Providencia 1234"></div>
+        <div class="form-group"><label>Ciudad <span style="color:var(--red)">*</span></label><input type="text" id="ne-ciudad" placeholder="Ej: Santiago"></div>
+        <div class="form-group"><label>Región</label><input type="text" id="ne-region" placeholder="Ej: Región Metropolitana"></div>
+        <div class="form-group"><label>Teléfono</label><input type="text" id="ne-telefono" placeholder="+56 2 2345 6789"></div>
+        <div class="form-group"><label>Email</label><input type="email" id="ne-email" placeholder="contacto@empresa.cl"></div>
       </div>
-      <div style="display:flex;gap:8px;margin-top:10px;justify-content:flex-end;">
+      <div id="ne-error" style="display:none;color:var(--red);font-size:0.8rem;margin-top:8px;padding:6px 10px;background:rgba(248,81,73,0.1);border-radius:6px;border:1px solid rgba(248,81,73,0.25);"></div>
+      <div style="display:flex;gap:8px;margin-top:12px;justify-content:flex-end;">
         <button class="btn" onclick="document.getElementById('form-nueva-empresa').style.display='none'">Cancelar</button>
         <button class="btn btn-green" onclick="crearEmpresa()">✓ Crear Empresa</button>
       </div>
@@ -536,6 +594,7 @@
     </div>
     <button class="btn" onclick="exportarDB()">⬇ Exportar</button>
     <button class="btn" onclick="document.getElementById('importFile').click()">⬆ Importar</button>
+    <button class="btn" onclick="restaurarBackup()" title="Restaurar backup automático">🔄 Backup</button>
     <input type="file" id="importFile" accept=".json" style="display:none" onchange="importarDB(event)">
     <button class="btn btn-accent" onclick="abrirModalAsiento()">+ Nuevo Asiento</button>
   </div>
@@ -570,10 +629,14 @@
     <div class="nav-item" data-page="rem-liquidaciones"><span class="nav-icon">💰</span> Liquidaciones</div>
     <div class="nav-item" data-page="rem-libro"><span class="nav-icon">📑</span> Libro Rem.</div>
     <div class="nav-item" data-page="rem-params"><span class="nav-icon">⚙️</span> Parámetros</div>
+    <div class="nav-section">Bancos</div>
+    <div class="nav-item" data-page="conciliaciones"><span class="nav-icon">🏦</span> Conciliación Bancaria</div>
     <div class="nav-section">Auxiliares</div>
     <div class="nav-item" data-page="aux-registro"><span class="nav-icon">🏷️</span> Clientes / Proveed.</div>
     <div class="nav-item" data-page="aux-mayor"><span class="nav-icon">📋</span> Mayor Auxiliar</div>
     <div class="nav-item" data-page="aux-antiguedad"><span class="nav-icon">⏱️</span> Antigüedad Saldos</div>
+    <div class="nav-section">Bancos</div>
+    <div class="nav-item" data-page="conc-bancaria"><span class="nav-icon">🏦</span> Conciliación Bancaria</div>
     <div class="nav-section">Inventario</div>
     <div class="nav-item" data-page="inv-productos"><span class="nav-icon">📦</span> Productos</div>
     <div class="nav-item" data-page="inv-movimientos"><span class="nav-icon">🔄</span> Movimientos</div>
@@ -1006,6 +1069,68 @@
       </div>
     </div>
 
+    <!-- ===== CONCILIACIÓN BANCARIA LISTA ===== -->
+    <div class="page" id="page-conciliaciones">
+      <div class="page-header">
+        <div><div class="page-title">Conciliación Bancaria</div><div class="page-sub">Control de saldos bancarios vs contabilidad</div></div>
+        <button class="btn btn-accent" onclick="abrirModalNuevaConciliacion()">+ Nueva Conciliación</button>
+      </div>
+      <div id="contenido-conciliaciones"></div>
+    </div>
+
+    <!-- ===== CONCILIACIÓN BANCARIA DETALLE ===== -->
+    <div class="page" id="page-concil-detalle">
+      <div id="contenido-concil-detalle"></div>
+    </div>
+
+    <!-- MODAL NUEVA CONCILIACIÓN -->
+    <div class="modal-overlay" id="modal-nueva-conciliacion">
+      <div class="modal" style="max-width:560px;width:95%;">
+        <div class="modal-header"><span>Nueva Conciliación Bancaria</span><button class="btn" onclick="cerrarModal('modal-nueva-conciliacion')" style="padding:4px 10px;">✕</button></div>
+        <div class="modal-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div class="form-group full"><label>Nombre / Identificador</label><input type="text" id="conc-nombre" placeholder="Ej: Banco BCI Enero 2025"></div>
+            <div class="form-group"><label>Banco *</label><input type="text" id="conc-banco" placeholder="Ej: BCI, Santander, Chile"></div>
+            <div class="form-group"><label>N° Cuenta</label><input type="text" id="conc-numero" placeholder="Ej: 63-12345-6"></div>
+            <div class="form-group"><label>Período *</label><input type="month" id="conc-periodo" style="background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:var(--text);padding:8px 10px;width:100%;"></div>
+            <div class="form-group"><label>Saldo Extracto Bancario ($) *</label><input type="text" id="conc-saldo-banco" oninput="fmtMiles(this)" placeholder="0"></div>
+            <div class="form-group full"><label>Cuenta Contable *</label>
+              <select id="conc-cuenta-contable" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:var(--text);padding:8px 10px;font-size:0.82rem;"></select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" onclick="cerrarModal('modal-nueva-conciliacion')">Cancelar</button>
+          <button class="btn btn-green" onclick="guardarNuevaConciliacion()">💾 Crear y Abrir</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL MOVIMIENTO BANCARIO -->
+    <div class="modal-overlay" id="modal-mov-bancario">
+      <div class="modal" style="max-width:460px;width:95%;">
+        <div class="modal-header"><span>Movimiento Bancario</span><button class="btn" onclick="cerrarModal('modal-mov-bancario')" style="padding:4px 10px;">✕</button></div>
+        <div class="modal-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div class="form-group"><label>Fecha *</label><input type="date" id="mb-fecha"></div>
+            <div class="form-group"><label>Tipo *</label>
+              <select id="mb-tipo" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:var(--text);padding:8px 10px;">
+                <option value="abono">Abono (ingreso)</option>
+                <option value="cargo">Cargo (egreso)</option>
+              </select>
+            </div>
+            <div class="form-group full"><label>Descripción</label><input type="text" id="mb-descripcion" placeholder="Ej: Depósito cliente, Pago proveedor..."></div>
+            <div class="form-group"><label>N° Comprobante</label><input type="text" id="mb-comprobante" placeholder="Ej: 00123456"></div>
+            <div class="form-group"><label>Monto ($) *</label><input type="text" id="mb-monto" oninput="fmtMiles(this)" placeholder="0"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" onclick="cerrarModal('modal-mov-bancario')">Cancelar</button>
+          <button class="btn btn-green" onclick="guardarMovimientoBancario()">💾 Guardar</button>
+        </div>
+      </div>
+    </div>
+
     <!-- ===== AUXILIARES: REGISTRO ===== -->
     <div class="page" id="page-aux-registro">
       <div class="page-header">
@@ -1097,6 +1222,79 @@
           </div>
         </div>
         <div class="modal-footer"><button class="btn" onclick="cerrarModal('modal-auxiliar')">Cancelar</button><button class="btn btn-green" onclick="guardarAuxiliar()">💾 Guardar</button></div>
+      </div>
+    </div>
+
+    <!-- ===== CONCILIACIÓN BANCARIA ===== -->
+    <div class="page" id="page-conc-bancaria">
+      <div class="page-header">
+        <div><div class="page-title">Conciliación Bancaria</div><div class="page-sub">Coteja los movimientos del libro con el estado de cuenta bancario</div></div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn" onclick="exportarConcPDF()">🖨️ PDF</button>
+          <button class="btn btn-green" onclick="exportarConcExcel()">📥 Excel</button>
+          <button class="btn btn-accent" onclick="abrirModalConciliacion()">+ Nueva Conciliación</button>
+        </div>
+      </div>
+      <div class="filters">
+        <select class="btn" id="sel-conc-activa" onchange="cargarConciliacion()" style="padding:7px 12px;min-width:260px;">
+          <option value="">— Seleccionar conciliación —</option>
+        </select>
+        <button class="btn btn-danger" id="btn-del-conc" style="display:none;" onclick="eliminarConciliacion()">🗑️ Eliminar</button>
+      </div>
+      <div id="contenido-conciliacion">
+        <div class="empty-state"><div class="empty-icon">🏦</div><div class="empty-title">Sin conciliaciones</div><div class="empty-sub">Crea una nueva conciliación para comenzar</div></div>
+      </div>
+    </div>
+
+    <!-- MODAL NUEVA CONCILIACIÓN -->
+    <div class="modal-overlay" id="modal-conciliacion">
+      <div class="modal" style="max-width:520px;width:95%;">
+        <div class="modal-header"><span>Nueva Conciliación Bancaria</span><button class="btn" onclick="cerrarModal('modal-conciliacion')" style="padding:4px 10px;">✕</button></div>
+        <div class="modal-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div class="form-group"><label>Período (Mes/Año) *</label><input type="month" id="conc-periodo"></div>
+            <div class="form-group"><label>Cuenta Bancaria *</label>
+              <select id="conc-cuenta-banco" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:var(--text);padding:8px 10px;font-size:0.82rem;"></select>
+            </div>
+            <div class="form-group"><label>Saldo Según Libro ($) al inicio</label><input type="text" id="conc-saldo-libro-ini" value="0" oninput="fmtMiles(this)"></div>
+            <div class="form-group"><label>Saldo Según Banco ($) al cierre</label><input type="text" id="conc-saldo-banco" value="0" oninput="fmtMiles(this)"></div>
+            <div class="form-group full"><label>Nombre / Referencia</label><input type="text" id="conc-nombre" placeholder="Ej: Banco BCI CTA. 123456 — Enero 2025"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" onclick="cerrarModal('modal-conciliacion')">Cancelar</button>
+          <button class="btn btn-green" onclick="crearConciliacion()">✓ Crear</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL AGREGAR PARTIDA -->
+    <div class="modal-overlay" id="modal-partida-conc">
+      <div class="modal" style="max-width:480px;width:95%;">
+        <div class="modal-header"><span id="modal-partida-title">Agregar Partida</span><button class="btn" onclick="cerrarModal('modal-partida-conc')" style="padding:4px 10px;">✕</button></div>
+        <div class="modal-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div class="form-group"><label>Fecha *</label><input type="date" id="cp-fecha"></div>
+            <div class="form-group"><label>Tipo *</label>
+              <select id="cp-tipo" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:var(--text);padding:8px 10px;">
+                <option value="dep_en_transito">Depósito en Tránsito</option>
+                <option value="cheque_pendiente">Cheque Pendiente Cobro</option>
+                <option value="nota_debito">Nota de Débito Banco</option>
+                <option value="nota_credito">Nota de Crédito Banco</option>
+                <option value="error_libro">Error en Libro</option>
+                <option value="error_banco">Error en Banco</option>
+                <option value="otro">Otro</option>
+              </select>
+            </div>
+            <div class="form-group full"><label>Descripción *</label><input type="text" id="cp-desc" placeholder="Ej: Cheque N°1234 emitido a proveedor"></div>
+            <div class="form-group"><label>Monto ($) *</label><input type="text" id="cp-monto" oninput="fmtMiles(this)" placeholder="0"></div>
+            <div class="form-group"><label>Referencia</label><input type="text" id="cp-ref" placeholder="N° cheque, transferencia, etc."></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" onclick="cerrarModal('modal-partida-conc')">Cancelar</button>
+          <button class="btn btn-green" onclick="guardarPartidaConc()">✓ Agregar</button>
+        </div>
       </div>
     </div>
 
@@ -1351,7 +1549,7 @@
 <script>
 // ===== IndexedDB =====
 // ===== MULTI-EMPRESA =====
-const DB_VERSION = 5;
+const DB_VERSION = 6;
 let db;
 let empresaActualId = null; // ID de la empresa activa (ej: 'emp_1')
 
@@ -1373,6 +1571,8 @@ function openDB() {
       if (!d.objectStoreNames.contains('productos')) d.createObjectStore('productos', {keyPath:'id', autoIncrement:true});
       if (!d.objectStoreNames.contains('mov_inv')) d.createObjectStore('mov_inv', {keyPath:'id', autoIncrement:true});
       if (!d.objectStoreNames.contains('auxiliares')) d.createObjectStore('auxiliares', {keyPath:'id', autoIncrement:true});
+      if (!d.objectStoreNames.contains('conciliaciones')) d.createObjectStore('conciliaciones', {keyPath:'id', autoIncrement:true});
+      if (!d.objectStoreNames.contains('conciliaciones')) d.createObjectStore('conciliaciones', {keyPath:'id', autoIncrement:true});
     };
   });
 }
@@ -1445,7 +1645,7 @@ const PLAN_INICIAL = [
 ];
 
 let cuentas=[], asientos=[], cierres=[], trabajadores=[], liquidaciones=[], paramsRem={},
-    productos=[], movInventario=[], auxiliares=[],
+    productos=[], movInventario=[], auxiliares=[], conciliaciones=[],
     editingAsientoId=null, editingCuentaCodigo=null, lineaCount=0,
     editingTrabajadorId=null, editingProductoId=null, editingAuxiliarId=null;
 
@@ -1475,6 +1675,7 @@ async function cargarEmpresaDB() {
   productos = await getAll('productos');
   movInventario = await getAll('mov_inv');
   auxiliares = await getAll('auxiliares');
+  try { conciliaciones = await getAll('conciliaciones'); } catch(e) { conciliaciones=[]; }
   const pArr = await getAll('params_rem');
   paramsRem = {}; pArr.forEach(p => paramsRem[p.clave] = p.valor);
   if (!Object.keys(paramsRem).length) await initParamsRem();
@@ -1489,20 +1690,21 @@ async function cargarEmpresaDB() {
   try { const t = localStorage.getItem('contacl-tema'); if (t) setTema(t); } catch(e) {}
   cargarEmpresa();
   actualizarSelectorEmpresaHeader();
+  addBackupIndicator();
+  iniciarAutoBackup();
 
   // Ocultar selector, mostrar app
   document.getElementById('pantalla-empresas').style.display = 'none';
   document.getElementById('app-main').style.display = 'flex';
 
   document.querySelectorAll('.nav-item').forEach(el => {
-    el.addEventListener('click', () => {
-      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      el.classList.add('active');
-      document.getElementById('page-' + el.dataset.page).classList.add('active');
-    });
+    el.addEventListener('click', () => navegarA(el.dataset.page));
   });
+  window.addEventListener('popstate', e => { if (e.state && e.state.page) activarPagina(e.state.page); });
   renderAll();
+  programarAutoBackup();
+  const hashPage = location.hash.replace('#','');
+  if (hashPage) activarPagina(hashPage);
 }
 
 function renderAll() {
@@ -1513,6 +1715,8 @@ function renderAll() {
   renderTrabajadores(); renderLiquidaciones(); renderLibroRem(); renderParamsRem();
   renderProductos(); renderMovInventario(); renderResumenInventario();
   renderAuxiliares(); poblarSelectAuxiliar();
+  renderConciliaciones();
+  poblarSelConciliaciones();
 }
 
 // ===== EMPRESA =====
@@ -1548,7 +1752,7 @@ function guardarEmpresa() {
   actualizarSelectorEmpresaHeader();
   document.querySelectorAll('.informe-empresa-header').forEach(el => el.outerHTML = empresaHeaderHTML());
   renderBalance(); renderEER(); renderIVA(); renderBalance8();
-  alert('✓ Datos de la empresa guardados correctamente');
+  toast('Datos de la empresa guardados correctamente','ok');
 }
 
 function actualizarPreviewEmpresa() {
@@ -1610,6 +1814,29 @@ function formatRut(input) {
   actualizarPreviewEmpresa();
 }
 
+function validarRut(rut) {
+  if (!rut) return false;
+  const clean = rut.replace(/[\.\-\s]/g, '').toUpperCase();
+  if (clean.length < 2) return false;
+  const body = clean.slice(0, -1);
+  const dv   = clean.slice(-1);
+  if (!/^\d+$/.test(body)) return false;
+  let suma = 0, factor = 2;
+  for (let i = body.length - 1; i >= 0; i--) {
+    suma += parseInt(body[i]) * factor;
+    factor = factor === 7 ? 2 : factor + 1;
+  }
+  const dvCalc = 11 - (suma % 11);
+  const dvEsp = dvCalc === 11 ? '0' : dvCalc === 10 ? 'K' : String(dvCalc);
+  return dv === dvEsp;
+}
+
+function formatRutValida(input) {
+  formatRut(input);
+  const errEl = document.getElementById('ne-rut-error');
+  if (errEl) errEl.style.display = input.value && !validarRut(input.value) ? '' : 'none';
+}
+
 // Genera el HTML del encabezado empresa para usar en informes en pantalla
 function empresaHeaderHTML(tituloInforme='', periodo='') {
   if (!empresa.nombre && !empresa.rut) return `<div class="informe-empresa-header"><div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.1rem;color:var(--text);">${tituloInforme}</div>${periodo?`<div style="font-size:0.8rem;color:var(--text3);margin-top:2px;">Período: ${periodo}</div>`:''}</div></div>`;
@@ -1663,6 +1890,8 @@ function setTema(tema) {
 }
 
 // ===== SALDOS =====
+// Calcula saldos acumulados HASTA hastaFecha (y opcionalmente DESDE desdeFecha para flujos de período)
+// Para balances acumulativos (Activo/Pasivo/Patrimonio) siempre usar sin desdeFecha.
 function calcularSaldos(hastaFecha=null, desdeFecha=null) {
   const saldos = {};
   asientos
@@ -1672,10 +1901,29 @@ function calcularSaldos(hastaFecha=null, desdeFecha=null) {
         if (!saldos[l.cuenta]) saldos[l.cuenta] = 0;
         const c = cuentas.find(x => x.codigo === l.cuenta);
         if (!c) return;
-        saldos[l.cuenta] += c.naturaleza === 'Deudora' ? (l.debito||0)-(l.credito||0) : (l.credito||0)-(l.debito||0);
+        // Saldo positivo = favor según naturaleza
+        saldos[l.cuenta] += c.naturaleza === 'Deudora'
+          ? (l.debito||0) - (l.credito||0)
+          : (l.credito||0) - (l.debito||0);
       });
     });
   return saldos;
+}
+
+// Calcula saldos BRUTOS (débito y crédito por separado, sin considerar naturaleza)
+function calcularSaldosBrutos(hastaFecha=null, desdeFecha=null) {
+  const deb = {}, cre = {};
+  asientos
+    .filter(a => (!hastaFecha || a.fecha <= hastaFecha) && (!desdeFecha || a.fecha >= desdeFecha))
+    .forEach(a => {
+      a.lineas.forEach(l => {
+        if (!deb[l.cuenta]) deb[l.cuenta] = 0;
+        if (!cre[l.cuenta]) cre[l.cuenta] = 0;
+        deb[l.cuenta] += l.debito||0;
+        cre[l.cuenta] += l.credito||0;
+      });
+    });
+  return { deb, cre };
 }
 
 // ===== PICKER MES/AÑO HELPERS =====
@@ -1849,7 +2097,8 @@ function renderDashboard() {
   const ult = asientosFiltro.sort((a,b) => b.id-a.id).slice(0,10);
   document.getElementById('dash-asientos').innerHTML = ult.length ? ult.map(a => {
     const d = a.lineas.reduce((s,l)=>s+(l.debito||0),0);
-    return `<tr><td class="mono" style="color:var(--text3)">#${String(a.id).padStart(4,'0')}</td><td>${a.fecha}</td><td style="max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${a.glosa}</td><td class="text-right amount-pos">${fmt(d)}</td><td class="text-right amount-neg">${fmt(d)}</td></tr>`;
+    const cr = a.lineas.reduce((s,l)=>s+(l.credito||0),0);
+    return `<tr><td class="mono" style="color:var(--text3)">#${String(a.id).padStart(4,'0')}</td><td>${a.fecha}</td><td style="max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${a.glosa}</td><td class="text-right amount-pos">${fmt(d)}</td><td class="text-right amount-neg">${fmt(cr)}</td></tr>`;
   }).join('') : `<tr><td colspan="5"><div class="empty-state"><div class="empty-icon">📓</div><div class="empty-title">Sin asientos en este período</div></div></td></tr>`;
 }
 
@@ -1897,7 +2146,7 @@ async function guardarCuenta() {
   const codigo=document.getElementById('c-codigo').value.trim();
   const nombre=document.getElementById('c-nombre').value.trim();
   const tipo=document.getElementById('c-tipo').value;
-  if(!codigo||!nombre||!tipo){alert('Complete los campos obligatorios');return;}
+  if(!codigo||!nombre||!tipo){toast('Complete los campos obligatorios');return;}
   if(editingCuentaCodigo && editingCuentaCodigo!==codigo) await del('cuentas',editingCuentaCodigo);
   await put('cuentas',{codigo,nombre,tipo,naturaleza:document.getElementById('c-naturaleza').value,sii:document.getElementById('c-sii').value.trim(),descripcion:document.getElementById('c-descripcion').value.trim()});
   cuentas = await getAll('cuentas');
@@ -1905,7 +2154,7 @@ async function guardarCuenta() {
 }
 
 async function eliminarCuenta(codigo) {
-  if(asientos.some(a=>a.lineas.some(l=>l.cuenta===codigo))){alert('No se puede eliminar: tiene movimientos.');return;}
+  if(asientos.some(a=>a.lineas.some(l=>l.cuenta===codigo))){toast('No se puede eliminar: tiene movimientos.');return;}
   if(!confirm('¿Eliminar esta cuenta?'))return;
   await del('cuentas',codigo); cuentas=await getAll('cuentas'); renderAll();
 }
@@ -1952,8 +2201,20 @@ function addLinea(data=null) {
   const auxOpts = '<option value="">— Sin auxiliar —</option>' +
     auxiliares.map(a=>`<option value="${a.id}" ${data&&data.auxiliarId===a.id?'selected':''}>[${a.rut}] ${a.nombre}</option>`).join('');
   const div=document.createElement('div'); div.className='linea-row'; div.id='linea-'+id;
+  const selectedCuenta = data ? cuentas.find(c=>c.codigo===data.cuenta) : null;
+  const selectedLabel = selectedCuenta ? `${selectedCuenta.codigo} — ${selectedCuenta.nombre}` : '';
   div.innerHTML=`
-    <select onchange="actualizarTotales();actualizarAuxSelector(this,${id})" style="font-size:0.83rem;padding:8px 10px;font-family:'DM Mono',monospace;width:100%;"><option value="">— Seleccione cuenta —</option>${opts}</select>
+    <div style="position:relative;width:100%;">
+      <input type="text" id="busca-cta-${id}" autocomplete="off"
+        placeholder="Buscar cuenta por código o nombre..."
+        value="${selectedLabel}"
+        oninput="buscarCuentaLinea(this,${id})"
+        onfocus="buscarCuentaLinea(this,${id})"
+        onblur="setTimeout(()=>cerrarDropdownLinea(${id}),200)"
+        style="font-size:0.83rem;padding:8px 10px;font-family:'DM Mono',monospace;width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:var(--text);">
+      <input type="hidden" id="cta-sel-${id}" value="${data?data.cuenta||'':''}">
+      <div id="dd-cta-${id}" style="display:none;position:absolute;top:100%;left:0;right:0;z-index:500;background:var(--bg2);border:1px solid var(--border);border-radius:0 0 8px 8px;max-height:180px;overflow-y:auto;box-shadow:0 4px 16px rgba(0,0,0,0.3);"></div>
+    </div>
     <input type="text" inputmode="numeric" placeholder="0" value="${debVal}" oninput="formatearMiles(this)" onblur="actualizarTotales()" style="font-family:'DM Mono',monospace;text-align:right;width:100%;font-size:0.88rem;padding:8px 10px;" data-raw="${data?data.debito||0:0}">
     <input type="text" inputmode="numeric" placeholder="0" value="${creVal}" oninput="formatearMiles(this)" onblur="actualizarTotales()" style="font-family:'DM Mono',monospace;text-align:right;width:100%;font-size:0.88rem;padding:8px 10px;" data-raw="${data?data.credito||0:0}">
     <button class="btn-icon" onclick="eliminarLinea(${id})">✕</button>
@@ -1967,8 +2228,10 @@ function addLinea(data=null) {
     if (wrap) wrap.style.display = '';
   }
   // Auto-mostrar si la cuenta ya es de auxiliar
-  const sel = div.querySelector('select');
-  if (data && data.cuenta) actualizarAuxSelector(sel, id);
+  if (data && data.cuenta) {
+    const fakeEl = { value: data.cuenta };
+    actualizarAuxSelector(fakeEl, id);
+  }
 }
 
 function formatearMiles(input) {
@@ -2017,12 +2280,16 @@ function actualizarAuxSelector(selectEl, lineaId) {
 function getLineas() {
   const lineas=[];
   document.querySelectorAll('#lineas-container .linea-row').forEach(row=>{
-    const sel=row.querySelector('select'); const ins=row.querySelectorAll('input[type=text]');
-    const cuenta=sel.value;
-    const debito = parseFloat(ins[0].dataset.raw||0) || parseMiles(ins[0].value);
-    const credito = parseFloat(ins[1].dataset.raw||0) || parseMiles(ins[1].value);
+    // Usar hidden input para cuenta (búsqueda en tiempo real)
+    const ctaHidden = row.querySelector('input[id^="cta-sel-"]');
+    const cuenta = ctaHidden ? ctaHidden.value : (row.querySelector('select')?.value||'');
+    const ins = row.querySelectorAll('input[type=text]');
+    // ins[0] = search box, ins[1] = debito, ins[2] = credito
+    const debIdx = ctaHidden ? 1 : 0;
+    const creIdx = ctaHidden ? 2 : 1;
+    const debito = parseFloat(ins[debIdx]?.dataset.raw||0) || parseMiles(ins[debIdx]?.value||'0');
+    const credito = parseFloat(ins[creIdx]?.dataset.raw||0) || parseMiles(ins[creIdx]?.value||'0');
     if(cuenta&&(debito>0||credito>0)) {
-      // Capturar auxiliar si existe
       const auxSel = row.querySelector('.linea-aux-selector');
       const auxiliarId = auxSel && auxSel.value ? parseInt(auxSel.value) : null;
       lineas.push({cuenta, debito, credito, auxiliarId: auxiliarId||null});
@@ -2036,11 +2303,11 @@ async function guardarAsiento() {
   const glosa=document.getElementById('a-glosa').value.trim();
   const referencia=document.getElementById('a-referencia').value.trim();
   const lineas=getLineas();
-  if(!fecha||!glosa){alert('Complete fecha y descripción');return;}
-  if(lineas.length<2){alert('El asiento debe tener al menos 2 líneas con cuentas y montos');return;}
+  if(!fecha||!glosa){toast('Complete fecha y descripción','err');return;}
+  if(lineas.length<2){toast('El asiento debe tener al menos 2 líneas con cuentas y montos','err');return;}
   const deb=lineas.reduce((s,l)=>s+l.debito,0);
   const cre=lineas.reduce((s,l)=>s+l.credito,0);
-  if(Math.abs(deb-cre)>1){alert('El asiento no está cuadrado (débito ≠ crédito)');return;}
+  if(Math.abs(deb-cre)>1){toast('El asiento no está cuadrado (débito ≠ crédito)','err');return;}
   const obj={fecha,glosa,referencia,lineas};
   if(editingAsientoId) obj.id=editingAsientoId;
   await put('asientos',obj);
@@ -2174,7 +2441,7 @@ function getDiarioFiltrado() {
 
 function exportarDiarioPDF() {
   const { lista, label } = getDiarioFiltrado();
-  if (!lista.length) { alert('No hay datos para exportar.'); return; }
+  if (!lista.length) { toast('No hay datos para exportar','warn'); return; }
   const win = window.open('', '_blank');
   let rows = '';
   lista.forEach(a => {
@@ -2199,7 +2466,7 @@ function exportarDiarioPDF() {
 
 function exportarDiarioExcel() {
   const { lista, label } = getDiarioFiltrado();
-  if (!lista.length) { alert('No hay datos para exportar.'); return; }
+  if (!lista.length) { toast('No hay datos para exportar','warn'); return; }
   let xml = `<?xml version="1.0" encoding="UTF-8"?><?mso-application progid="Excel.Sheet"?><Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"><Styles><Style ss:ID="h"><Font ss:Bold="1" ss:Size="11"/></Style><Style ss:ID="t"><Font ss:Bold="1" ss:Size="9"/><Interior ss:Color="#F0F0F0" ss:Pattern="Solid"/></Style><Style ss:ID="s"><Interior ss:Color="#FAFAFA" ss:Pattern="Solid"/></Style><Style ss:ID="sb"><Font ss:Bold="1"/><Interior ss:Color="#FAFAFA" ss:Pattern="Solid"/><Alignment ss:Horizontal="Right"/></Style><Style ss:ID="n"><Alignment ss:Horizontal="Right"/><NumberFormat ss:Format="#,##0"/></Style></Styles><Worksheet ss:Name="Libro Diario"><Table>`;
   xml += `<Row><Cell ss:MergeAcross="6" ss:StyleID="h"><Data ss:Type="String">${empresa.nombre||'Libro Diario'}</Data></Cell></Row>`;
   xml += `<Row><Cell ss:MergeAcross="6"><Data ss:Type="String">${empresa.rut?'RUT: '+empresa.rut:''}</Data></Cell></Row>`;
@@ -2244,7 +2511,7 @@ function getMayorFiltrado() {
 
 function exportarMayorPDF() {
   const { resultado, label } = getMayorFiltrado();
-  if (!resultado.length) { alert('No hay datos para exportar.'); return; }
+  if (!resultado.length) { toast('No hay datos para exportar','warn'); return; }
   const win = window.open('', '_blank');
   let body = '';
   resultado.forEach(({cuenta, saldo, lineas}) => {
@@ -2262,7 +2529,7 @@ function exportarMayorPDF() {
 
 function exportarMayorExcel() {
   const { resultado, label } = getMayorFiltrado();
-  if (!resultado.length) { alert('No hay datos para exportar.'); return; }
+  if (!resultado.length) { toast('No hay datos para exportar','warn'); return; }
   let xml = `<?xml version="1.0" encoding="UTF-8"?><?mso-application progid="Excel.Sheet"?><Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"><Styles><Style ss:ID="h"><Font ss:Bold="1" ss:Size="11"/></Style><Style ss:ID="t"><Font ss:Bold="1" ss:Size="9"/><Interior ss:Color="#F0F0F0" ss:Pattern="Solid"/></Style><Style ss:ID="c"><Font ss:Bold="1" ss:Size="9"/><Interior ss:Color="#E8EEF8" ss:Pattern="Solid"/></Style><Style ss:ID="f"><Font ss:Bold="1"/><Interior ss:Color="#F5F5F5" ss:Pattern="Solid"/><Alignment ss:Horizontal="Right"/><NumberFormat ss:Format="#,##0"/></Style><Style ss:ID="n"><Alignment ss:Horizontal="Right"/><NumberFormat ss:Format="#,##0"/></Style><Style ss:ID="pos"><Alignment ss:Horizontal="Right"/><NumberFormat ss:Format="#,##0"/><Font ss:Color="#1a6b30"/></Style><Style ss:ID="neg"><Alignment ss:Horizontal="Right"/><NumberFormat ss:Format="#,##0"/><Font ss:Color="#c0392b"/></Style></Styles>`;
   resultado.forEach(({cuenta, saldo, lineas}) => {
     const sheetName = cuenta.codigo.replace(/[\/\\?*\[\]:]/g,'_').slice(0,25);
@@ -2373,22 +2640,39 @@ function renderIVA() {
   const { hasta, label } = getPickerRangeAcumulado('iva');
   const asMes = asientos.filter(a=>!hasta||a.fecha<=hasta);
   const sumCuenta=(codigo,campo)=>{ let t=0; asMes.forEach(a=>a.lineas.filter(l=>l.cuenta===codigo).forEach(l=>t+=(l[campo]||0))); return t; };
-  const ivaD=sumCuenta('2-01-002-0001','credito');
-  const ivaC=sumCuenta('1-02-002-0001','debito');
-  const vtG=sumCuenta('4-01-001-0001','credito');
-  const vtE=sumCuenta('4-01-001-0002','credito');
-  const ppm=sumCuenta('1-02-002-0002','debito');
-  const ivaP=ivaD-ivaC;
-  const final=Math.max(0,ivaP-ppm);
+
+  // Débito Fiscal = lo que se cobra a clientes (crédito en cuenta 2-01-002-0001)
+  const ivaD = sumCuenta('2-01-002-0001','credito');
+  // Crédito Fiscal = lo que pagamos en compras (débito en cuenta 1-02-002-0001)
+  const ivaC = sumCuenta('1-02-002-0001','debito');
+  // Ventas
+  const vtG = sumCuenta('4-01-001-0001','credito');
+  const vtE = sumCuenta('4-01-001-0002','credito');
+  // PPM
+  const ppm = sumCuenta('1-02-002-0002','debito');
+
+  // IVA neto = Débito - Crédito
+  const ivaNeto = ivaD - ivaC;
+
+  // Si IVA neto > 0 hay impuesto a pagar; si < 0 hay remanente
+  const hayRemanente = ivaNeto < 0;
+  const remanente = hayRemanente ? Math.abs(ivaNeto) : 0;
+
+  // Impuesto a pagar = MAX(0, ivaNeto - PPM)
+  // Si hay remanente, no hay impuesto a pagar
+  const impuestoPagar = hayRemanente ? 0 : Math.max(0, ivaNeto - ppm);
+  // Si ivaNeto > 0 pero ivaNeto <= ppm → crédito PPM cubre todo
+  const ppmExcedente = (!hayRemanente && ppm > ivaNeto) ? ppm - ivaNeto : 0;
+
   document.getElementById('iva-contenido').innerHTML=`
   ${empresaHeaderHTML('IVA / Formulario F29', label)}
   <div class="iva-grid">
-    <div class="iva-card"><div class="iva-card-title" style="color:var(--green)">Débito Fiscal</div>
+    <div class="iva-card"><div class="iva-card-title" style="color:var(--green)">Débito Fiscal (Ventas)</div>
       <div class="informe-row"><span>Ventas gravadas netas</span><span class="mono">${fmt(vtG)}</span></div>
-      <div class="informe-row"><span>IVA 19% (Débito Fiscal)</span><span class="mono amount-pos">${fmt(ivaD)}</span></div>
-      <div class="informe-row"><span>Ventas exentas</span><span class="mono">${fmt(vtE)}</span></div>
+      <div class="informe-row"><span>IVA 19% sobre ventas gravadas</span><span class="mono amount-pos">${fmt(ivaD)}</span></div>
+      ${vtE>0?`<div class="informe-row"><span>Ventas exentas / no gravadas</span><span class="mono">${fmt(vtE)}</span></div>`:''}
     </div>
-    <div class="iva-card"><div class="iva-card-title" style="color:var(--blue)">Crédito Fiscal</div>
+    <div class="iva-card"><div class="iva-card-title" style="color:var(--blue)">Crédito Fiscal (Compras)</div>
       <div class="informe-row"><span>IVA pagado en compras</span><span class="mono amount-neg">${fmt(ivaC)}</span></div>
       <div class="informe-row"><span>PPM pagado</span><span class="mono amount-neg">${fmt(ppm)}</span></div>
     </div>
@@ -2396,14 +2680,19 @@ function renderIVA() {
   <div class="informe">
     <div class="informe-header"><div class="informe-title">Resumen F29 — ${label}</div></div>
     <div class="informe-body">
-      <div class="informe-row"><span>Débito Fiscal (IVA ventas)</span><span class="mono amount-pos">${fmt(ivaD)}</span></div>
-      <div class="informe-row"><span>(−) Crédito Fiscal (IVA compras)</span><span class="mono amount-neg">${fmt(ivaC)}</span></div>
-      <div class="informe-row subtotal"><span>IVA neto antes PPM</span><span class="mono" style="color:${ivaP>=0?'var(--yellow)':'var(--green)'}">${fmtS(ivaP)}</span></div>
-      <div class="informe-row"><span>(−) PPM</span><span class="mono amount-neg">${fmt(ppm)}</span></div>
-      <div class="informe-row total"><span>${final>0?'⚠️ TOTAL A PAGAR SII':'✓ REMANENTE CRÉDITO FISCAL'}</span><span class="mono" style="color:${final>0?'var(--red)':'var(--green)'}">${final>0?fmt(final):fmt(Math.abs(ivaP)+ppm)}</span></div>
+      <div class="informe-row"><span>Débito Fiscal (IVA cobrado en ventas)</span><span class="mono amount-pos">${fmt(ivaD)}</span></div>
+      <div class="informe-row"><span>(−) Crédito Fiscal (IVA pagado en compras)</span><span class="mono amount-neg">${fmt(ivaC)}</span></div>
+      <div class="informe-row subtotal"><span>${hayRemanente?'Remanente Crédito Fiscal (acumulable)':'IVA neto determinado'}</span>
+        <span class="mono" style="color:${hayRemanente?'var(--green)':'var(--yellow)'};">${hayRemanente?'('+fmt(remanente)+')':fmt(ivaNeto)}</span></div>
+      ${!hayRemanente?`<div class="informe-row"><span>(−) PPM imputado</span><span class="mono amount-neg">${fmt(Math.min(ppm,ivaNeto))}</span></div>`:''}
+      ${ppmExcedente>0?`<div class="informe-row"><span>Excedente PPM (crédito futuro)</span><span class="mono" style="color:var(--green);">${fmt(ppmExcedente)}</span></div>`:''}
+      <div class="informe-row total">
+        <span>${impuestoPagar>0?'⚠️ IMPUESTO A PAGAR SII':hayRemanente?'✓ REMANENTE CRÉDITO FISCAL':'✓ SIN IMPUESTO A PAGAR (PPM cubre)'}</span>
+        <span class="mono" style="color:${impuestoPagar>0?'var(--red)':'var(--green)'};">${impuestoPagar>0?fmt(impuestoPagar):hayRemanente?fmt(remanente):fmt(0)}</span>
+      </div>
     </div>
   </div>
-  <div class="alert alert-info" style="margin-top:1rem;">ℹ️ Este resumen es estimativo. El F29 debe declararse en el SII dentro de los plazos legales establecidos. Los montos dependen de los asientos registrados en las cuentas de IVA Débito Fiscal, IVA Crédito Fiscal y PPM.</div>`;
+  <div class="alert alert-info" style="margin-top:1rem;">ℹ️ Resumen estimativo basado en asientos registrados. Débito Fiscal = IVA Débito Fiscal (cta. 2-01-002-0001). Crédito Fiscal = IVA Crédito Fiscal (cta. 1-02-002-0001). PPM = cta. 1-02-002-0002. Declare el F29 en el SII dentro de los plazos legales.</div>`;
 }
 
 // ===== MODALES =====
@@ -2413,8 +2702,10 @@ document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click
 // ===== EXPORT/IMPORT =====
 async function exportarDB() {
   const nombreEmp = empresa.nombre || empresaActualId;
+  const paramsArr = await getAll('params_rem');
   const data={cuentas,asientos,cierres,trabajadores,liquidaciones,productos,movInventario,auxiliares,
-    empresa: getEmpresaActual(), exportado:new Date().toISOString()};
+    paramsRem: paramsArr, empresa: getEmpresaActual(),
+    listaEmpresas: getEmpresas(), exportado:new Date().toISOString()};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
   a.download=`ContaCL_${nombreEmp.replace(/\s/g,'_')}_${new Date().toISOString().slice(0,10)}.json`; a.click();
@@ -2432,12 +2723,16 @@ async function importarDB(event) {
   if(data.productos) for(const p of data.productos) await put('productos',p);
   if(data.movInventario) for(const m of data.movInventario) await put('mov_inv',m);
   if(data.auxiliares) for(const x of data.auxiliares) await put('auxiliares',x);
+  if(data.conciliaciones) for(const x of data.conciliaciones) await put('conciliaciones',x);
+  if(data.paramsRemArr) for(const p of data.paramsRemArr) await put('params_rem',p);
   cuentas=await getAll('cuentas'); asientos=await getAll('asientos');
   cierres=await getAll('cierres'); trabajadores=await getAll('trabajadores');
   liquidaciones=await getAll('liquidaciones'); productos=await getAll('productos');
   movInventario=await getAll('mov_inv'); auxiliares=await getAll('auxiliares');
+  if(data.paramsRem) for(const p of data.paramsRem) await put('params_rem',p);
+  paramsRem={}; (await getAll('params_rem')).forEach(p=>paramsRem[p.clave]=p.valor);
   renderAll(); event.target.value='';
-  alert('✓ Datos importados correctamente');
+  toast('Datos importados correctamente','ok');
 }
 
 // ===== BALANCE 8 COLUMNAS =====
@@ -2519,11 +2814,13 @@ function renderBalance8() {
   // Resultado (utilidad o pérdida)
   const resultado = totResIngC - totResGasD;
   const esUtilidad = resultado >= 0;
-  // Ajustar totales para cuadrar: el resultado va al lado de menor suma
-  const balActDFinal = totBalActD + (esUtilidad ? 0 : Math.abs(resultado));
+  // Cuadre de columnas:
+  // Utilidad: va en col. Resultados-Gastos (aumenta gastos) y en col. Balance-Pasivo (aumenta pasivo/patrimonio)
+  // Pérdida: va en col. Resultados-Ingresos (aumenta ingresos) y en col. Balance-Activo (aumenta activo)
+  const balActDFinal = totBalActD + (!esUtilidad ? Math.abs(resultado) : 0);
   const balActCFinal = totBalActC + (esUtilidad ? resultado : 0);
   const resGasDFinal = totResGasD + (esUtilidad ? resultado : 0);
-  const resIngCFinal = totResIngC + (esUtilidad ? 0 : Math.abs(resultado));
+  const resIngCFinal = totResIngC + (!esUtilidad ? Math.abs(resultado) : 0);
 
   document.getElementById('balance8-contenido').innerHTML = `
   ${empresaHeaderHTML('Balance de 8 Columnas', label)}
@@ -2587,7 +2884,7 @@ function renderBalance8() {
 
 function imprimirBalance8() {
   const tabla = document.getElementById('tabla-balance8');
-  if (!tabla) { alert('Primero genera el balance seleccionando un período'); return; }
+  if (!tabla) { toast('Primero genera el balance seleccionando un período'); return; }
   const { label } = getPickerRangeAcumulado('balance8');
   const win = window.open('', '_blank');
   win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Balance 8 Columnas — ${label}</title>
@@ -2632,7 +2929,7 @@ function exportarBalance8Excel() {
     (sumasDeb[c.codigo] || 0) > 0 || (sumasCre[c.codigo] || 0) > 0
   ).sort((a, b) => a.codigo.localeCompare(b.codigo));
 
-  if (!cuentasConMov.length) { alert('No hay datos para exportar. Selecciona un período con movimientos.'); return; }
+  if (!cuentasConMov.length) { toast('No hay datos para exportar. Selecciona un período con movimientos.'); return; }
 
   let totSumaD=0,totSumaC=0,totSaldD=0,totSaldC=0,totBalActD=0,totBalActC=0,totResGasD=0,totResIngC=0;
 
@@ -2817,7 +3114,7 @@ function abrirModalCierre() {
 function previsualizarCierre() {
   const anio = document.getElementById('cierre-anio').value;
   const cuentaUtil = document.getElementById('cierre-cuenta-util').value;
-  if (!anio || !cuentaUtil) { alert('Seleccione el año y la cuenta de Utilidades Acumuladas'); return; }
+  if (!anio || !cuentaUtil) { toast('Seleccione el año y la cuenta de Utilidades Acumuladas'); return; }
 
   const datos = calcularDatosCierre(anio, cuentaUtil);
   const cuentaUtilObj = cuentas.find(c => c.codigo === cuentaUtil);
@@ -3170,7 +3467,7 @@ async function guardarParamsRem() {
     paramsRem[c] = val;
     await put('params_rem', {clave:c, valor:val});
   }
-  alert('✓ Parámetros guardados');
+  toast('✓ Parámetros guardados');
 }
 
 // ===== TRABAJADORES =====
@@ -3238,7 +3535,7 @@ function abrirModalTrabajador(id=null) {
 async function guardarTrabajador() {
   const nombre = document.getElementById('t-nombre').value.trim();
   const sueldo = getMiles('t-sueldo');
-  if (!nombre || !sueldo) { alert('Nombre y Sueldo son obligatorios'); return; }
+  if (!nombre || !sueldo) { toast('Nombre y Sueldo son obligatorios'); return; }
   const obj = {
     nombre, rut: document.getElementById('t-rut').value.trim(),
     cargo: document.getElementById('t-cargo').value.trim(),
@@ -3439,10 +3736,10 @@ function renderFormularioTrabajadores() {
 async function confirmarGenerarLiq() {
   const mes = document.getElementById('gen-liq-mes').value;
   const anio = document.getElementById('gen-liq-anio').value;
-  if (!mes || !anio) { alert('Selecciona mes y año'); return; }
+  if (!mes || !anio) { toast('Selecciona mes y año'); return; }
   const periodo = `${anio}-${mes}`;
   const activos = trabajadores.filter(t=>t.estado==='activo');
-  if (!activos.length) { alert('No hay trabajadores activos'); return; }
+  if (!activos.length) { toast('No hay trabajadores activos'); return; }
 
   // Verificar si ya existen
   const yaExisten = liquidaciones.filter(l=>l.periodo===periodo);
@@ -3737,9 +4034,9 @@ function renderLibroRem() {
 // ===== CENTRALIZAR EN CONTABILIDAD =====
 async function centralizarLibroRem() {
   const periodo = document.getElementById('filtro-libro-rem-mes').value;
-  if (!periodo) { alert('Selecciona un período'); return; }
+  if (!periodo) { toast('Selecciona un período'); return; }
   const lista = liquidaciones.filter(l=>l.periodo===periodo);
-  if (!lista.length) { alert('Sin liquidaciones para este período'); return; }
+  if (!lista.length) { toast('Sin liquidaciones para este período'); return; }
   const perLabel = `${MESES[parseInt(periodo.slice(5))]} ${periodo.slice(0,4)}`;
 
   const tot = lista.reduce((acc,l)=>({
@@ -3801,9 +4098,9 @@ async function centralizarLibroRem() {
 // ===== EXPORTAR LIBRO REM PDF =====
 function exportarLibroRemPDF() {
   const periodo = document.getElementById('filtro-libro-rem-mes').value;
-  if (!periodo) { alert('Selecciona un período'); return; }
+  if (!periodo) { toast('Selecciona un período'); return; }
   const lista = liquidaciones.filter(l=>l.periodo===periodo).sort((a,b)=>a.nombre.localeCompare(b.nombre));
-  if (!lista.length) { alert('Sin datos'); return; }
+  if (!lista.length) { toast('Sin datos'); return; }
   const perLabel = `${MESES[parseInt(periodo.slice(5))]} ${periodo.slice(0,4)}`;
   const tot = lista.reduce((acc,l)=>({
     totalHaberes:acc.totalHaberes+l.totalHaberes, cotAFP:acc.cotAFP+l.cotAFP,
@@ -3840,9 +4137,9 @@ function exportarLibroRemPDF() {
 // ===== EXPORTAR LIBRO REM EXCEL =====
 function exportarLibroRemExcel() {
   const periodo = document.getElementById('filtro-libro-rem-mes').value;
-  if (!periodo) { alert('Selecciona un período'); return; }
+  if (!periodo) { toast('Selecciona un período'); return; }
   const lista = liquidaciones.filter(l=>l.periodo===periodo).sort((a,b)=>a.nombre.localeCompare(b.nombre));
-  if (!lista.length) { alert('Sin datos'); return; }
+  if (!lista.length) { toast('Sin datos'); return; }
   const perLabel = `${MESES[parseInt(periodo.slice(5))]} ${periodo.slice(0,4)}`;
   const cols = ['Trabajador','RUT','Cargo','Sueldo Base','Gratificación','H. Imponibles','H. No Imponibles','Total Imponible','Total Haberes','AFP','Salud','Seg.Ces. Trab.','Imp. 2a Cat.','Desc. Judicial','Otros Desc.','Total Descuentos','Sueldo Liquido','SC Empleador','SIS','Mutualidad','Costo Empleador'];
   let xml = `<?xml version="1.0" encoding="UTF-8"?><?mso-application progid="Excel.Sheet"?><Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">
@@ -3918,25 +4215,41 @@ function renderListaEmpresas() {
     </div>`).join('');
 }
 
-function crearEmpresa() {
-  const nombre = document.getElementById('ne-nombre').value.trim();
-  if (!nombre) { alert('El nombre es obligatorio'); return; }
+async function crearEmpresa() {
+  const nombre    = document.getElementById('ne-nombre').value.trim();
+  const rut       = document.getElementById('ne-rut').value.trim();
+  const giro      = document.getElementById('ne-giro').value.trim();
+  const direccion = document.getElementById('ne-direccion').value.trim();
+  const ciudad    = document.getElementById('ne-ciudad').value.trim();
+  const errEl = document.getElementById('ne-error');
+  // Validation
+  const faltantes = [];
+  if (!nombre)    faltantes.push('Nombre / Razón Social');
+  if (!rut)       faltantes.push('RUT');
+  if (!giro)      faltantes.push('Giro / Actividad');
+  if (!direccion) faltantes.push('Dirección');
+  if (!ciudad)    faltantes.push('Ciudad');
+  if (faltantes.length) {
+    errEl.style.display=''; errEl.textContent='⚠️ Campos obligatorios: ' + faltantes.join(', ');
+    return;
+  }
+  errEl.style.display='none';
   const lista = getEmpresas();
-  if (lista.length >= 10) { alert('Máximo 10 empresas'); return; }
+  if (lista.length >= 10) { toast('Máximo 10 empresas permitidas','warn'); return; }
   const id = 'emp_' + Date.now();
   const nueva = {
-    id, nombre,
-    rut: document.getElementById('ne-rut').value.trim(),
-    giro: document.getElementById('ne-giro').value.trim(),
-    direccion: '', ciudad: '', region: '', telefono: '', email: ''
+    id, nombre, rut, giro, direccion, ciudad,
+    region:   document.getElementById('ne-region').value.trim(),
+    telefono: document.getElementById('ne-telefono').value.trim(),
+    email:    document.getElementById('ne-email').value.trim(),
   };
   lista.push(nueva);
   saveEmpresas(lista);
-  document.getElementById('ne-nombre').value = '';
-  document.getElementById('ne-rut').value = '';
-  document.getElementById('ne-giro').value = '';
+  // Limpiar form
+  ['ne-nombre','ne-rut','ne-giro','ne-direccion','ne-ciudad','ne-region','ne-telefono','ne-email']
+    .forEach(id2 => { const el=document.getElementById(id2); if(el) el.value=''; });
   document.getElementById('form-nueva-empresa').style.display = 'none';
-  seleccionarEmpresa(id);
+  await seleccionarEmpresa(id);
 }
 
 async function seleccionarEmpresa(id) {
@@ -4135,7 +4448,7 @@ function abrirModalProducto(id=null) {
 async function guardarProducto() {
   const codigo = document.getElementById('p-codigo').value.trim();
   const nombre = document.getElementById('p-nombre').value.trim();
-  if (!codigo || !nombre) { alert('Código y nombre son obligatorios'); return; }
+  if (!codigo || !nombre) { toast('Código y nombre son obligatorios','err'); return; }
   const obj = {
     codigo, nombre,
     unidad: document.getElementById('p-unidad').value.trim() || 'un',
@@ -4270,7 +4583,7 @@ async function guardarMovInventario() {
   const fecha = document.getElementById('mv-fecha').value;
   const cantidad = parseFloat(document.getElementById('mv-cantidad').value)||0;
   const glosa = document.getElementById('mv-glosa').value.trim();
-  if (!productoId || !fecha || !cantidad) { alert('Producto, fecha y cantidad son obligatorios'); return; }
+  if (!productoId || !fecha || !cantidad) { toast('Producto, fecha y cantidad son obligatorios'); return; }
 
   let precioUnitario = 0;
   if (tipoMovActual === 'salida') {
@@ -4281,7 +4594,7 @@ async function guardarMovInventario() {
     }
   } else {
     precioUnitario = getMiles('mv-precio');
-    if (!precioUnitario && tipoMovActual !== 'ajuste') { alert('Precio unitario es obligatorio'); return; }
+    if (!precioUnitario && tipoMovActual !== 'ajuste') { toast('Precio unitario es obligatorio'); return; }
   }
 
   const obj = { tipo: tipoMovActual, productoId, fecha, cantidad, precioUnitario, glosa };
@@ -4398,7 +4711,7 @@ function renderResumenInventario() {
 // ===== CENTRALIZAR COSTO DE SALIDAS =====
 async function centralizarInventario() {
   const filtroMes = document.getElementById('filtro-resumen-inv-mes')?.value;
-  if (!filtroMes) { alert('Selecciona un período específico para centralizar'); return; }
+  if (!filtroMes) { toast('Selecciona un período específico para centralizar','warn'); return; }
   const periodoLabel = `${MESES[parseInt(filtroMes.slice(5))]} ${filtroMes.slice(0,4)}`;
 
   // Calcular salidas del mes por producto
@@ -4431,7 +4744,7 @@ async function centralizarInventario() {
   });
 
   const salidas = Object.values(salidasPorProducto).filter(s=>s.monto>0);
-  if (!salidas.length) { alert('No hay salidas de inventario en este período'); return; }
+  if (!salidas.length) { toast('No hay salidas de inventario en este período','warn'); return; }
 
   const totalSalidas = salidas.reduce((s,x)=>s+x.monto,0);
   const refCentral = `INV-${filtroMes}`;
@@ -4606,10 +4919,10 @@ function abrirModalAuxiliar(id=null) {
 async function guardarAuxiliar() {
   const nombre = document.getElementById('aux-nombre').value.trim();
   const rut = document.getElementById('aux-rut').value.trim();
-  if (!nombre || !rut) { alert('Nombre y RUT son obligatorios'); return; }
+  if (!nombre || !rut) { toast('Nombre y RUT son obligatorios','err'); return; }
   // Verificar RUT duplicado
   const dup = auxiliares.find(a => a.rut === rut && a.id !== editingAuxiliarId);
-  if (dup) { alert(`Ya existe un auxiliar con RUT ${rut}: ${dup.nombre}`); return; }
+  if (dup) { toast(`Ya existe auxiliar con RUT ${rut}: ${dup.nombre}`,'err'); return; }
   const obj = {
     tipo: document.getElementById('aux-tipo').value,
     rut, nombre,
@@ -4866,7 +5179,7 @@ function renderAntiguedad() {
 // ===== EXPORTAR MAYOR AUXILIAR PDF =====
 function exportarMayorAuxPDF() {
   const auxId = parseInt(document.getElementById('filtro-aux-mayor-rut')?.value||'0');
-  if (!auxId) { alert('Selecciona un auxiliar primero'); return; }
+  if (!auxId) { toast('Selecciona un auxiliar primero','warn'); return; }
   const aux = auxiliares.find(a=>a.id===auxId);
   const desde = document.getElementById('aux-mayor-desde')?.value||'';
   const hasta = document.getElementById('aux-mayor-hasta')?.value||'';
@@ -4897,7 +5210,7 @@ function exportarMayorAuxPDF() {
 // ===== EXPORTAR MAYOR AUXILIAR EXCEL =====
 function exportarMayorAuxExcel() {
   const auxId = parseInt(document.getElementById('filtro-aux-mayor-rut')?.value||'0');
-  if (!auxId) { alert('Selecciona un auxiliar primero'); return; }
+  if (!auxId) { toast('Selecciona un auxiliar primero','warn'); return; }
   const aux = auxiliares.find(a=>a.id===auxId);
   const desde = document.getElementById('aux-mayor-desde')?.value||'';
   const hasta = document.getElementById('aux-mayor-hasta')?.value||'';
@@ -4994,6 +5307,954 @@ function exportarAntiguedadExcel() {
   const blob=new Blob([xml],{type:'application/vnd.ms-excel'});
   const a2=document.createElement('a');a2.href=URL.createObjectURL(blob);
   a2.download=`Antiguedad_${fechaCorteStr}.xls`;a2.click();
+}
+
+
+// =========================================================
+// ===== TOAST NOTIFICATION SYSTEM =========================
+// =========================================================
+function toast(msg, type='ok', duration=3500) {
+  const icons = { ok:'✅', err:'❌', warn:'⚠️', info:'ℹ️' };
+  const cont = document.getElementById('toast-container');
+  if (!cont) { console.log('[Toast]', msg); return; }
+  const el = document.createElement('div');
+  el.className = `toast toast-${type}`;
+  el.innerHTML = `<span class="toast-icon">${icons[type]||'ℹ️'}</span><span class="toast-msg">${msg}</span><button class="toast-close" onclick="this.parentElement.remove()">✕</button>`;
+  cont.appendChild(el);
+  setTimeout(() => { el.style.opacity='0'; el.style.transition='opacity 0.4s'; setTimeout(()=>el.remove(), 400); }, duration);
+}
+
+// =========================================================
+// ===== BÚSQUEDA DE CUENTAS EN LÍNEAS DE ASIENTO ==========
+// =========================================================
+function buscarCuentaLinea(input, lineaId) {
+  const q = input.value.toLowerCase().trim();
+  const dd = document.getElementById(`dd-cta-${lineaId}`);
+  if (!dd) return;
+  if (!q) { dd.style.display='none'; return; }
+  const matches = cuentas
+    .filter(c => c.codigo.toLowerCase().includes(q) || c.nombre.toLowerCase().includes(q))
+    .sort((a,b) => a.codigo.localeCompare(b.codigo))
+    .slice(0, 15);
+  if (!matches.length) { dd.style.display='none'; return; }
+  dd.style.display = 'block';
+  dd.innerHTML = matches.map(c => `
+    <div onclick="seleccionarCuentaLinea(${lineaId},'${c.codigo}','${c.nombre.replace(/'/g,"\\'")}',this)"
+      style="padding:7px 12px;cursor:pointer;font-size:0.82rem;border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:center;"
+      onmouseenter="this.style.background='var(--bg3)'" onmouseleave="this.style.background=''">
+      <span style="font-family:'DM Mono',monospace;color:var(--accent);font-size:0.76rem;min-width:110px;">${c.codigo}</span>
+      <span>${c.nombre}</span>
+    </div>`).join('');
+}
+
+function seleccionarCuentaLinea(lineaId, codigo, nombre, el) {
+  const input = document.getElementById(`busca-cta-${lineaId}`);
+  const hidden = document.getElementById(`cta-sel-${lineaId}`);
+  const dd = document.getElementById(`dd-cta-${lineaId}`);
+  if (input) input.value = `${codigo} — ${nombre}`;
+  if (hidden) hidden.value = codigo;
+  if (dd) dd.style.display = 'none';
+  actualizarTotales();
+  actualizarAuxSelector({ value: codigo }, lineaId);
+}
+
+function cerrarDropdownLinea(lineaId) {
+  const dd = document.getElementById(`dd-cta-${lineaId}`);
+  if (dd) dd.style.display = 'none';
+}
+
+// =========================================================
+// ===== AUTO-BACKUP SYSTEM ================================
+// =========================================================
+const BACKUP_KEY = 'contacl-autobackup';
+const BACKUP_INTERVAL = 5 * 60 * 1000; // 5 minutos
+
+async function autoBackup() {
+  if (!empresaActualId) return;
+  try {
+    const paramsArr = await getAll('params_rem');
+    const data = {
+      cuentas, asientos, cierres, trabajadores, liquidaciones,
+      productos, movInventario, auxiliares,
+      paramsRem: paramsArr,
+      empresa: getEmpresaActual(),
+      empresaId: empresaActualId,
+      ts: new Date().toISOString()
+    };
+    const key = `${BACKUP_KEY}-${empresaActualId}`;
+    localStorage.setItem(key, JSON.stringify(data));
+    // Actualizar timestamp visible
+    const el = document.getElementById('backup-ts');
+    if (el) el.textContent = `Backup: ${new Date().toLocaleTimeString('es-CL')}`;
+  } catch(e) { console.warn('Auto-backup failed:', e); }
+}
+
+function iniciarAutoBackup() {
+  autoBackup(); // Inmediato
+  setInterval(autoBackup, BACKUP_INTERVAL);
+}
+
+function restaurarDesdeBackup() {
+  if (!empresaActualId) return;
+  const key = `${BACKUP_KEY}-${empresaActualId}`;
+  const raw = localStorage.getItem(key);
+  if (!raw) { toast('No hay backup disponible para esta empresa','warn'); return; }
+  try {
+    const data = JSON.parse(raw);
+    const ts = data.ts ? new Date(data.ts).toLocaleString('es-CL') : 'desconocido';
+    if (!confirm(`¿Restaurar backup del ${ts}?\n\nEsto sobreescribirá los datos actuales.`)) return;
+    importarDesdeDatos(data);
+  } catch(e) { toast('Error al leer el backup','err'); }
+}
+
+async function importarDesdeDatos(data) {
+  if(data.cuentas) for(const c of data.cuentas) await put('cuentas',c);
+  if(data.asientos) for(const a of data.asientos) await put('asientos',a);
+  if(data.cierres) for(const c of data.cierres) await put('cierres',c);
+  if(data.trabajadores) for(const t of data.trabajadores) await put('trabajadores',t);
+  if(data.liquidaciones) for(const l of data.liquidaciones) await put('liquidaciones',l);
+  if(data.productos) for(const p of data.productos) await put('productos',p);
+  if(data.movInventario) for(const m of data.movInventario) await put('mov_inv',m);
+  if(data.auxiliares) for(const x of data.auxiliares) await put('auxiliares',x);
+  if(data.paramsRem) for(const p of data.paramsRem) await put('params_rem',p);
+  cuentas=await getAll('cuentas'); asientos=await getAll('asientos');
+  cierres=await getAll('cierres'); trabajadores=await getAll('trabajadores');
+  liquidaciones=await getAll('liquidaciones'); productos=await getAll('productos');
+  movInventario=await getAll('mov_inv'); auxiliares=await getAll('auxiliares');
+  paramsRem={}; (await getAll('params_rem')).forEach(p=>paramsRem[p.clave]=p.valor);
+  renderAll();
+  toast('Backup restaurado correctamente','ok');
+}
+
+// =========================================================
+// ===== CONCILIACIONES BANCARIAS ==========================
+// =========================================================
+// conciliaciones declared in global state above
+let concActualId = null;
+
+// Inicializar store (ya está en openDB v5)
+async function cargarConciliaciones() {
+  try { conciliaciones = await getAll('conciliaciones'); } catch(e) { conciliaciones = []; }
+}
+
+// Poblar selector de conciliaciones
+function poblarSelConciliaciones() {
+  const sel = document.getElementById('sel-conc-activa');
+  if (!sel) return;
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">— Seleccionar conciliación —</option>' +
+    [...conciliaciones].sort((a,b)=>b.periodo.localeCompare(a.periodo))
+      .map(c=>`<option value="${c.id}" ${String(c.id)===cur?'selected':''}>${c.nombre||c.periodo} — ${cuentas.find(x=>x.codigo===c.cuentaBanco)?.nombre||c.cuentaBanco}</option>`).join('');
+  if (cur) sel.value = cur;
+  const btnDel = document.getElementById('btn-del-conc');
+  if (btnDel) btnDel.style.display = sel.value ? '' : 'none';
+}
+
+function abrirModalConciliacion() {
+  // Poblar cuentas bancarias
+  const ctasBanco = cuentas.filter(c=>c.tipo==='Activo' && (c.codigo.startsWith('1-01') || c.nombre.toLowerCase().includes('banco') || c.nombre.toLowerCase().includes('caja')));
+  document.getElementById('conc-cuenta-banco').innerHTML =
+    '<option value="">— Seleccionar cuenta —</option>' +
+    ctasBanco.map(c=>`<option value="${c.codigo}">${c.codigo} — ${c.nombre}</option>`).join('');
+  document.getElementById('conc-periodo').value = new Date().toISOString().slice(0,7);
+  document.getElementById('conc-saldo-libro-ini').value = '0';
+  document.getElementById('conc-saldo-banco').value = '0';
+  document.getElementById('conc-nombre').value = '';
+  document.getElementById('modal-conciliacion').classList.add('open');
+}
+
+async function crearConciliacion() {
+  const periodo = document.getElementById('conc-periodo').value;
+  const cuentaBanco = document.getElementById('conc-cuenta-banco').value;
+  if (!periodo || !cuentaBanco) { toast('Período y cuenta bancaria son obligatorios','err'); return; }
+  const saldoLibroIni = getMiles('conc-saldo-libro-ini');
+  const saldoBanco = getMiles('conc-saldo-banco');
+  const nombre = document.getElementById('conc-nombre').value.trim() ||
+    `${cuentas.find(c=>c.codigo===cuentaBanco)?.nombre||cuentaBanco} — ${MESES[parseInt(periodo.slice(5))]} ${periodo.slice(0,4)}`;
+
+  const obj = { periodo, cuentaBanco, saldoLibroIni, saldoBanco, nombre, partidas: [], cerrada: false };
+  const id = await put('conciliaciones', obj);
+  conciliaciones = await getAll('conciliaciones');
+  cerrarModal('modal-conciliacion');
+  poblarSelConciliaciones();
+  // Seleccionar la nueva
+  const sel = document.getElementById('sel-conc-activa');
+  const nuevaConc = conciliaciones[conciliaciones.length-1];
+  if (sel && nuevaConc) { sel.value = String(nuevaConc.id); cargarConciliacion(); }
+  toast(`Conciliación "${nombre}" creada`,'ok');
+}
+
+function cargarConciliacion() {
+  const sel = document.getElementById('sel-conc-activa');
+  const id = sel ? parseInt(sel.value) : null;
+  const btnDel = document.getElementById('btn-del-conc');
+  if (btnDel) btnDel.style.display = id ? '' : 'none';
+  if (!id) {
+    document.getElementById('contenido-conciliacion').innerHTML = `<div class="empty-state"><div class="empty-icon">🏦</div><div class="empty-title">Selecciona una conciliación</div></div>`;
+    return;
+  }
+  concActualId = id;
+  renderConciliacion();
+}
+
+function renderConciliacion() {
+  const conc = conciliaciones.find(c=>c.id===concActualId);
+  if (!conc) return;
+  const cuenta = cuentas.find(c=>c.codigo===conc.cuentaBanco);
+  const mes = conc.periodo; // YYYY-MM
+
+  // Obtener movimientos del libro para la cuenta bancaria en el período
+  const movLibro = [];
+  asientos.filter(a=>a.fecha.startsWith(mes)).forEach(a=>{
+    a.lineas.filter(l=>l.cuenta===conc.cuentaBanco).forEach(l=>{
+      const monto = (l.debito||0) - (l.credito||0); // débito = ingreso, crédito = egreso
+      movLibro.push({
+        id: `lib-${a.id}-${l.cuenta}`,
+        fecha: a.fecha,
+        glosa: a.glosa + (a.referencia?' · Ref:'+a.referencia:''),
+        debito: l.debito||0,
+        credito: l.credito||0,
+        monto,
+        tipo: 'libro',
+        conciliado: (conc.partidas||[]).some(p=>p.refId===`lib-${a.id}-${l.cuenta}` && p.conciliado)
+      });
+    });
+  });
+
+  // Calcular saldo libro al inicio del mes (acumulado hasta el día antes del período)
+  const hasta_prev = `${mes}-01`; // aproximación: saldo antes del período
+  const saldosAcum = calcularSaldos(`${mes.slice(0,4)}-${mes.slice(5,7)}-01`, null);
+  // Saldo según libro al inicio del período (saldo acumulado hasta fin del mes anterior)
+  const { deb: debAcum, cre: creAcum } = calcularSaldosBrutos(
+    `${mes.slice(0,4)}-${String(parseInt(mes.slice(5,7))-1).padStart(2,'0')}-31`,
+    null
+  );
+
+  // Movimientos del período
+  const totDebLibro = movLibro.reduce((s,m)=>s+m.debito,0);
+  const totCreLibro = movLibro.reduce((s,m)=>s+m.credito,0);
+  const saldoLibroCierre = conc.saldoLibroIni + totDebLibro - totCreLibro;
+
+  // Partidas de conciliación
+  const partidas = conc.partidas || [];
+  const totDepTransito = partidas.filter(p=>p.tipo==='dep_en_transito'&&!p.conciliado).reduce((s,p)=>s+p.monto,0);
+  const totChequePend  = partidas.filter(p=>p.tipo==='cheque_pendiente'&&!p.conciliado).reduce((s,p)=>s+p.monto,0);
+  const totNdebito     = partidas.filter(p=>p.tipo==='nota_debito'&&!p.conciliado).reduce((s,p)=>s+p.monto,0);
+  const totNcredito    = partidas.filter(p=>p.tipo==='nota_credito'&&!p.conciliado).reduce((s,p)=>s+p.monto,0);
+  const totErrorLibro  = partidas.filter(p=>p.tipo==='error_libro'&&!p.conciliado).reduce((s,p)=>s+p.monto,0);
+  const totErrorBanco  = partidas.filter(p=>p.tipo==='error_banco'&&!p.conciliado).reduce((s,p)=>s+p.monto,0);
+
+  // Saldo ajustado según banco = saldo banco - cheques pendientes + depósitos en tránsito +/- errores
+  const saldoBancoAjustado = conc.saldoBanco - totChequePend + totDepTransito - totNdebito + totNcredito + totErrorBanco;
+  // Saldo ajustado según libro = saldo libro + notas crédito - notas débito +/- errores libro
+  const saldoLibroAjustado = saldoLibroCierre + totNcredito - totNdebito + totErrorLibro;
+
+  const diferencia = saldoBancoAjustado - saldoLibroAjustado;
+  const cuadra = Math.abs(diferencia) < 1;
+
+  const tipoLabel = {
+    dep_en_transito: 'Depósito en Tránsito', cheque_pendiente: 'Cheque Pendiente',
+    nota_debito: 'Nota de Débito', nota_credito: 'Nota de Crédito',
+    error_libro: 'Error en Libro', error_banco: 'Error en Banco', otro: 'Otro'
+  };
+
+  document.getElementById('contenido-conciliacion').innerHTML = `
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem;">
+    <!-- SALDO SEGÚN BANCO -->
+    <div class="conc-section">
+      <div class="conc-section-header">
+        <span>🏦 Saldo según Estado de Cuenta Banco</span>
+        <span style="font-family:'DM Mono',monospace;font-size:0.9rem;">${fmt(conc.saldoBanco)}</span>
+      </div>
+      <div style="padding:12px 16px;">
+        <div class="informe-row"><span>Saldo Estado de Cuenta (al cierre)</span><span class="mono">${fmt(conc.saldoBanco)}</span></div>
+        ${totDepTransito?`<div class="informe-row"><span>(+) Depósitos en Tránsito</span><span class="mono amount-pos">+${fmt(totDepTransito)}</span></div>`:''}
+        ${totChequePend?`<div class="informe-row"><span>(−) Cheques Pendientes de Cobro</span><span class="mono amount-neg">−${fmt(totChequePend)}</span></div>`:''}
+        ${totNdebito?`<div class="informe-row"><span>(−) Notas de Débito no contabilizadas</span><span class="mono amount-neg">−${fmt(totNdebito)}</span></div>`:''}
+        ${totNcredito?`<div class="informe-row"><span>(+) Notas de Crédito no contabilizadas</span><span class="mono amount-pos">+${fmt(totNcredito)}</span></div>`:''}
+        ${totErrorBanco?`<div class="informe-row"><span>Errores Banco</span><span class="mono">${fmtS(totErrorBanco)}</span></div>`:''}
+        <div class="informe-row total"><span>Saldo Ajustado Banco</span><span class="mono" style="color:var(--accent);">${fmt(saldoBancoAjustado)}</span></div>
+      </div>
+    </div>
+    <!-- SALDO SEGÚN LIBRO -->
+    <div class="conc-section">
+      <div class="conc-section-header">
+        <span>📒 Saldo según Libro Mayor</span>
+        <span style="font-family:'DM Mono',monospace;font-size:0.9rem;">${fmt(saldoLibroCierre)}</span>
+      </div>
+      <div style="padding:12px 16px;">
+        <div class="informe-row"><span>Saldo Inicial (ingresado)</span><span class="mono">${fmt(conc.saldoLibroIni)}</span></div>
+        ${totDebLibro?`<div class="informe-row"><span>(+) Total Débitos del período</span><span class="mono amount-pos">+${fmt(totDebLibro)}</span></div>`:''}
+        ${totCreLibro?`<div class="informe-row"><span>(−) Total Créditos del período</span><span class="mono amount-neg">−${fmt(totCreLibro)}</span></div>`:''}
+        ${totNdebito?`<div class="informe-row"><span>(−) Notas de Débito a registrar</span><span class="mono amount-neg">−${fmt(totNdebito)}</span></div>`:''}
+        ${totNcredito?`<div class="informe-row"><span>(+) Notas de Crédito a registrar</span><span class="mono amount-pos">+${fmt(totNcredito)}</span></div>`:''}
+        ${totErrorLibro?`<div class="informe-row"><span>Errores Libro</span><span class="mono">${fmtS(totErrorLibro)}</span></div>`:''}
+        <div class="informe-row total"><span>Saldo Ajustado Libro</span><span class="mono" style="color:var(--accent);">${fmt(saldoLibroAjustado)}</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DIFERENCIA -->
+  <div style="background:var(--bg2);border:1px solid ${cuadra?'var(--green)':'var(--red)'};border-radius:12px;padding:16px 20px;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:center;">
+    <div>
+      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.95rem;">${cuadra?'✅ Conciliación Cuadrada':'⚠️ Diferencia sin Conciliar'}</div>
+      <div style="font-size:0.8rem;color:var(--text3);margin-top:3px;">${cuadra?'Saldo banco ajustado = Saldo libro ajustado':'Revisar partidas de conciliación'}</div>
+    </div>
+    <div class="${cuadra?'conc-diff-ok':'conc-diff-err'}" style="font-size:1.3rem;font-family:'DM Mono',monospace;">${cuadra?'$ 0':fmtS(diferencia)}</div>
+  </div>
+
+  <!-- MOVIMIENTOS LIBRO -->
+  <div class="conc-section" style="margin-bottom:1.5rem;">
+    <div class="conc-section-header">
+      <span>📓 Movimientos del Libro — ${cuenta?.nombre||conc.cuentaBanco} — ${MESES[parseInt(mes.slice(5))]} ${mes.slice(0,4)}</span>
+      <span style="font-size:0.8rem;color:var(--text3);">${movLibro.length} movimiento(s)</span>
+    </div>
+    ${movLibro.length ? movLibro.map(m=>`
+      <div class="conc-item ${m.conciliado?'conciliado':''}">
+        <span class="conc-item-fecha">${m.fecha}</span>
+        <span class="conc-item-glosa">${m.glosa}</span>
+        ${m.debito>0?`<span class="conc-item-monto amount-pos">+${fmt(m.debito)}</span>`:''}
+        ${m.credito>0?`<span class="conc-item-monto amount-neg">−${fmt(m.credito)}</span>`:''}
+      </div>`).join('')
+    : '<div style="padding:16px;color:var(--text3);text-align:center;font-size:0.85rem;">Sin movimientos en el libro para este período y cuenta</div>'}
+  </div>
+
+  <!-- PARTIDAS DE CONCILIACIÓN -->
+  <div class="conc-section">
+    <div class="conc-section-header">
+      <span>🔧 Partidas de Conciliación</span>
+      <button class="btn btn-accent" style="font-size:0.78rem;padding:4px 12px;" onclick="abrirModalPartidaConc()">+ Agregar Partida</button>
+    </div>
+    ${partidas.length ? partidas.map((p,i)=>`
+      <div class="conc-item ${p.conciliado?'conciliado':''}">
+        <input type="checkbox" class="conc-item-check" ${p.conciliado?'checked':''} onchange="togglePartidaConc(${i},this.checked)">
+        <span class="conc-item-fecha">${p.fecha}</span>
+        <span style="background:var(--bg3);border-radius:4px;padding:1px 6px;font-size:0.7rem;color:var(--text2);white-space:nowrap;">${tipoLabel[p.tipo]||p.tipo}</span>
+        <span class="conc-item-glosa">${p.desc}${p.ref?' · '+p.ref:''}</span>
+        <span class="conc-item-monto" style="color:var(--accent);">${fmt(p.monto)}</span>
+        <button class="btn btn-danger" style="font-size:0.7rem;padding:2px 7px;" onclick="eliminarPartidaConc(${i})">🗑️</button>
+      </div>`).join('')
+    : '<div style="padding:16px;color:var(--text3);text-align:center;font-size:0.85rem;">Sin partidas de conciliación</div>'}
+  </div>`;
+}
+
+function abrirModalPartidaConc() {
+  document.getElementById('cp-fecha').value = new Date().toISOString().slice(0,10);
+  document.getElementById('cp-tipo').value = 'dep_en_transito';
+  document.getElementById('cp-desc').value = '';
+  document.getElementById('cp-monto').value = '';
+  document.getElementById('cp-ref').value = '';
+  document.getElementById('modal-partida-conc').classList.add('open');
+}
+
+async function guardarPartidaConc() {
+  const fecha = document.getElementById('cp-fecha').value;
+  const tipo  = document.getElementById('cp-tipo').value;
+  const desc  = document.getElementById('cp-desc').value.trim();
+  const monto = getMiles('cp-monto');
+  const ref   = document.getElementById('cp-ref').value.trim();
+  if (!fecha || !desc || !monto) { toast('Fecha, descripción y monto son obligatorios','err'); return; }
+  const conc = conciliaciones.find(c=>c.id===concActualId);
+  if (!conc) return;
+  if (!conc.partidas) conc.partidas = [];
+  conc.partidas.push({ fecha, tipo, desc, monto, ref, conciliado: false });
+  await put('conciliaciones', conc);
+  conciliaciones = await getAll('conciliaciones');
+  cerrarModal('modal-partida-conc');
+  renderConciliacion();
+}
+
+async function togglePartidaConc(idx, checked) {
+  const conc = conciliaciones.find(c=>c.id===concActualId);
+  if (!conc || !conc.partidas[idx]) return;
+  conc.partidas[idx].conciliado = checked;
+  await put('conciliaciones', conc);
+  conciliaciones = await getAll('conciliaciones');
+  renderConciliacion();
+}
+
+async function eliminarPartidaConc(idx) {
+  const conc = conciliaciones.find(c=>c.id===concActualId);
+  if (!conc) return;
+  if (!confirm('¿Eliminar esta partida?')) return;
+  conc.partidas.splice(idx, 1);
+  await put('conciliaciones', conc);
+  conciliaciones = await getAll('conciliaciones');
+  renderConciliacion();
+}
+
+async function eliminarConciliacion() {
+  if (!concActualId) return;
+  const conc = conciliaciones.find(c=>c.id===concActualId);
+  if (!confirm(`¿Eliminar conciliación "${conc?.nombre||''}"?`)) return;
+  await del('conciliaciones', concActualId);
+  conciliaciones = await getAll('conciliaciones');
+  concActualId = null;
+  poblarSelConciliaciones();
+  document.getElementById('sel-conc-activa').value = '';
+  cargarConciliacion();
+  toast('Conciliación eliminada','ok');
+}
+
+function exportarConcPDF() {
+  const conc = conciliaciones.find(c=>c.id===concActualId);
+  if (!conc) { toast('Selecciona una conciliación','warn'); return; }
+  const cuenta = cuentas.find(c=>c.codigo===conc.cuentaBanco);
+  const win = window.open('','_blank');
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Conciliación</title>
+  <style>body{font-family:Arial,sans-serif;font-size:10px;margin:20px;}table{width:100%;border-collapse:collapse;margin-bottom:12px;}th,td{border:1px solid #ccc;padding:3px 6px;}th{background:#f0f0f0;}.n{text-align:right;font-family:monospace;font-weight:700;}h3{font-size:11px;margin:8px 0 4px;}</style></head><body>
+  ${empresaPrintHeader(`Conciliación Bancaria — ${conc.nombre}`, MESES[parseInt(conc.periodo.slice(5))] + ' ' + conc.periodo.slice(0,4))}
+  <h3>Saldo Banco Ajustado</h3>
+  <table><tr><th>Concepto</th><th>Monto</th></tr>
+  <tr><td>Saldo Estado de Cuenta</td><td class="n">$ ${conc.saldoBanco.toLocaleString('es-CL')}</td></tr>
+  ${(conc.partidas||[]).filter(p=>!p.conciliado).map(p=>`<tr><td>${p.tipo} — ${p.desc}</td><td class="n">$ ${p.monto.toLocaleString('es-CL')}</td></tr>`).join('')}
+  <tr style="background:#f5f5f5;font-weight:700;"><td>SALDO BANCO AJUSTADO</td><td class="n">$ ${conc.saldoBanco.toLocaleString('es-CL')}</td></tr>
+  </table>
+  <h3>Partidas de Conciliación</h3>
+  <table><tr><th>Fecha</th><th>Tipo</th><th>Descripción</th><th>Referencia</th><th>Monto</th><th>Estado</th></tr>
+  ${(conc.partidas||[]).map(p=>`<tr><td>${p.fecha}</td><td>${p.tipo}</td><td>${p.desc}</td><td>${p.ref||'—'}</td><td class="n">$ ${p.monto.toLocaleString('es-CL')}</td><td>${p.conciliado?'✓ Conciliada':'Pendiente'}</td></tr>`).join('')}
+  </table></body></html>`);
+  win.document.close(); setTimeout(()=>win.print(),400);
+}
+
+function exportarConcExcel() {
+  const conc = conciliaciones.find(c=>c.id===concActualId);
+  if (!conc) { toast('Selecciona una conciliación','warn'); return; }
+  let xml = `<?xml version="1.0" encoding="UTF-8"?><?mso-application progid="Excel.Sheet"?><Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"><Styles><Style ss:ID="h"><Font ss:Bold="1" ss:Size="11"/></Style><Style ss:ID="t"><Font ss:Bold="1"/><Interior ss:Color="#F0F0F0" ss:Pattern="Solid"/></Style><Style ss:ID="n"><Alignment ss:Horizontal="Right"/><NumberFormat ss:Format="#,##0"/></Style></Styles><Worksheet ss:Name="Conciliacion"><Table>`;
+  xml += `<Row><Cell ss:MergeAcross="5" ss:StyleID="h"><Data ss:Type="String">${empresa.nombre||''} — Conciliación Bancaria — ${conc.nombre}</Data></Cell></Row><Row/>`;
+  xml += `<Row><Cell ss:StyleID="t"><Data ss:Type="String">Fecha</Data></Cell><Cell ss:StyleID="t"><Data ss:Type="String">Tipo</Data></Cell><Cell ss:StyleID="t"><Data ss:Type="String">Descripcion</Data></Cell><Cell ss:StyleID="t"><Data ss:Type="String">Referencia</Data></Cell><Cell ss:StyleID="t"><Data ss:Type="String">Monto</Data></Cell><Cell ss:StyleID="t"><Data ss:Type="String">Estado</Data></Cell></Row>`;
+  (conc.partidas||[]).forEach(p=>{
+    xml += `<Row><Cell><Data ss:Type="String">${p.fecha}</Data></Cell><Cell><Data ss:Type="String">${p.tipo}</Data></Cell><Cell><Data ss:Type="String">${p.desc}</Data></Cell><Cell><Data ss:Type="String">${p.ref||''}</Data></Cell><Cell ss:StyleID="n"><Data ss:Type="Number">${p.monto}</Data></Cell><Cell><Data ss:Type="String">${p.conciliado?'Conciliada':'Pendiente'}</Data></Cell></Row>`;
+  });
+  xml += `</Table></Worksheet></Workbook>`;
+  const blob=new Blob([xml],{type:'application/vnd.ms-excel'});
+  const a2=document.createElement('a');a2.href=URL.createObjectURL(blob);
+  a2.download=`Conciliacion_${conc.periodo}.xls`;a2.click();
+}
+
+// Hook conciliaciones into cargarEmpresaDB — patch renderAll
+const _origRenderAll = renderAll;
+// We override cargarEmpresaDB to also load conciliaciones
+const _origCargarEmpresaDB = cargarEmpresaDB;
+
+// Patch: add backup timestamp indicator to header
+function addBackupIndicator() {
+  const bar = document.getElementById('empresa-header-bar');
+  if (bar && !document.getElementById('backup-ts')) {
+    const span = document.createElement('span');
+    span.id = 'backup-ts';
+    span.style.cssText = 'font-size:0.7rem;color:var(--text3);font-family:DM Mono,monospace;';
+    span.textContent = '';
+    bar.appendChild(span);
+    const btn = document.createElement('button');
+    btn.className = 'btn';
+    btn.style.cssText = 'padding:3px 8px;font-size:0.7rem;';
+    btn.title = 'Restaurar último backup automático';
+    btn.textContent = '↩ Restaurar backup';
+    btn.onclick = restaurarDesdeBackup;
+    bar.appendChild(btn);
+  }
+}
+
+
+function calcularSaldosBalance(hastaFecha=null) {
+  // Always accumulate from beginning (for balance sheet accounts)
+  return calcularSaldos(hastaFecha, null);
+}
+
+function mostrarDropdownCuentas(lineaId) { filtrarCuentasLinea(lineaId, true); }
+function ocultarDropdown(lineaId) {
+  const d = document.getElementById(`cta-drop-${lineaId}`);
+  if (d) d.style.display = 'none';
+}
+
+function filtrarCuentasLinea(lineaId, showAll=false) {
+  const input = document.getElementById(`cta-search-${lineaId}`);
+  const drop  = document.getElementById(`cta-drop-${lineaId}`);
+  if (!input || !drop) return;
+  const q = input.value.toLowerCase().trim();
+  if (!q && !showAll) { drop.style.display='none'; return; }
+  const lista = cuentas
+    .filter(c => !q || c.codigo.toLowerCase().includes(q) || c.nombre.toLowerCase().includes(q))
+    .sort((a,b) => a.codigo.localeCompare(b.codigo)).slice(0, 40);
+  if (!lista.length) { drop.style.display='none'; return; }
+  drop.style.display = '';
+  drop.innerHTML = lista.map(c =>
+    `<div onmousedown="seleccionarCuentaLinea(${lineaId},'${c.codigo}')"
+      style="padding:7px 12px;cursor:pointer;font-size:0.81rem;display:flex;gap:8px;align-items:center;border-bottom:1px solid var(--border);">
+      <span style="font-family:'DM Mono',monospace;color:var(--accent);font-size:0.73rem;min-width:105px;">${c.codigo}</span>
+      <span>${c.nombre}</span>
+    </div>`
+  ).join('');
+}
+
+// ===== TOAST CONTAINER (add to body on load) =====
+document.addEventListener('DOMContentLoaded', () => {
+  if (!document.getElementById('toast-container')) {
+    const div = document.createElement('div');
+    div.id = 'toast-container';
+    document.body.appendChild(div);
+  }
+});
+function toast(msg, tipo='success', duracion=3500) {
+  let cont = document.getElementById('toast-container');
+  if (!cont) {
+    cont = document.createElement('div');
+    cont.id = 'toast-container';
+    document.body.appendChild(cont);
+  }
+  const icons = { success:'✓', error:'✗', info:'ℹ️' };
+  const div = document.createElement('div');
+  div.className = `toast-msg toast-${tipo}`;
+  div.innerHTML = `<span>${icons[tipo]||'•'}</span><span>${msg}</span>`;
+  cont.appendChild(div);
+  setTimeout(() => {
+    div.style.animation = 'toastOut .3s ease forwards';
+    setTimeout(() => div.remove(), 300);
+  }, duracion);
+}
+
+// =========================================================
+// ===== NAVIGATION (hash-based) ===========================
+// =========================================================
+function activarPagina(page) {
+  document.querySelectorAll('.nav-item').forEach(n => {
+    n.classList.toggle('active', n.dataset.page === page);
+  });
+  document.querySelectorAll('.page').forEach(p => {
+    p.classList.toggle('active', p.id === 'page-' + page);
+  });
+}
+
+function navegarA(page) {
+  activarPagina(page);
+  history.pushState({ page }, '', '#' + page);
+}
+
+// =========================================================
+// ===== KEYBOARD SHORTCUTS ================================
+// =========================================================
+document.addEventListener('keydown', (e) => {
+  const modal = document.getElementById('modal-asiento');
+  if (!modal || !modal.classList.contains('open')) return;
+  if (e.key === 'F2') { e.preventDefault(); guardarAsiento(); }
+  if ((e.ctrlKey || e.metaKey) && (e.key === '+' || e.key === '=')) { e.preventDefault(); addLinea(); }
+  if (e.key === 'Escape') { e.preventDefault(); cerrarModal('modal-asiento'); }
+});
+
+// =========================================================
+// ===== AUTO BACKUP =======================================
+// =========================================================
+let _backupTimer = null;
+async function autoBackup() {
+  try {
+    const data = {
+      cuentas, asientos, cierres, trabajadores, liquidaciones,
+      productos, movInventario, auxiliares, conciliaciones,
+      paramsRemArr: Object.entries(paramsRem).map(([clave,valor])=>({clave,valor})),
+      empresa: getEmpresaActual(),
+      ts: new Date().toISOString()
+    };
+    localStorage.setItem(`contacl-backup-${empresaActualId}`, JSON.stringify(data));
+  } catch(e) { console.warn('Backup automático falló:', e); }
+}
+
+function programarAutoBackup() {
+  if (_backupTimer) clearInterval(_backupTimer);
+  _backupTimer = setInterval(autoBackup, 5 * 60 * 1000); // every 5 min
+}
+
+function restaurarBackup() {
+  try {
+    const raw = localStorage.getItem(`contacl-backup-${empresaActualId}`);
+    if (!raw) { toast('No hay backup disponible para esta empresa', 'error'); return; }
+    const data = JSON.parse(raw);
+    const ts = data.ts ? new Date(data.ts).toLocaleString('es-CL') : 'desconocida';
+    if (!confirm(`¿Restaurar backup automático del ${ts}? Los datos actuales serán reemplazados.`)) return;
+    importarDesdeObj(data);
+  } catch(e) { toast('Error al leer backup: ' + e.message, 'error'); }
+}
+
+async function importarDesdeObj(data) {
+  if (data.cuentas) for (const x of data.cuentas) await put('cuentas', x);
+  if (data.asientos) for (const x of data.asientos) await put('asientos', x);
+  if (data.cierres) for (const x of data.cierres) await put('cierres', x);
+  if (data.trabajadores) for (const x of data.trabajadores) await put('trabajadores', x);
+  if (data.liquidaciones) for (const x of data.liquidaciones) await put('liquidaciones', x);
+  if (data.productos) for (const x of data.productos) await put('productos', x);
+  if (data.movInventario) for (const x of data.movInventario) await put('mov_inv', x);
+  if (data.auxiliares) for (const x of data.auxiliares) await put('auxiliares', x);
+  if (data.conciliaciones) for (const x of data.conciliaciones) await put('conciliaciones', x);
+  if (data.paramsRemArr) for (const p of data.paramsRemArr) await put('params_rem', p);
+  cuentas = await getAll('cuentas'); asientos = await getAll('asientos');
+  cierres = await getAll('cierres'); trabajadores = await getAll('trabajadores');
+  liquidaciones = await getAll('liquidaciones'); productos = await getAll('productos');
+  movInventario = await getAll('mov_inv'); auxiliares = await getAll('auxiliares');
+  conciliaciones = await getAll('conciliaciones');
+  renderAll();
+  toast('✓ Backup restaurado correctamente');
+}
+
+// =========================================================
+// ===== MÓDULO CONCILIACIÓN BANCARIA ======================
+// =========================================================
+
+// Schema conciliacion:
+// { id, nombre, banco, numeroCuenta, periodo (YYYY-MM), saldoSegunBanco,
+//   movimientos: [{ id, fecha, tipo('cargo'|'abono'), monto, descripcion,
+//                   comprobante, conciliado, asientoId }] }
+
+function renderConciliaciones() {
+  const cont = document.getElementById('contenido-conciliaciones');
+  if (!cont) return;
+  if (!conciliaciones.length) {
+    cont.innerHTML = `<div class="empty-state"><div class="empty-icon">🏦</div><div class="empty-title">Sin conciliaciones</div><div class="empty-sub">Crea una nueva conciliación bancaria para comenzar</div></div>`;
+    return;
+  }
+  cont.innerHTML = `<div class="table-wrap"><table>
+    <thead><tr><th>Banco</th><th>Cuenta</th><th>Período</th><th class="text-right">Saldo Banco</th><th class="text-right">Saldo Contable</th><th class="text-right">Diferencia</th><th>Estado</th><th>Acciones</th></tr></thead>
+    <tbody>
+    ${conciliaciones.sort((a,b)=>b.periodo.localeCompare(a.periodo)).map(c => {
+      const saldoCtb = calcularSaldoContableCuenta(c.cuentaContable, c.periodo);
+      const dif = (c.saldoSegunBanco||0) - saldoCtb;
+      const conciliado = Math.abs(dif) < 1;
+      return `<tr>
+        <td style="font-weight:600;">${c.banco||'—'}</td>
+        <td class="mono" style="font-size:0.8rem;">${c.numeroCuenta||'—'}</td>
+        <td>${formatPeriodo(c.periodo)}</td>
+        <td class="text-right mono">$ ${Math.round(c.saldoSegunBanco||0).toLocaleString('es-CL')}</td>
+        <td class="text-right mono">$ ${Math.round(saldoCtb).toLocaleString('es-CL')}</td>
+        <td class="text-right mono ${conciliado?'aux-saldo-positivo':'aux-saldo-negativo'}">
+          ${conciliado ? '✓ Cuadra' : `$ ${Math.abs(Math.round(dif)).toLocaleString('es-CL')}`}
+        </td>
+        <td><span class="badge ${conciliado?'badge-conciliado':'badge-pendiente'}">${conciliado?'Conciliado':'Diferencia'}</span></td>
+        <td><div style="display:flex;gap:4px;">
+          <button class="btn btn-accent" style="font-size:0.72rem;padding:3px 8px;" onclick="abrirConciliacion(${c.id})">📋 Abrir</button>
+          <button class="btn btn-danger" style="font-size:0.72rem;padding:3px 8px;" onclick="eliminarConciliacion(${c.id})">🗑️</button>
+        </div></td>
+      </tr>`;
+    }).join('')}
+    </tbody>
+  </table></div>`;
+}
+
+function formatPeriodo(p) {
+  if (!p) return '—';
+  const [y, m] = p.split('-');
+  return `${MESES[parseInt(m)]} ${y}`;
+}
+
+function calcularSaldoContableCuenta(codigoCuenta, periodo) {
+  if (!codigoCuenta) return 0;
+  const cuenta = cuentas.find(c => c.codigo === codigoCuenta);
+  if (!cuenta) return 0;
+  const hasta = periodo ? periodo + '-31' : null;
+  let saldo = 0;
+  asientos.filter(a => !hasta || a.fecha <= hasta).forEach(a => {
+    a.lineas.filter(l => l.cuenta === codigoCuenta).forEach(l => {
+      saldo += cuenta.naturaleza === 'Deudora'
+        ? (l.debito||0) - (l.credito||0)
+        : (l.credito||0) - (l.debito||0);
+    });
+  });
+  return saldo;
+}
+
+function abrirModalNuevaConciliacion() {
+  editingConciliacionId = null;
+  document.getElementById('conc-nombre').value = '';
+  document.getElementById('conc-banco').value = '';
+  document.getElementById('conc-numero').value = '';
+  document.getElementById('conc-periodo').value = new Date().toISOString().slice(0,7);
+  document.getElementById('conc-saldo-banco').value = '';
+  // Poblar cuentas bancarias
+  const ctasBanco = cuentas.filter(c =>
+    c.tipo === 'Activo' && (c.nombre.toLowerCase().includes('banco') || c.nombre.toLowerCase().includes('caja') || c.nombre.toLowerCase().includes('cuenta'))
+  ).sort((a,b)=>a.codigo.localeCompare(b.codigo));
+  document.getElementById('conc-cuenta-contable').innerHTML =
+    '<option value="">— Seleccionar cuenta —</option>' +
+    ctasBanco.map(c=>`<option value="${c.codigo}">${c.codigo} — ${c.nombre}</option>`).join('');
+  document.getElementById('modal-nueva-conciliacion').classList.add('open');
+}
+
+async function guardarNuevaConciliacion() {
+  const nombre = document.getElementById('conc-nombre').value.trim();
+  const banco  = document.getElementById('conc-banco').value.trim();
+  const numeroCuenta = document.getElementById('conc-numero').value.trim();
+  const periodo = document.getElementById('conc-periodo').value;
+  const saldoSegunBanco = getMiles('conc-saldo-banco');
+  const cuentaContable  = document.getElementById('conc-cuenta-contable').value;
+  if (!banco || !periodo || !cuentaContable) {
+    toast('Banco, período y cuenta contable son obligatorios', 'error'); return;
+  }
+  const obj = {
+    nombre: nombre || `${banco} ${formatPeriodo(periodo)}`,
+    banco, numeroCuenta, periodo, saldoSegunBanco, cuentaContable,
+    movimientos: []
+  };
+  if (editingConciliacionId) obj.id = editingConciliacionId;
+  const newId = await put('conciliaciones', obj);
+  conciliaciones = await getAll('conciliaciones');
+  cerrarModal('modal-nueva-conciliacion');
+  renderConciliaciones();
+  toast('✓ Conciliación creada');
+  // Abrir la conciliación directamente
+  const id = editingConciliacionId || newId;
+  setTimeout(() => { const c = conciliaciones.find(x => x.id === id || x.id === newId); if(c) abrirConciliacion(c.id); }, 200);
+}
+
+async function eliminarConciliacion(id) {
+  if (!confirm('¿Eliminar esta conciliación bancaria?')) return;
+  await del('conciliaciones', id);
+  conciliaciones = await getAll('conciliaciones');
+  renderConciliaciones();
+  toast('Conciliación eliminada');
+}
+
+// ── Detalle de conciliación ──
+let concilActualId = null;
+
+function abrirConciliacion(id) {
+  concilActualId = id;
+  navegarA('concil-detalle');
+  renderDetalleConciliacion();
+}
+
+function renderDetalleConciliacion() {
+  const cont = document.getElementById('contenido-concil-detalle');
+  if (!cont) return;
+  const c = conciliaciones.find(x => x.id === concilActualId);
+  if (!c) { cont.innerHTML = '<div class="empty-state">Conciliación no encontrada</div>'; return; }
+
+  const movs = c.movimientos || [];
+  const saldoCtb = calcularSaldoContableCuenta(c.cuentaContable, c.periodo);
+  const totalCargos = movs.filter(m=>m.tipo==='cargo').reduce((s,m)=>s+m.monto,0);
+  const totalAbonos = movs.filter(m=>m.tipo==='abono').reduce((s,m)=>s+m.monto,0);
+  const conciliados = movs.filter(m=>m.conciliado).length;
+  const pendientes  = movs.filter(m=>!m.conciliado).length;
+  const dif = (c.saldoSegunBanco||0) - saldoCtb;
+  const cuadra = Math.abs(dif) < 1;
+  const $ = v => '$ ' + Math.abs(Math.round(v)).toLocaleString('es-CL');
+
+  // Build movements from accounting for this account + period
+  const ctaObj = cuentas.find(ct => ct.codigo === c.cuentaContable);
+  const hasta = c.periodo + '-31';
+  const desde = c.periodo + '-01';
+  const movContables = asientos
+    .filter(a => a.fecha >= desde && a.fecha <= hasta)
+    .flatMap(a => a.lineas.filter(l=>l.cuenta===c.cuentaContable).map(l=>({
+      fecha: a.fecha, glosa: a.glosa, ref: a.referencia||'',
+      debito: l.debito||0, credito: l.credito||0, asientoId: a.id
+    })));
+
+  cont.innerHTML = `
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:8px;">
+    <div>
+      <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;">${c.nombre}</div>
+      <div style="font-size:0.8rem;color:var(--text3);">${c.banco} · ${c.numeroCuenta||'Sin número'} · ${formatPeriodo(c.periodo)}</div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="btn" onclick="navegarA('conciliaciones')">← Volver</button>
+      <button class="btn btn-green" onclick="agregarMovimientoBancario()">+ Movimiento</button>
+      <button class="btn" onclick="importarMovimientosContables()">📥 Importar desde Contabilidad</button>
+      <button class="btn" onclick="exportarConciliacionPDF()">🖨️ PDF</button>
+    </div>
+  </div>
+
+  <div class="concil-stats">
+    <div class="concil-stat">
+      <div class="concil-stat-label">Saldo según banco</div>
+      <div class="concil-stat-val" style="color:var(--accent)">${$(c.saldoSegunBanco||0)}</div>
+    </div>
+    <div class="concil-stat">
+      <div class="concil-stat-label">Saldo contable</div>
+      <div class="concil-stat-val">${$(saldoCtb)}</div>
+    </div>
+    <div class="concil-stat">
+      <div class="concil-stat-label">Diferencia</div>
+      <div class="concil-stat-val" style="color:${cuadra?'var(--green)':'var(--red)'};">${cuadra?'✓ Cuadra':$(dif)}</div>
+    </div>
+    <div class="concil-stat">
+      <div class="concil-stat-label">Cargos / Abonos</div>
+      <div class="concil-stat-val" style="font-size:0.88rem;">${$(totalCargos)} / ${$(totalAbonos)}</div>
+    </div>
+    <div class="concil-stat">
+      <div class="concil-stat-label">Conciliados / Pendientes</div>
+      <div class="concil-stat-val" style="font-size:0.88rem;color:${pendientes>0?'var(--yellow)':'var(--green)'};">${conciliados} / ${pendientes}</div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:0;">
+
+    <!-- MOVIMIENTOS BANCO -->
+    <div>
+      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);margin-bottom:8px;">Extracto Bancario</div>
+      ${movs.length ? `<div class="table-wrap"><table>
+        <thead><tr><th>Fecha</th><th>Descripción</th><th>Comprobante</th><th class="text-right">Cargo</th><th class="text-right">Abono</th><th>Estado</th><th></th></tr></thead>
+        <tbody>
+        ${movs.sort((a,b)=>a.fecha.localeCompare(b.fecha)).map((m,idx)=>`
+          <tr class="${m.conciliado?'concil-row-conciliada':'concil-row-pendiente'}">
+            <td style="font-size:0.82rem;">${m.fecha}</td>
+            <td style="font-size:0.82rem;">${m.descripcion||'—'}</td>
+            <td style="font-size:0.75rem;color:var(--text3);">${m.comprobante||'—'}</td>
+            <td class="text-right mono movtype-cargo">${m.tipo==='cargo'?$(m.monto):''}</td>
+            <td class="text-right mono movtype-abono">${m.tipo==='abono'?$(m.monto):''}</td>
+            <td><span class="badge ${m.conciliado?'badge-conciliado':'badge-pendiente'}" style="font-size:0.67rem;">${m.conciliado?'✓':'Pend.'}</span></td>
+            <td><div style="display:flex;gap:2px;">
+              <button class="btn" style="font-size:0.68rem;padding:2px 6px;" onclick="toggleConciliarMov(${idx})">${m.conciliado?'↩':'✓'}</button>
+              <button class="btn btn-danger" style="font-size:0.68rem;padding:2px 6px;" onclick="eliminarMovBancario(${idx})">✕</button>
+            </div></td>
+          </tr>`).join('')}
+        </tbody>
+      </table></div>` : `<div class="empty-state" style="padding:2rem;"><div class="empty-icon">📄</div><div class="empty-title">Sin movimientos bancarios</div><div class="empty-sub">Agrega movimientos del extracto o impórtalos desde contabilidad</div></div>`}
+    </div>
+
+    <!-- MOVIMIENTOS CONTABLES -->
+    <div>
+      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);margin-bottom:8px;">Movimientos Contables — ${ctaObj?ctaObj.nombre:c.cuentaContable}</div>
+      ${movContables.length ? `<div class="table-wrap"><table>
+        <thead><tr><th>Fecha</th><th>Descripción</th><th class="text-right">Débito</th><th class="text-right">Crédito</th></tr></thead>
+        <tbody>
+        ${movContables.map(m=>`<tr>
+          <td style="font-size:0.82rem;">${m.fecha}</td>
+          <td style="font-size:0.82rem;">${m.glosa}${m.ref?`<div style="font-size:.7rem;color:var(--text3);">${m.ref}</div>`:''}</td>
+          <td class="text-right mono">${m.debito>0?$(m.debito):''}</td>
+          <td class="text-right mono">${m.credito>0?$(m.credito):''}</td>
+        </tr>`).join('')}
+        </tbody>
+      </table></div>` : `<div class="empty-state" style="padding:2rem;"><div class="empty-icon">📒</div><div class="empty-title">Sin movimientos contables en este período</div></div>`}
+    </div>
+
+  </div>
+
+  <!-- RESUMEN CONCILIACIÓN -->
+  <div class="informe" style="margin-top:1.5rem;">
+    <div class="informe-header"><div class="informe-title">Resumen de Conciliación — ${formatPeriodo(c.periodo)}</div></div>
+    <div class="informe-body">
+      <div class="informe-row"><span>Saldo según Estado de Cuenta Bancario</span><span class="mono amount-pos">${$(c.saldoSegunBanco||0)}</span></div>
+      <div class="informe-row"><span>(+) Cargos en tránsito (no en banco)</span><span class="mono">${$(movs.filter(m=>!m.conciliado&&m.tipo==='cargo').reduce((s,m)=>s+m.monto,0))}</span></div>
+      <div class="informe-row"><span>(−) Abonos en tránsito (no en banco)</span><span class="mono">${$(movs.filter(m=>!m.conciliado&&m.tipo==='abono').reduce((s,m)=>s+m.monto,0))}</span></div>
+      <div class="informe-row subtotal"><span>Saldo ajustado</span><span class="mono">${$((c.saldoSegunBanco||0) + movs.filter(m=>!m.conciliado&&m.tipo==='cargo').reduce((s,m)=>s+m.monto,0) - movs.filter(m=>!m.conciliado&&m.tipo==='abono').reduce((s,m)=>s+m.monto,0))}</span></div>
+      <div class="informe-row subtotal"><span>Saldo según Libros Contables</span><span class="mono">${$(saldoCtb)}</span></div>
+      <div class="informe-row total">
+        <span>${cuadra ? '✅ CONCILIACIÓN CUADRADA' : '⚠️ DIFERENCIA SIN CONCILIAR'}</span>
+        <span class="mono" style="color:${cuadra?'var(--green)':'var(--red)'};">${cuadra ? '$ 0' : $(dif)}</span>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── Modal: nuevo movimiento bancario ──
+let _movBancarioEditIdx = null;
+
+function agregarMovimientoBancario(idx=null) {
+  _movBancarioEditIdx = idx;
+  const c = conciliaciones.find(x=>x.id===concilActualId);
+  const m = idx !== null ? (c?.movimientos||[])[idx] : null;
+  document.getElementById('mb-fecha').value = m?.fecha || new Date().toISOString().slice(0,10);
+  document.getElementById('mb-tipo').value = m?.tipo || 'abono';
+  document.getElementById('mb-descripcion').value = m?.descripcion || '';
+  document.getElementById('mb-comprobante').value = m?.comprobante || '';
+  setMiles('mb-monto', m?.monto || 0);
+  document.getElementById('modal-mov-bancario').classList.add('open');
+}
+
+async function guardarMovimientoBancario() {
+  const fecha = document.getElementById('mb-fecha').value;
+  const tipo  = document.getElementById('mb-tipo').value;
+  const monto = getMiles('mb-monto');
+  const descripcion  = document.getElementById('mb-descripcion').value.trim();
+  const comprobante  = document.getElementById('mb-comprobante').value.trim();
+  if (!fecha || !monto) { toast('Fecha y monto son obligatorios', 'error'); return; }
+  const c = conciliaciones.find(x=>x.id===concilActualId);
+  if (!c) return;
+  const movs = c.movimientos || [];
+  const nuevoMov = { id: Date.now(), fecha, tipo, monto, descripcion, comprobante, conciliado: false };
+  if (_movBancarioEditIdx !== null) movs[_movBancarioEditIdx] = nuevoMov;
+  else movs.push(nuevoMov);
+  c.movimientos = movs;
+  await put('conciliaciones', c);
+  conciliaciones = await getAll('conciliaciones');
+  cerrarModal('modal-mov-bancario');
+  renderDetalleConciliacion();
+  toast('✓ Movimiento guardado');
+}
+
+async function toggleConciliarMov(idx) {
+  const c = conciliaciones.find(x=>x.id===concilActualId);
+  if (!c || !c.movimientos[idx]) return;
+  c.movimientos[idx].conciliado = !c.movimientos[idx].conciliado;
+  await put('conciliaciones', c);
+  conciliaciones = await getAll('conciliaciones');
+  renderDetalleConciliacion();
+}
+
+async function eliminarMovBancario(idx) {
+  if (!confirm('¿Eliminar este movimiento?')) return;
+  const c = conciliaciones.find(x=>x.id===concilActualId);
+  if (!c) return;
+  c.movimientos.splice(idx, 1);
+  await put('conciliaciones', c);
+  conciliaciones = await getAll('conciliaciones');
+  renderDetalleConciliacion();
+  toast('Movimiento eliminado');
+}
+
+async function importarMovimientosContables() {
+  const c = conciliaciones.find(x=>x.id===concilActualId);
+  if (!c) return;
+  const hasta = c.periodo + '-31';
+  const desde = c.periodo + '-01';
+  const ctaObj = cuentas.find(ct => ct.codigo === c.cuentaContable);
+  const movContables = asientos
+    .filter(a => a.fecha >= desde && a.fecha <= hasta)
+    .flatMap(a => a.lineas.filter(l=>l.cuenta===c.cuentaContable).map(l=>({
+      fecha: a.fecha, glosa: a.glosa, debito: l.debito||0, credito: l.credito||0
+    })));
+  if (!movContables.length) { toast('No hay movimientos contables en este período', 'info'); return; }
+  if (!confirm(`¿Importar ${movContables.length} movimientos contables como movimientos bancarios?`)) return;
+  const nuevos = movContables.map(m => ({
+    id: Date.now() + Math.random(),
+    fecha: m.fecha,
+    tipo: m.debito > 0 ? 'abono' : 'cargo',
+    monto: m.debito > 0 ? m.debito : m.credito,
+    descripcion: m.glosa,
+    comprobante: '',
+    conciliado: false
+  }));
+  c.movimientos = [...(c.movimientos||[]), ...nuevos];
+  await put('conciliaciones', c);
+  conciliaciones = await getAll('conciliaciones');
+  renderDetalleConciliacion();
+  toast(`✓ ${nuevos.length} movimientos importados`);
+}
+
+function exportarConciliacionPDF() {
+  const c = conciliaciones.find(x=>x.id===concilActualId);
+  if (!c) return;
+  const movs = c.movimientos||[];
+  const saldoCtb = calcularSaldoContableCuenta(c.cuentaContable, c.periodo);
+  const dif = (c.saldoSegunBanco||0) - saldoCtb;
+  const cuadra = Math.abs(dif) < 1;
+  const $ = v => '$ ' + Math.abs(Math.round(v)).toLocaleString('es-CL');
+  const rows = movs.sort((a,b)=>a.fecha.localeCompare(b.fecha)).map(m =>
+    `<tr><td>${m.fecha}</td><td>${m.descripcion||'—'}</td><td>${m.comprobante||'—'}</td>
+    <td class="n">${m.tipo==='cargo'?$(m.monto):''}</td>
+    <td class="n">${m.tipo==='abono'?$(m.monto):''}</td>
+    <td>${m.conciliado?'✓ Conciliado':'Pendiente'}</td></tr>`
+  ).join('');
+  const win = window.open('','_blank');
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Conciliación</title>
+  <style>body{font-family:Arial,sans-serif;font-size:10px;margin:20px;}table{width:100%;border-collapse:collapse;}th,td{border:1px solid #ccc;padding:3px 6px;}th{background:#f0f0f0;}td.n{text-align:right;font-family:monospace;}.tot{font-weight:700;}.ok{color:green;}.err{color:red;}</style>
+  </head><body>
+  ${empresaPrintHeader('Conciliación Bancaria', formatPeriodo(c.periodo))}
+  <p><strong>${c.banco}</strong> · Cta: ${c.numeroCuenta||'—'}</p>
+  <table><thead><tr><th>Fecha</th><th>Descripción</th><th>Comprobante</th><th>Cargo</th><th>Abono</th><th>Estado</th></tr></thead><tbody>${rows}</tbody></table>
+  <br><table><tr><td><strong>Saldo según banco</strong></td><td class="n">${$(c.saldoSegunBanco||0)}</td></tr>
+  <tr><td><strong>Saldo contable</strong></td><td class="n">${$(saldoCtb)}</td></tr>
+  <tr><td><strong>Diferencia</strong></td><td class="n ${cuadra?'ok':'err'}">${cuadra?'Cuadra':$(dif)}</td></tr>
+  </table></body></html>`);
+  win.document.close(); setTimeout(()=>win.print(),400);
 }
 
 </script>
