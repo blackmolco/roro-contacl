@@ -546,6 +546,20 @@
   .toast-close { background:none; border:none; color:var(--text3); cursor:pointer; font-size:1rem; padding:0 2px; }
   @keyframes toastIn { from { opacity:0; transform:translateX(30px); } to { opacity:1; transform:none; } }
 
+  /* ===== NEW MODULES CSS ===== */
+  .dep-bar{height:7px;border-radius:4px;background:var(--bg3);overflow:hidden;margin-top:3px}
+  .dep-bar-inner{height:100%;border-radius:4px;background:var(--accent);transition:width .4s}
+  .honorario-ret{color:var(--red);font-size:.8rem}
+  .lcv-ventas{color:var(--green)} .lcv-compras{color:var(--red)}
+  .badge-blue{background:rgba(50,120,240,.12);color:#5090ff;border:1px solid rgba(50,120,240,.3)}
+  .badge-green{background:rgba(63,185,80,.12);color:var(--green);border:1px solid rgba(63,185,80,.3)}
+  .badge-red{background:rgba(248,81,73,.1);color:var(--red);border:1px solid rgba(248,81,73,.25)}
+  .spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;margin-right:6px;vertical-align:middle}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .loading-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+  .loading-box{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:2rem 2.5rem;text-align:center;font-size:.9rem;display:flex;flex-direction:column;align-items:center;gap:.75rem}
+  .loading-box .spinner{width:28px;height:28px;border-width:3px}
+
   ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
@@ -624,19 +638,23 @@
     <div class="nav-item" data-page="balance8"><span class="nav-icon">📊</span> Balance 8 Col.</div>
     <div class="nav-item" data-page="eer"><span class="nav-icon">📈</span> Estado Resultados</div>
     <div class="nav-item" data-page="iva"><span class="nav-icon">🧾</span> IVA / F29</div>
+    <div class="nav-item" data-page="lcv"><span class="nav-icon">📖</span> Libro Compra/Venta</div>
     <div class="nav-section">Remuneraciones</div>
     <div class="nav-item" data-page="rem-trabajadores"><span class="nav-icon">👤</span> Trabajadores</div>
     <div class="nav-item" data-page="rem-liquidaciones"><span class="nav-icon">💰</span> Liquidaciones</div>
     <div class="nav-item" data-page="rem-libro"><span class="nav-icon">📑</span> Libro Rem.</div>
     <div class="nav-item" data-page="rem-params"><span class="nav-icon">⚙️</span> Parámetros</div>
+    <div class="nav-item" data-page="rem-previred"><span class="nav-icon">📤</span> Previred</div>
+    <div class="nav-item" data-page="rem-lre"><span class="nav-icon">📑</span> LRE</div>
+    <div class="nav-section">Tributario</div>
+    <div class="nav-item" data-page="honorarios"><span class="nav-icon">🧾</span> Boletas Honorarios</div>
+    <div class="nav-item" data-page="activo-fijo"><span class="nav-icon">🏗️</span> Activos Fijos</div>
     <div class="nav-section">Bancos</div>
     <div class="nav-item" data-page="conciliaciones"><span class="nav-icon">🏦</span> Conciliación Bancaria</div>
     <div class="nav-section">Auxiliares</div>
     <div class="nav-item" data-page="aux-registro"><span class="nav-icon">🏷️</span> Clientes / Proveed.</div>
     <div class="nav-item" data-page="aux-mayor"><span class="nav-icon">📋</span> Mayor Auxiliar</div>
     <div class="nav-item" data-page="aux-antiguedad"><span class="nav-icon">⏱️</span> Antigüedad Saldos</div>
-    <div class="nav-section">Bancos</div>
-    <div class="nav-item" data-page="conc-bancaria"><span class="nav-icon">🏦</span> Conciliación Bancaria</div>
     <div class="nav-section">Inventario</div>
     <div class="nav-item" data-page="inv-productos"><span class="nav-icon">📦</span> Productos</div>
     <div class="nav-item" data-page="inv-movimientos"><span class="nav-icon">🔄</span> Movimientos</div>
@@ -1069,6 +1087,148 @@
       </div>
     </div>
 
+    <!-- ===== LIBRO COMPRA / VENTA ===== -->
+    <div class="page" id="page-lcv">
+      <div class="page-header">
+        <div><div class="page-title">Libro de Compras y Ventas</div><div class="page-sub">Detalle de IVA por período</div></div>
+        <div style="display:flex;gap:8px;">
+          <div class="picker-group" id="picker-lcv"></div>
+          <button class="btn" onclick="exportarLCVPDF()">🖨️ PDF</button>
+          <button class="btn btn-green" onclick="exportarLCVExcel()">📥 Excel</button>
+        </div>
+      </div>
+      <div id="contenido-lcv"></div>
+    </div>
+
+    <!-- ===== PREVIRED ===== -->
+    <div class="page" id="page-rem-previred">
+      <div class="page-header">
+        <div><div class="page-title">Previred</div><div class="page-sub">Exportar cotizaciones previsionales</div></div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <div class="picker-group" id="picker-previred"></div>
+        </div>
+      </div>
+      <div id="contenido-previred"></div>
+    </div>
+
+    <!-- ===== LRE ===== -->
+    <div class="page" id="page-rem-lre">
+      <div class="page-header">
+        <div><div class="page-title">Libro de Remuneraciones Electrónico</div><div class="page-sub">Exportar para Dirección del Trabajo</div></div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <div class="picker-group" id="picker-lre"></div>
+        </div>
+      </div>
+      <div id="contenido-lre"></div>
+    </div>
+
+    <!-- ===== BOLETAS HONORARIOS ===== -->
+    <div class="page" id="page-honorarios">
+      <div class="page-header">
+        <div><div class="page-title">Boletas de Honorarios</div><div class="page-sub">Registro y centralización de boletas recibidas</div></div>
+        <div style="display:flex;gap:8px;">
+          <input class="filter-input" id="filtro-honorarios" placeholder="Buscar por nombre o RUT..." oninput="renderHonorarios()" style="min-width:220px;">
+          <button class="btn btn-accent" onclick="abrirModalHonorario()">+ Nueva Boleta</button>
+        </div>
+      </div>
+      <div id="contenido-honorarios"></div>
+    </div>
+
+    <!-- ===== ACTIVOS FIJOS ===== -->
+    <div class="page" id="page-activo-fijo">
+      <div class="page-header">
+        <div><div class="page-title">Activos Fijos</div><div class="page-sub">Cuadro de bienes con depreciación automática</div></div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <select id="filtro-activo-estado" class="btn" onchange="renderActivosFijos()" style="padding:7px 12px;">
+            <option value="activo">Activos</option>
+            <option value="">Todos</option>
+            <option value="vendido">Vendidos</option>
+            <option value="dado_baja">Dados de baja</option>
+          </select>
+          <button class="btn btn-accent" onclick="abrirModalActivo()">+ Nuevo Activo</button>
+        </div>
+      </div>
+      <div id="contenido-activos-fijos"></div>
+    </div>
+
+    <!-- MODAL NUEVA BOLETA HONORARIO -->
+    <div class="modal-overlay" id="modal-honorario">
+      <div class="modal" style="max-width:520px;width:95%;">
+        <div class="modal-header"><span>Boleta de Honorario</span><button class="btn" onclick="cerrarModal('modal-honorario')" style="padding:4px 10px;">✕</button></div>
+        <div class="modal-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div class="form-group"><label>Fecha *</label><input type="date" id="hon-fecha"></div>
+            <div class="form-group"><label>RUT Emisor</label><input type="text" id="hon-rut" placeholder="12.345.678-9" oninput="formatRut(this)"></div>
+            <div class="form-group full"><label>Nombre Emisor *</label><input type="text" id="hon-nombre" placeholder="Nombre completo o razón social"></div>
+            <div class="form-group full"><label>Concepto / Servicio</label><input type="text" id="hon-concepto" placeholder="Ej: Asesoría contable enero 2025"></div>
+            <div class="form-group"><label>Honorario Bruto ($) *</label><input type="text" id="hon-monto" oninput="fmtMiles(this);calcularHonorarioPreview()" placeholder="0"></div>
+            <div class="form-group"><label>Tasa Retención (%)</label><input type="number" id="hon-tasa" step="0.01" min="0" max="100" onchange="calcularHonorarioPreview()" style="background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:var(--text);padding:8px 10px;width:100%;"></div>
+            <div class="form-group"><label>Estado</label>
+              <select id="hon-estado" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:var(--text);padding:8px 10px;">
+                <option value="pendiente">Pendiente de pago</option>
+                <option value="pagado">Pagado</option>
+              </select>
+            </div>
+          </div>
+          <div id="hon-preview" style="margin-top:10px;"></div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" onclick="cerrarModal('modal-honorario')">Cancelar</button>
+          <button class="btn btn-green" onclick="guardarHonorario()">💾 Guardar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL NUEVO ACTIVO FIJO -->
+    <div class="modal-overlay" id="modal-activo">
+      <div class="modal" style="max-width:560px;width:95%;">
+        <div class="modal-header"><span>Activo Fijo</span><button class="btn" onclick="cerrarModal('modal-activo')" style="padding:4px 10px;">✕</button></div>
+        <div class="modal-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div class="form-group"><label>Código</label><input type="text" id="af-codigo" placeholder="Ej: AF-001"></div>
+            <div class="form-group full"><label>Descripción *</label><input type="text" id="af-descripcion" placeholder="Ej: Computador Dell Optiplex"></div>
+            <div class="form-group"><label>Fecha Adquisición *</label><input type="date" id="af-fecha-adq"></div>
+            <div class="form-group"><label>Valor Adquisición ($) *</label><input type="text" id="af-valor-adq" oninput="fmtMiles(this)" placeholder="0"></div>
+            <div class="form-group"><label>Vida Útil (años)</label>
+              <select id="af-vida-util" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:var(--text);padding:8px 10px;">
+                <option value="2">2 años</option><option value="3">3 años</option>
+                <option value="5" selected>5 años</option><option value="6">6 años</option>
+                <option value="10">10 años</option><option value="15">15 años</option>
+                <option value="20">20 años</option><option value="25">25 años</option>
+                <option value="33">33 años</option><option value="40">40 años</option>
+              </select>
+            </div>
+            <div class="form-group"><label>Método Depreciación</label>
+              <select id="af-metodo" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:var(--text);padding:8px 10px;">
+                <option value="lineal">Lineal</option>
+                <option value="acelerada">Acelerada (1/3 vida útil)</option>
+              </select>
+            </div>
+            <div class="form-group"><label>Estado</label>
+              <select id="af-estado" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:var(--text);padding:8px 10px;">
+                <option value="activo">Activo</option>
+                <option value="vendido">Vendido</option>
+                <option value="dado_baja">Dado de baja</option>
+              </select>
+            </div>
+            <div class="form-group"><label>Cuenta Activo</label>
+              <select id="af-cta-activo" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:var(--text);padding:8px 10px;font-size:0.8rem;"></select>
+            </div>
+            <div class="form-group"><label>Cuenta Dep. Acumulada</label>
+              <select id="af-cta-dep-acum" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:var(--text);padding:8px 10px;font-size:0.8rem;"></select>
+            </div>
+            <div class="form-group"><label>Cuenta Gasto Dep.</label>
+              <select id="af-cta-gasto-dep" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:var(--text);padding:8px 10px;font-size:0.8rem;"></select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" onclick="cerrarModal('modal-activo')">Cancelar</button>
+          <button class="btn btn-green" onclick="guardarActivo()">💾 Guardar</button>
+        </div>
+      </div>
+    </div>
+
     <!-- ===== CONCILIACIÓN BANCARIA LISTA ===== -->
     <div class="page" id="page-conciliaciones">
       <div class="page-header">
@@ -1226,78 +1386,6 @@
     </div>
 
     <!-- ===== CONCILIACIÓN BANCARIA ===== -->
-    <div class="page" id="page-conc-bancaria">
-      <div class="page-header">
-        <div><div class="page-title">Conciliación Bancaria</div><div class="page-sub">Coteja los movimientos del libro con el estado de cuenta bancario</div></div>
-        <div style="display:flex;gap:8px;">
-          <button class="btn" onclick="exportarConcPDF()">🖨️ PDF</button>
-          <button class="btn btn-green" onclick="exportarConcExcel()">📥 Excel</button>
-          <button class="btn btn-accent" onclick="abrirModalConciliacion()">+ Nueva Conciliación</button>
-        </div>
-      </div>
-      <div class="filters">
-        <select class="btn" id="sel-conc-activa" onchange="cargarConciliacion()" style="padding:7px 12px;min-width:260px;">
-          <option value="">— Seleccionar conciliación —</option>
-        </select>
-        <button class="btn btn-danger" id="btn-del-conc" style="display:none;" onclick="eliminarConciliacion()">🗑️ Eliminar</button>
-      </div>
-      <div id="contenido-conciliacion">
-        <div class="empty-state"><div class="empty-icon">🏦</div><div class="empty-title">Sin conciliaciones</div><div class="empty-sub">Crea una nueva conciliación para comenzar</div></div>
-      </div>
-    </div>
-
-    <!-- MODAL NUEVA CONCILIACIÓN -->
-    <div class="modal-overlay" id="modal-conciliacion">
-      <div class="modal" style="max-width:520px;width:95%;">
-        <div class="modal-header"><span>Nueva Conciliación Bancaria</span><button class="btn" onclick="cerrarModal('modal-conciliacion')" style="padding:4px 10px;">✕</button></div>
-        <div class="modal-body">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-            <div class="form-group"><label>Período (Mes/Año) *</label><input type="month" id="conc-periodo"></div>
-            <div class="form-group"><label>Cuenta Bancaria *</label>
-              <select id="conc-cuenta-banco" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:var(--text);padding:8px 10px;font-size:0.82rem;"></select>
-            </div>
-            <div class="form-group"><label>Saldo Según Libro ($) al inicio</label><input type="text" id="conc-saldo-libro-ini" value="0" oninput="fmtMiles(this)"></div>
-            <div class="form-group"><label>Saldo Según Banco ($) al cierre</label><input type="text" id="conc-saldo-banco" value="0" oninput="fmtMiles(this)"></div>
-            <div class="form-group full"><label>Nombre / Referencia</label><input type="text" id="conc-nombre" placeholder="Ej: Banco BCI CTA. 123456 — Enero 2025"></div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button class="btn" onclick="cerrarModal('modal-conciliacion')">Cancelar</button>
-          <button class="btn btn-green" onclick="crearConciliacion()">✓ Crear</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- MODAL AGREGAR PARTIDA -->
-    <div class="modal-overlay" id="modal-partida-conc">
-      <div class="modal" style="max-width:480px;width:95%;">
-        <div class="modal-header"><span id="modal-partida-title">Agregar Partida</span><button class="btn" onclick="cerrarModal('modal-partida-conc')" style="padding:4px 10px;">✕</button></div>
-        <div class="modal-body">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-            <div class="form-group"><label>Fecha *</label><input type="date" id="cp-fecha"></div>
-            <div class="form-group"><label>Tipo *</label>
-              <select id="cp-tipo" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:var(--text);padding:8px 10px;">
-                <option value="dep_en_transito">Depósito en Tránsito</option>
-                <option value="cheque_pendiente">Cheque Pendiente Cobro</option>
-                <option value="nota_debito">Nota de Débito Banco</option>
-                <option value="nota_credito">Nota de Crédito Banco</option>
-                <option value="error_libro">Error en Libro</option>
-                <option value="error_banco">Error en Banco</option>
-                <option value="otro">Otro</option>
-              </select>
-            </div>
-            <div class="form-group full"><label>Descripción *</label><input type="text" id="cp-desc" placeholder="Ej: Cheque N°1234 emitido a proveedor"></div>
-            <div class="form-group"><label>Monto ($) *</label><input type="text" id="cp-monto" oninput="fmtMiles(this)" placeholder="0"></div>
-            <div class="form-group"><label>Referencia</label><input type="text" id="cp-ref" placeholder="N° cheque, transferencia, etc."></div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button class="btn" onclick="cerrarModal('modal-partida-conc')">Cancelar</button>
-          <button class="btn btn-green" onclick="guardarPartidaConc()">✓ Agregar</button>
-        </div>
-      </div>
-    </div>
-
     <!-- ===== INVENTARIO PRODUCTOS ===== -->
     <div class="page" id="page-inv-productos">
       <div class="page-header">
@@ -1549,7 +1637,7 @@
 <script>
 // ===== IndexedDB =====
 // ===== MULTI-EMPRESA =====
-const DB_VERSION = 6;
+const DB_VERSION = 7;
 let db;
 let empresaActualId = null; // ID de la empresa activa (ej: 'emp_1')
 
@@ -1572,6 +1660,8 @@ function openDB() {
       if (!d.objectStoreNames.contains('mov_inv')) d.createObjectStore('mov_inv', {keyPath:'id', autoIncrement:true});
       if (!d.objectStoreNames.contains('auxiliares')) d.createObjectStore('auxiliares', {keyPath:'id', autoIncrement:true});
       if (!d.objectStoreNames.contains('conciliaciones')) d.createObjectStore('conciliaciones', {keyPath:'id', autoIncrement:true});
+      if (!d.objectStoreNames.contains('honorarios')) d.createObjectStore('honorarios', {keyPath:'id', autoIncrement:true});
+      if (!d.objectStoreNames.contains('activos_fijos')) d.createObjectStore('activos_fijos', {keyPath:'id', autoIncrement:true});
       if (!d.objectStoreNames.contains('conciliaciones')) d.createObjectStore('conciliaciones', {keyPath:'id', autoIncrement:true});
     };
   });
@@ -1644,10 +1734,39 @@ const PLAN_INICIAL = [
   {codigo:'5-02-008-0001',nombre:'Otros Gastos No Operacionales',tipo:'Gasto',naturaleza:'Deudora',sii:'',descripcion:''},
 ];
 
-let cuentas=[], asientos=[], cierres=[], trabajadores=[], liquidaciones=[], paramsRem={},
-    productos=[], movInventario=[], auxiliares=[], conciliaciones=[],
-    editingAsientoId=null, editingCuentaCodigo=null, lineaCount=0,
-    editingTrabajadorId=null, editingProductoId=null, editingAuxiliarId=null;
+// ===== APP STATE (central) =====
+const AppState = {
+  _listeners: {},
+  _data: {
+    cuentas:[], asientos:[], cierres:[], trabajadores:[], liquidaciones:[],
+    paramsRem:{}, productos:[], movInventario:[], auxiliares:[], conciliaciones:[],
+    honorariosBoletas:[], activosFijos:[]
+  },
+  get(key) { return this._data[key]; },
+  set(key, val) {
+    this._data[key] = val;
+    if (this._listeners[key]) this._listeners[key].forEach(fn => fn(val));
+  },
+  on(key, fn) { if (!this._listeners[key]) this._listeners[key]=[]; this._listeners[key].push(fn); }
+};
+
+// Proxies for backward compatibility with existing code
+let cuentas, asientos, cierres, trabajadores, liquidaciones, paramsRem,
+    productos, movInventario, auxiliares, conciliaciones, honorariosBoletas, activosFijos;
+
+function syncStateProxies() {
+  cuentas=AppState.get('cuentas'); asientos=AppState.get('asientos');
+  cierres=AppState.get('cierres'); trabajadores=AppState.get('trabajadores');
+  liquidaciones=AppState.get('liquidaciones'); paramsRem=AppState.get('paramsRem');
+  productos=AppState.get('productos'); movInventario=AppState.get('movInventario');
+  auxiliares=AppState.get('auxiliares'); conciliaciones=AppState.get('conciliaciones');
+  honorariosBoletas=AppState.get('honorariosBoletas'); activosFijos=AppState.get('activosFijos');
+}
+syncStateProxies(); // init empty
+
+let editingAsientoId=null, editingCuentaCodigo=null, lineaCount=0,
+    editingTrabajadorId=null, editingProductoId=null, editingAuxiliarId=null,
+    editingHonorarioId=null, editingActivoId=null, editingConciliacionId=null;
 
 // ===== INIT =====
 async function init() {
@@ -1676,10 +1795,20 @@ async function cargarEmpresaDB() {
   movInventario = await getAll('mov_inv');
   auxiliares = await getAll('auxiliares');
   try { conciliaciones = await getAll('conciliaciones'); } catch(e) { conciliaciones=[]; }
+  let honorariosBoletas2=[]; try { honorariosBoletas2=await getAll('honorarios'); } catch(e){}
+  let activosFijos2=[]; try { activosFijos2=await getAll('activos_fijos'); } catch(e){}
   const pArr = await getAll('params_rem');
   paramsRem = {}; pArr.forEach(p => paramsRem[p.clave] = p.valor);
   if (!Object.keys(paramsRem).length) await initParamsRem();
-  if (!cuentas.length) { for (const c of PLAN_INICIAL) await put('cuentas',c); cuentas = await getAll('cuentas'); }
+  // Sync all to AppState
+  AppState.set('cuentas',cuentas); AppState.set('asientos',asientos);
+  AppState.set('cierres',cierres); AppState.set('trabajadores',trabajadores);
+  AppState.set('liquidaciones',liquidaciones); AppState.set('paramsRem',paramsRem);
+  AppState.set('productos',productos); AppState.set('movInventario',movInventario);
+  AppState.set('auxiliares',auxiliares); AppState.set('conciliaciones',conciliaciones);
+  AppState.set('honorariosBoletas',honorariosBoletas2); AppState.set('activosFijos',activosFijos2);
+  syncStateProxies();
+  if (!cuentas.length) { for (const c of PLAN_INICIAL) await put('cuentas',c); cuentas=await getAll('cuentas'); AppState.set('cuentas',cuentas); }
 
   // Actualizar empresa en la variable empresa para compatibilidad con informes
   empresa = getEmpresaActual();
@@ -1700,23 +1829,59 @@ async function cargarEmpresaDB() {
   document.querySelectorAll('.nav-item').forEach(el => {
     el.addEventListener('click', () => navegarA(el.dataset.page));
   });
-  window.addEventListener('popstate', e => { if (e.state && e.state.page) activarPagina(e.state.page); });
   renderAll();
   programarAutoBackup();
-  const hashPage = location.hash.replace('#','');
-  if (hashPage) activarPagina(hashPage);
 }
+
+// PAGE→RENDER map (smart renderAll: only renders visible page)
+const PAGE_RENDERS = {
+  'dashboard':         () => renderDashboard(),
+  'empresa':           () => {},
+  'plan-cuentas':      () => renderCuentas(),
+  'diario':            () => renderDiario(),
+  'mayor':             () => { renderMayor(); populateMayorSelect(); },
+  'cierre':            () => renderCierres(),
+  'balance':           () => renderBalance(),
+  'balance8':          () => renderBalance8(),
+  'eer':               () => renderEER(),
+  'iva':               () => renderIVA(),
+  'lcv':               () => renderLCV(),
+  'rem-trabajadores':  () => renderTrabajadores(),
+  'rem-liquidaciones': () => renderLiquidaciones(),
+  'rem-libro':         () => renderLibroRem(),
+  'rem-params':        () => renderParamsRem(),
+  'rem-previred':      () => renderPrevired(),
+  'rem-lre':           () => renderLRE(),
+  'honorarios':        () => renderHonorarios(),
+  'activo-fijo':       () => renderActivosFijos(),
+  'conciliaciones':    () => { renderConciliaciones(); poblarSelConciliaciones(); },
+  'concil-detalle':    () => renderDetalleConciliacion(),
+  'aux-registro':      () => { renderAuxiliares(); poblarSelectAuxiliar(); },
+  'aux-mayor':         () => renderMayorAuxiliar(),
+  'aux-antiguedad':    () => renderAntiguedad(),
+  'inv-productos':     () => renderProductos(),
+  'inv-movimientos':   () => renderMovInventario(),
+  'inv-resumen':       () => renderResumenInventario(),
+};
 
 function renderAll() {
   const hoy = new Date();
   poblarPickersGlobales(hoy.getFullYear(), hoy.getMonth()+1);
-  renderDashboard(); renderCuentas(); renderDiario(); renderMayor();
-  renderCierres(); renderBalance(); renderBalance8(); renderEER(); renderIVA(); populateMayorSelect();
-  renderTrabajadores(); renderLiquidaciones(); renderLibroRem(); renderParamsRem();
-  renderProductos(); renderMovInventario(); renderResumenInventario();
-  renderAuxiliares(); poblarSelectAuxiliar();
-  renderConciliaciones();
+  renderDashboard();          // always render dashboard
+  populateMayorSelect();
+  poblarSelectAuxiliar();
   poblarSelConciliaciones();
+  renderParamsRem();
+  // Render only active page (skip if dashboard)
+  const activePage = document.querySelector('.page.active');
+  if (activePage) {
+    const pid = activePage.id.replace('page-','');
+    if (pid && pid !== 'dashboard' && PAGE_RENDERS[pid]) PAGE_RENDERS[pid]();
+  }
+}
+
+function renderPagina(page) {
+  if (PAGE_RENDERS[page]) PAGE_RENDERS[page]();
 }
 
 // ===== EMPRESA =====
@@ -1814,6 +1979,16 @@ function formatRut(input) {
   actualizarPreviewEmpresa();
 }
 
+function escapeHTML(str) {
+  if (str===null||str===undefined) return '';
+  return String(str)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#039;');
+}
+
 function validarRut(rut) {
   if (!rut) return false;
   const clean = rut.replace(/[\.\-\s]/g, '').toUpperCase();
@@ -1892,7 +2067,13 @@ function setTema(tema) {
 // ===== SALDOS =====
 // Calcula saldos acumulados HASTA hastaFecha (y opcionalmente DESDE desdeFecha para flujos de período)
 // Para balances acumulativos (Activo/Pasivo/Patrimonio) siempre usar sin desdeFecha.
+// ===== SALDO CACHE =====
+const _saldosCache = {};
+function invalidarCacheSaldos() { Object.keys(_saldosCache).forEach(k=>delete _saldosCache[k]); }
+
 function calcularSaldos(hastaFecha=null, desdeFecha=null) {
+  const cacheKey = (hastaFecha||'∞')+'|'+(desdeFecha||'0');
+  if (_saldosCache[cacheKey]) return _saldosCache[cacheKey];
   const saldos = {};
   asientos
     .filter(a => (!hastaFecha || a.fecha <= hastaFecha) && (!desdeFecha || a.fecha >= desdeFecha))
@@ -1907,6 +2088,7 @@ function calcularSaldos(hastaFecha=null, desdeFecha=null) {
           : (l.credito||0) - (l.debito||0);
       });
     });
+  _saldosCache[cacheKey] = saldos;
   return saldos;
 }
 
@@ -2311,7 +2493,7 @@ async function guardarAsiento() {
   const obj={fecha,glosa,referencia,lineas};
   if(editingAsientoId) obj.id=editingAsientoId;
   await put('asientos',obj);
-  asientos=await getAll('asientos');
+  asientos=await getAll('asientos'); AppState.set('asientos',asientos); invalidarCacheSaldos();
   cerrarModal('modal-asiento'); renderAll();
 }
 
@@ -2352,7 +2534,7 @@ function renderDiario() {
         ${i===0?`<td class="mono" rowspan="${a.lineas.length}" style="color:var(--text3);vertical-align:top;padding-top:12px;">#${String(a.id).padStart(4,'0')}</td>`:''}
         ${i===0?`<td rowspan="${a.lineas.length}" style="vertical-align:top;padding-top:12px;">${a.fecha}</td>`:''}
         <td><div class="tag-cuenta">${l.cuenta}</div><div style="font-size:0.84rem;">${cuenta?cuenta.nombre:l.cuenta}</div>${l.auxiliarId?`<div style="font-size:0.72rem;color:var(--accent);margin-top:2px;">👤 ${(auxiliares.find(a=>a.id===l.auxiliarId)||{}).nombre||''}</div>`:''}</td>
-        ${i===0?`<td rowspan="${a.lineas.length}" style="vertical-align:top;padding-top:12px;"><div style="font-size:0.86rem;">${a.glosa}</div>${a.referencia?`<div style="font-size:0.74rem;color:var(--text3);">Ref: ${a.referencia}</div>`:''}</td>`:''}
+        ${i===0?`<td rowspan="${a.lineas.length}" style="vertical-align:top;padding-top:12px;"><div style="font-size:0.86rem;">${escapeHTML(a.glosa)}</div>${a.referencia?`<div style="font-size:0.74rem;color:var(--text3);">Ref: ${escapeHTML(a.referencia)}</div>`:''}</td>`:''}
         <td class="text-right">${l.debito>0?`<span class="amount-pos">${fmt(l.debito)}</span>`:'—'}</td>
         <td class="text-right">${l.credito>0?`<span class="amount-neg">${fmt(l.credito)}</span>`:'—'}</td>
         ${i===0?`<td rowspan="${a.lineas.length}" style="vertical-align:top;padding-top:8px;"><div style="display:flex;gap:4px;"><button class="btn" style="padding:4px 8px;font-size:0.75rem;" onclick="abrirModalAsiento(${a.id})">✏️</button><button class="btn btn-danger" style="padding:4px 8px;font-size:0.75rem;" onclick="eliminarAsiento(${a.id})">🗑️</button></div></td>`:''}
@@ -2366,7 +2548,7 @@ function renderDiario() {
 
 async function eliminarAsiento(id) {
   if(!confirm('¿Eliminar este asiento?'))return;
-  await del('asientos',id); asientos=await getAll('asientos'); renderAll();
+  await del('asientos',id); asientos=await getAll('asientos'); AppState.set('asientos',asientos); invalidarCacheSaldos(); renderAll();
 }
 
 // ===== LIBRO MAYOR =====
@@ -2724,6 +2906,8 @@ async function importarDB(event) {
   if(data.movInventario) for(const m of data.movInventario) await put('mov_inv',m);
   if(data.auxiliares) for(const x of data.auxiliares) await put('auxiliares',x);
   if(data.conciliaciones) for(const x of data.conciliaciones) await put('conciliaciones',x);
+  if(data.honorariosBoletas) for(const x of data.honorariosBoletas) await put('honorarios',x);
+  if(data.activosFijos) for(const x of data.activosFijos) await put('activos_fijos',x);
   if(data.paramsRemArr) for(const p of data.paramsRemArr) await put('params_rem',p);
   cuentas=await getAll('cuentas'); asientos=await getAll('asientos');
   cierres=await getAll('cierres'); trabajadores=await getAll('trabajadores');
@@ -5828,7 +6012,7 @@ function activarPagina(page) {
 
 function navegarA(page) {
   activarPagina(page);
-  history.pushState({ page }, '', '#' + page);
+  renderPagina(page);
 }
 
 // =========================================================
@@ -5836,10 +6020,20 @@ function navegarA(page) {
 // =========================================================
 document.addEventListener('keydown', (e) => {
   const modal = document.getElementById('modal-asiento');
-  if (!modal || !modal.classList.contains('open')) return;
-  if (e.key === 'F2') { e.preventDefault(); guardarAsiento(); }
-  if ((e.ctrlKey || e.metaKey) && (e.key === '+' || e.key === '=')) { e.preventDefault(); addLinea(); }
-  if (e.key === 'Escape') { e.preventDefault(); cerrarModal('modal-asiento'); }
+  const anyModal = document.querySelector('.modal-overlay.open');
+  // Global shortcuts (no modal open)
+  if (!anyModal) {
+    if ((e.ctrlKey||e.metaKey) && e.key==='n') { e.preventDefault(); abrirModalAsiento(); }
+  }
+  // Asiento modal shortcuts
+  if (modal && modal.classList.contains('open')) {
+    if (e.key==='F2' || ((e.ctrlKey||e.metaKey) && e.key==='s')) { e.preventDefault(); guardarAsiento(); }
+    if ((e.ctrlKey||e.metaKey) && (e.key==='+'||e.key==='=')) { e.preventDefault(); addLinea(); }
+    if (e.key==='Escape') { e.preventDefault(); cerrarModal('modal-asiento'); }
+  } else if (anyModal && e.key==='Escape') {
+    const id = anyModal.id;
+    if (id) { e.preventDefault(); cerrarModal(id); }
+  }
 });
 
 // =========================================================
@@ -6256,6 +6450,695 @@ function exportarConciliacionPDF() {
   </table></body></html>`);
   win.document.close(); setTimeout(()=>win.print(),400);
 }
+
+
+// =========================================================
+// ===== LIBRO DE COMPRAS Y VENTAS (LCV) ===================
+// =========================================================
+function _renderLCV() {
+  const cont = document.getElementById('contenido-lcv');
+  if (!cont) return;
+  const { desde, hasta, label } = getPickerMesAnio('lcv');
+
+  // Cuentas SII relevantes
+  const CTAS_IVA_DEB  = ['2-01-002-0001']; // IVA Débito Fiscal
+  const CTAS_IVA_CRED = ['1-02-002-0001']; // IVA Crédito Fiscal
+  const CTAS_VTA_GRAV = ['4-01-001-0001'];
+  const CTAS_VTA_EXEN = ['4-01-001-0002'];
+  const CTAS_COMPRAS  = ['5-01-001-0001','5-01-002-0001','5-01-003-0001','5-01-004-0001'];
+
+  const asMes = asientos.filter(a => (!desde||a.fecha>=desde) && (!hasta||a.fecha<=hasta));
+
+  const ventasGrav = asMes.reduce((s,a) => s + a.lineas.filter(l=>CTAS_VTA_GRAV.includes(l.cuenta)).reduce((ss,l)=>ss+(l.credito||0),0),0);
+  const ventasExen = asMes.reduce((s,a) => s + a.lineas.filter(l=>CTAS_VTA_EXEN.includes(l.cuenta)).reduce((ss,l)=>ss+(l.credito||0),0),0);
+  const ivaDebito  = asMes.reduce((s,a) => s + a.lineas.filter(l=>CTAS_IVA_DEB.includes(l.cuenta)).reduce((ss,l)=>ss+(l.credito||0),0),0);
+  const comprasAfec = asMes.reduce((s,a) => s + a.lineas.filter(l=>CTAS_COMPRAS.includes(l.cuenta)).reduce((ss,l)=>ss+(l.debito||0),0),0);
+  const ivaCredito = asMes.reduce((s,a) => s + a.lineas.filter(l=>CTAS_IVA_CRED.includes(l.cuenta)).reduce((ss,l)=>ss+(l.debito||0),0),0);
+
+  // Generar filas de ventas desde asientos con IVA débito
+  const ventasRows = asMes
+    .filter(a => a.lineas.some(l=>CTAS_IVA_DEB.includes(l.cuenta)||CTAS_VTA_GRAV.includes(l.cuenta)))
+    .sort((a,b)=>a.fecha.localeCompare(b.fecha))
+    .map(a => {
+      const neto = a.lineas.filter(l=>CTAS_VTA_GRAV.includes(l.cuenta)).reduce((s,l)=>s+(l.credito||0),0);
+      const exen = a.lineas.filter(l=>CTAS_VTA_EXEN.includes(l.cuenta)).reduce((s,l)=>s+(l.credito||0),0);
+      const iva  = a.lineas.filter(l=>CTAS_IVA_DEB.includes(l.cuenta)).reduce((s,l)=>s+(l.credito||0),0);
+      return `<tr>
+        <td>${escapeHTML(a.fecha)}</td>
+        <td style="font-size:0.78rem;color:var(--text3);">${escapeHTML(a.referencia||'—')}</td>
+        <td style="max-width:200px;font-size:0.83rem;">${escapeHTML(a.glosa)}</td>
+        <td class="text-right mono">${neto>0?fmt(neto):''}</td>
+        <td class="text-right mono">${exen>0?fmt(exen):''}</td>
+        <td class="text-right mono lcv-ventas">${iva>0?fmt(iva):''}</td>
+        <td class="text-right mono">${fmt(neto+exen+iva)}</td>
+      </tr>`;
+    }).join('');
+
+  // Generar filas de compras
+  const comprasRows = asMes
+    .filter(a => a.lineas.some(l=>CTAS_COMPRAS.includes(l.cuenta)||CTAS_IVA_CRED.includes(l.cuenta)))
+    .sort((a,b)=>a.fecha.localeCompare(b.fecha))
+    .map(a => {
+      const neto = a.lineas.filter(l=>CTAS_COMPRAS.includes(l.cuenta)).reduce((s,l)=>s+(l.debito||0),0);
+      const iva  = a.lineas.filter(l=>CTAS_IVA_CRED.includes(l.cuenta)).reduce((s,l)=>s+(l.debito||0),0);
+      return `<tr>
+        <td>${escapeHTML(a.fecha)}</td>
+        <td style="font-size:0.78rem;color:var(--text3);">${escapeHTML(a.referencia||'—')}</td>
+        <td style="max-width:200px;font-size:0.83rem;">${escapeHTML(a.glosa)}</td>
+        <td class="text-right mono">${neto>0?fmt(neto):''}</td>
+        <td class="text-right mono lcv-compras">${iva>0?fmt(iva):''}</td>
+        <td class="text-right mono">${fmt(neto+iva)}</td>
+      </tr>`;
+    }).join('');
+
+  cont.innerHTML = `
+  ${empresaHeaderHTML('Libro de Compras y Ventas', label)}
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
+    <div class="informe">
+      <div class="informe-header"><div class="informe-title" style="color:var(--green)">📈 VENTAS</div></div>
+      <div class="informe-body">
+        <div class="informe-row"><span>Ventas Afectas (Neto)</span><span class="mono">${fmt(ventasGrav)}</span></div>
+        <div class="informe-row"><span>Ventas Exentas</span><span class="mono">${fmt(ventasExen)}</span></div>
+        <div class="informe-row subtotal"><span>IVA Débito Fiscal (19%)</span><span class="mono amount-pos">${fmt(ivaDebito)}</span></div>
+        <div class="informe-row total"><span>Total Ventas (con IVA)</span><span class="mono">${fmt(ventasGrav+ventasExen+ivaDebito)}</span></div>
+      </div>
+    </div>
+    <div class="informe">
+      <div class="informe-header"><div class="informe-title" style="color:var(--red)">📉 COMPRAS</div></div>
+      <div class="informe-body">
+        <div class="informe-row"><span>Compras Afectas (Neto)</span><span class="mono">${fmt(comprasAfec)}</span></div>
+        <div class="informe-row subtotal"><span>IVA Crédito Fiscal (19%)</span><span class="mono amount-neg">${fmt(ivaCredito)}</span></div>
+        <div class="informe-row total"><span>Total Compras (con IVA)</span><span class="mono">${fmt(comprasAfec+ivaCredito)}</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-bottom:1.5rem;">
+    <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem;text-transform:uppercase;letter-spacing:.8px;color:var(--green);margin-bottom:8px;">Detalle Ventas</div>
+    ${ventasRows ? `<div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Folio/Ref.</th><th>Descripción</th><th class="text-right">Neto Afecto</th><th class="text-right">Exento</th><th class="text-right">IVA</th><th class="text-right">Total</th></tr></thead><tbody>${ventasRows}</tbody></table></div>` : '<div class="empty-state" style="padding:1rem;"><div>Sin ventas en este período</div></div>'}
+  </div>
+
+  <div>
+    <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem;text-transform:uppercase;letter-spacing:.8px;color:var(--red);margin-bottom:8px;">Detalle Compras</div>
+    ${comprasRows ? `<div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Folio/Ref.</th><th>Descripción</th><th class="text-right">Neto</th><th class="text-right">IVA</th><th class="text-right">Total</th></tr></thead><tbody>${comprasRows}</tbody></table></div>` : '<div class="empty-state" style="padding:1rem;"><div>Sin compras en este período</div></div>'}
+  </div>
+  <div class="alert alert-info" style="margin-top:1rem;">ℹ️ Este reporte se genera a partir de los asientos contables. Para el LCV oficial del SII se recomienda usar el RCV (Registro de Compras y Ventas) disponible en www.sii.cl</div>`;
+}
+
+// =========================================================
+// ===== PREVIRED EXPORT ===================================
+// =========================================================
+function _renderPrevired() {
+  const cont = document.getElementById('contenido-previred');
+  if (!cont) return;
+  const { label, mes, anio } = getPickerMesAnio('rem-previred');
+  const liqsMes = liquidaciones.filter(l =>
+    l.periodo?.slice(5,7)===mes && l.periodo?.slice(0,4)===anio);
+
+  if (!liqsMes.length) {
+    cont.innerHTML = `<div class="empty-state"><div class="empty-icon">📤</div><div class="empty-title">Sin liquidaciones en este período</div><div class="empty-sub">Genera liquidaciones de remuneraciones primero</div></div>`;
+    return;
+  }
+
+  const rows = liqsMes.map(l => {
+    const t = trabajadores.find(x=>x.id===l.trabajadorId)||{};
+    const afpCod = AFP_CODIGO[t.afp]||'08'; // código AFP para Previred
+    return `<tr>
+      <td class="mono" style="font-size:0.78rem;">${escapeHTML(l.rut||t.rut||'')}</td>
+      <td>${escapeHTML(l.nombre||t.nombre||'')}</td>
+      <td class="text-right mono">${Math.round(l.totalImponible||0).toLocaleString('es-CL')}</td>
+      <td class="text-right mono">${Math.round(l.cotAFP||0).toLocaleString('es-CL')}</td>
+      <td class="text-right mono">${Math.round(l.cotSalud||0).toLocaleString('es-CL')}</td>
+      <td class="text-right mono">${Math.round(l.cotSC||0).toLocaleString('es-CL')}</td>
+      <td class="text-right mono">${Math.round(l.cotSC_emp||0).toLocaleString('es-CL')}</td>
+      <td class="text-right mono">${Math.round(l.cotSIS||0).toLocaleString('es-CL')}</td>
+      <td class="text-right mono">${Math.round(l.cotMut||0).toLocaleString('es-CL')}</td>
+      <td style="font-size:0.78rem;">${afpCod}</td>
+    </tr>`;
+  }).join('');
+
+  const totImp  = liqsMes.reduce((s,l)=>s+Math.round(l.totalImponible||0),0);
+  const totAFP  = liqsMes.reduce((s,l)=>s+Math.round(l.cotAFP||0),0);
+  const totSal  = liqsMes.reduce((s,l)=>s+Math.round(l.cotSalud||0),0);
+  const totSC   = liqsMes.reduce((s,l)=>s+Math.round(l.cotSC||0),0);
+  const totSCE  = liqsMes.reduce((s,l)=>s+Math.round(l.cotSC_emp||0),0);
+  const totSIS  = liqsMes.reduce((s,l)=>s+Math.round(l.cotSIS||0),0);
+  const totMut  = liqsMes.reduce((s,l)=>s+Math.round(l.cotMut||0),0);
+
+  cont.innerHTML = `
+  ${empresaHeaderHTML('Previred — Cotizaciones Previsionales', label)}
+  <div class="alert" style="background:rgba(248,196,25,.1);border:1px solid rgba(248,196,25,.3);border-radius:8px;padding:10px 14px;margin-bottom:1rem;font-size:0.83rem;">
+    ⚠️ Este archivo es referencial. La declaración definitiva debe realizarse en <strong>www.previred.com</strong> con el formato oficial de 105 campos.
+  </div>
+  <div style="display:flex;gap:8px;margin-bottom:1rem;">
+    <button class="btn btn-green previred-export-btn" onclick="exportarPreviredCSV()">📤 Exportar CSV para Previred</button>
+    <button class="btn" onclick="exportarPreviredPDF()">🖨️ PDF Resumen</button>
+  </div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>RUT</th><th>Nombre</th><th class="text-right">Imponible</th><th class="text-right">AFP</th><th class="text-right">Salud</th><th class="text-right">SC Trab.</th><th class="text-right">SC Emp.</th><th class="text-right">SIS</th><th class="text-right">ACHS/Mut.</th><th>AFP Cód.</th></tr></thead>
+    <tbody>${rows}</tbody>
+    <tfoot><tr style="font-weight:700;background:var(--bg3);">
+      <td colspan="2">TOTALES</td>
+      <td class="text-right mono">${totImp.toLocaleString('es-CL')}</td>
+      <td class="text-right mono">${totAFP.toLocaleString('es-CL')}</td>
+      <td class="text-right mono">${totSal.toLocaleString('es-CL')}</td>
+      <td class="text-right mono">${totSC.toLocaleString('es-CL')}</td>
+      <td class="text-right mono">${totSCE.toLocaleString('es-CL')}</td>
+      <td class="text-right mono">${totSIS.toLocaleString('es-CL')}</td>
+      <td class="text-right mono">${totMut.toLocaleString('es-CL')}</td>
+      <td></td>
+    </tr></tfoot>
+  </table></div>`;
+}
+
+// Códigos AFP para Previred
+const AFP_CODIGO = {
+  'capital':'03','cuprum':'02','habitat':'05','modelo':'08','planvital':'06','provida':'07','uno':'10'
+};
+
+function exportarPreviredCSV() {
+  const { mes: sel, anio } = getPickerMesAnio('rem-previred');
+  const liqsMes = liquidaciones.filter(l => l.periodo?.slice(5,7)===sel && l.periodo?.slice(0,4)===anio);
+  if (!liqsMes.length) { toast('Sin liquidaciones en el período','error'); return; }
+  // Formato simplificado Previred (campos más importantes)
+  const header = 'RUT_TRABAJADOR;NOMBRES;APELLIDO_PATERNO;APELLIDO_MATERNO;REMUNERACION_IMPONIBLE;AFP_CODIGO;COTIZACION_AFP;ISAPRE_FONASA;COTIZACION_SALUD;SC_TRABAJADOR;SC_EMPLEADOR;SIS;ACCIDENTES';
+  const rows = liqsMes.map(l => {
+    const t = trabajadores.find(x=>x.id===l.trabajadorId)||{};
+    const nombreParts = (l.nombre||t.nombre||'').split(' ');
+    const nombres = nombreParts.slice(0,-2).join(' ')||nombreParts[0]||'';
+    const ap = nombreParts[nombreParts.length-2]||'';
+    const am = nombreParts[nombreParts.length-1]||'';
+    const afpCod = AFP_CODIGO[t.afp]||'08';
+    const saludCod = t.salud==='isapre'?'2':'1'; // 1=Fonasa, 2=Isapre
+    return [
+      (l.rut||t.rut||'').replace(/[.-]/g,''),
+      nombres, ap, am,
+      Math.round(l.totalImponible||0),
+      afpCod,
+      Math.round(l.cotAFP||0),
+      saludCod,
+      Math.round(l.cotSalud||0),
+      Math.round(l.cotSC||0),
+      Math.round(l.cotSC_emp||0),
+      Math.round(l.cotSIS||0),
+      Math.round(l.cotMut||0)
+    ].join(';');
+  });
+  const csv = header + '\n' + rows.join('\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download = `Previred_${anio||''}${sel||''}.csv`; a.click();
+  toast('✓ CSV Previred exportado');
+}
+
+function exportarPreviredPDF() {
+  const sel = document.getElementById('filtro-mes-previred-m')?.value;
+  const anio = document.getElementById('filtro-mes-previred-a')?.value;
+  const liqsMes = liquidaciones.filter(l =>
+    (!sel||l.periodo?.slice(5,7)===sel) && (!anio||l.periodo?.slice(0,4)===anio));
+  const $ = v => Math.round(v||0).toLocaleString('es-CL');
+  const rows = liqsMes.map(l => {
+    const t = trabajadores.find(x=>x.id===l.trabajadorId)||{};
+    return `<tr><td>${l.rut||t.rut||''}</td><td>${escapeHTML(l.nombre||t.nombre||'')}</td><td class="n">${$(l.totalImponible)}</td><td class="n">${$(l.cotAFP)}</td><td class="n">${$(l.cotSalud)}</td><td class="n">${$(l.cotSC)}</td><td class="n">${$(l.cotSC_emp)}</td><td class="n">${$(l.cotSIS)}</td><td class="n">${$(l.cotMut)}</td></tr>`;
+  }).join('');
+  const periodo = `${anio||''}-${sel||''}`;
+  const win=window.open('','_blank');
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Previred</title><style>body{font-family:Arial,sans-serif;font-size:9px;margin:16px}table{width:100%;border-collapse:collapse}th,td{border:1px solid #ccc;padding:2px 5px}th{background:#f0f0f0;font-weight:700}td.n{text-align:right;font-family:monospace}</style></head><body>
+  ${empresaPrintHeader('Resumen Previred', periodo)}<table><thead><tr><th>RUT</th><th>Nombre</th><th>Imponible</th><th>AFP</th><th>Salud</th><th>SC T.</th><th>SC E.</th><th>SIS</th><th>ACHS</th></tr></thead><tbody>${rows}</tbody></table></body></html>`);
+  win.document.close(); setTimeout(()=>win.print(),400);
+}
+
+// =========================================================
+// ===== LRE — LIBRO REMUNERACIONES ELECTRÓNICO ============
+// =========================================================
+function _renderLRE() {
+  const cont = document.getElementById('contenido-lre');
+  if (!cont) return;
+  const { label, mes, anio } = getPickerMesAnio('rem-lre');
+  const liqsMes = liquidaciones.filter(l =>
+    l.periodo?.slice(5,7)===mes && l.periodo?.slice(0,4)===anio);
+
+  if (!liqsMes.length) {
+    cont.innerHTML = `<div class="empty-state"><div class="empty-icon">📑</div><div class="empty-title">Sin liquidaciones en este período</div></div>`;
+    return;
+  }
+
+  const $ = v => Math.round(v||0).toLocaleString('es-CL');
+  const rows = liqsMes.map(l => {
+    const t = trabajadores.find(x=>x.id===l.trabajadorId)||{};
+    return `<tr style="font-size:0.78rem;">
+      <td class="mono">${escapeHTML(l.rut||t.rut||'')}</td>
+      <td>${escapeHTML(l.nombre||t.nombre||'')}</td>
+      <td>${escapeHTML(t.cargo||'')}</td>
+      <td class="text-right mono">${$(l.sueldoBase)}</td>
+      <td class="text-right mono">${$(l.gratificacion)}</td>
+      <td class="text-right mono">${$(l.haberesImp)}</td>
+      <td class="text-right mono">${$(l.haberesNoImp)}</td>
+      <td class="text-right mono">${$(l.totalImponible)}</td>
+      <td class="text-right mono">${$(l.cotAFP)}</td>
+      <td class="text-right mono">${$(l.cotSalud)}</td>
+      <td class="text-right mono">${$(l.cotSC)}</td>
+      <td class="text-right mono">${$(l.impuesto2Cat)}</td>
+      <td class="text-right mono">${$(l.totalDescuentos)}</td>
+      <td class="text-right mono" style="font-weight:700;color:var(--green);">${$(l.sueldoLiquido)}</td>
+    </tr>`;
+  }).join('');
+
+  cont.innerHTML = `
+  ${empresaHeaderHTML('Libro de Remuneraciones Electrónico (LRE)', label)}
+  <div class="alert" style="background:rgba(248,196,25,.1);border:1px solid rgba(248,196,25,.3);border-radius:8px;padding:10px 14px;margin-bottom:1rem;font-size:0.83rem;">
+    ℹ️ Este reporte es para referencia. El LRE oficial debe subirse al portal de la <strong>Dirección del Trabajo</strong> en el formato estandarizado DT. Obligatorio para empresas con 5 o más trabajadores.
+  </div>
+  <div style="display:flex;gap:8px;margin-bottom:1rem;">
+    <button class="btn btn-green" onclick="exportarLREExcel()">📥 Exportar Excel LRE</button>
+    <button class="btn" onclick="exportarLREPDF()">🖨️ PDF</button>
+  </div>
+  <div class="table-wrap" style="overflow-x:auto;"><table>
+    <thead><tr>
+      <th>RUT</th><th>Nombre</th><th>Cargo</th>
+      <th class="text-right">S. Base</th><th class="text-right">Gratif.</th>
+      <th class="text-right">Hab. Imp.</th><th class="text-right">Hab. No Imp.</th>
+      <th class="text-right">Total Imp.</th><th class="text-right">AFP</th>
+      <th class="text-right">Salud</th><th class="text-right">SC</th>
+      <th class="text-right">Imp. 2ª Cat.</th><th class="text-right">Total Desc.</th>
+      <th class="text-right">Líquido</th>
+    </tr></thead>
+    <tbody>${rows}</tbody>
+  </table></div>`;
+}
+
+function exportarLREPDF() {
+  const { mes: sel, anio } = getPickerMesAnio('rem-lre');
+  const liqsMes = liquidaciones.filter(l=>l.periodo?.slice(5,7)===sel&&l.periodo?.slice(0,4)===anio);
+  const $ = v => Math.round(v||0).toLocaleString('es-CL');
+  const rows = liqsMes.map(l => {
+    const t = trabajadores.find(x=>x.id===l.trabajadorId)||{};
+    return `<tr><td>${l.rut||t.rut||''}</td><td>${escapeHTML(l.nombre||t.nombre||'')}</td><td class="n">${$(l.sueldoBase)}</td><td class="n">${$(l.totalImponible)}</td><td class="n">${$(l.cotAFP)}</td><td class="n">${$(l.cotSalud)}</td><td class="n">${$(l.impuesto2Cat)}</td><td class="n">${$(l.totalDescuentos)}</td><td class="n">${$(l.sueldoLiquido)}</td></tr>`;
+  }).join('');
+  const win=window.open('','_blank');
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>LRE</title><style>body{font-family:Arial,sans-serif;font-size:9px;margin:16px}table{width:100%;border-collapse:collapse}th,td{border:1px solid #ccc;padding:2px 5px}th{background:#f0f0f0}td.n{text-align:right;font-family:monospace}</style></head><body>
+  ${empresaPrintHeader('Libro Remuneraciones Electrónico', `${anio||''}-${sel||''}`)}
+  <table><thead><tr><th>RUT</th><th>Nombre</th><th>S.Base</th><th>T.Imponible</th><th>AFP</th><th>Salud</th><th>Imp.2Cat</th><th>T.Desc.</th><th>Líquido</th></tr></thead><tbody>${rows}</tbody></table></body></html>`);
+  win.document.close(); setTimeout(()=>win.print(),400);
+}
+
+function exportarLREExcel() {
+  const sel  = document.getElementById('filtro-mes-lre-m')?.value;
+  const anio = document.getElementById('filtro-mes-lre-a')?.value;
+  const liqsMes = liquidaciones.filter(l=>(!sel||l.periodo?.slice(5,7)===sel)&&(!anio||l.periodo?.slice(0,4)===anio));
+  let xml=`<?xml version="1.0" encoding="UTF-8"?><?mso-application progid="Excel.Sheet"?><Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"><Styles><Style ss:ID="h"><Font ss:Bold="1" ss:Size="11"/></Style><Style ss:ID="t"><Font ss:Bold="1"/><Interior ss:Color="#F0F0F0" ss:Pattern="Solid"/></Style><Style ss:ID="n"><Alignment ss:Horizontal="Right"/><NumberFormat ss:Format="#,##0"/></Style></Styles><Worksheet ss:Name="LRE"><Table>`;
+  xml+=`<Row><Cell ss:MergeAcross="13" ss:StyleID="h"><Data ss:Type="String">${empresa.nombre||''} — LRE ${anio||''}-${sel||''}</Data></Cell></Row><Row/>`;
+  xml+=`<Row>${['RUT','Nombre','Cargo','S.Base','Gratif.','Hab.Imp.','Hab.NoImp.','T.Imponible','AFP','Salud','SC','Imp.2Cat.','T.Desc.','Liquido'].map(h=>`<Cell ss:StyleID="t"><Data ss:Type="String">${h}</Data></Cell>`).join('')}</Row>`;
+  liqsMes.forEach(l => {
+    const t = trabajadores.find(x=>x.id===l.trabajadorId)||{};
+    const cols = [l.rut||t.rut||'', l.nombre||t.nombre||'', t.cargo||'',
+      l.sueldoBase,l.gratificacion,l.haberesImp,l.haberesNoImp,l.totalImponible,
+      l.cotAFP,l.cotSalud,l.cotSC,l.impuesto2Cat,l.totalDescuentos,l.sueldoLiquido];
+    xml+=`<Row>${cols.map((v,i)=>i<3?`<Cell><Data ss:Type="String">${v}</Data></Cell>`:`<Cell ss:StyleID="n"><Data ss:Type="Number">${Math.round(v||0)}</Data></Cell>`).join('')}</Row>`;
+  });
+  xml+=`</Table></Worksheet></Workbook>`;
+  const blob=new Blob([xml],{type:'application/vnd.ms-excel'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`LRE_${anio||''}${sel||''}.xls`;a.click();
+  toast('✓ LRE exportado');
+}
+
+// =========================================================
+// ===== BOLETAS DE HONORARIOS =============================
+// =========================================================
+// Schema: { id, fecha, rutEmisor, nombreEmisor, concepto, montoHonorario, tasaRetencion, montoRetencion, montoLiquido, estado('pendiente'|'pagado'), asientoId }
+
+function getRETENCION_VIGENTE() {
+  // Tasa de retención 2025 = 13.75% (se puede configurar en params)
+  return parseFloat(paramsRem?.tasa_retencion_honorarios || 13.75) / 100;
+}
+
+function renderHonorarios() {
+  const cont = document.getElementById('contenido-honorarios');
+  if (!cont) return;
+
+  const filtro = (document.getElementById('filtro-honorarios')?.value||'').toLowerCase();
+  const lista = honorariosBoletas
+    .filter(h => !filtro || (h.nombreEmisor||'').toLowerCase().includes(filtro) || (h.rutEmisor||'').includes(filtro))
+    .sort((a,b)=>b.fecha.localeCompare(a.fecha));
+
+  const totBruto = lista.reduce((s,h)=>s+(h.montoHonorario||0),0);
+  const totRet   = lista.reduce((s,h)=>s+(h.montoRetencion||0),0);
+  const totLiq   = lista.reduce((s,h)=>s+(h.montoLiquido||0),0);
+
+  if (!lista.length) {
+    cont.innerHTML = `<div class="empty-state"><div class="empty-icon">🧾</div><div class="empty-title">Sin boletas registradas</div><div class="empty-sub">Registra boletas de honorarios recibidas</div></div>`;
+    return;
+  }
+
+  cont.innerHTML = `
+  <div class="concil-stats" style="margin-bottom:1.5rem;">
+    <div class="concil-stat"><div class="concil-stat-label">Total Honorarios Brutos</div><div class="concil-stat-val">${fmt(totBruto)}</div></div>
+    <div class="concil-stat"><div class="concil-stat-label">Total Retenciones</div><div class="concil-stat-val" style="color:var(--red);">${fmt(totRet)}</div></div>
+    <div class="concil-stat"><div class="concil-stat-label">Total Líquido a Pagar</div><div class="concil-stat-val" style="color:var(--green);">${fmt(totLiq)}</div></div>
+    <div class="concil-stat"><div class="concil-stat-label">N° Boletas</div><div class="concil-stat-val">${lista.length}</div></div>
+  </div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Fecha</th><th>RUT Emisor</th><th>Nombre</th><th>Concepto</th><th class="text-right">Honorario Bruto</th><th class="text-right">Retención (${(getRETENCION_VIGENTE()*100).toFixed(2)}%)</th><th class="text-right">Líquido</th><th>Estado</th><th>Acciones</th></tr></thead>
+    <tbody>
+    ${lista.map(h=>`<tr>
+      <td>${h.fecha}</td>
+      <td class="mono" style="font-size:0.8rem;color:var(--accent);">${escapeHTML(h.rutEmisor||'')}</td>
+      <td>${escapeHTML(h.nombreEmisor||'')}</td>
+      <td style="font-size:0.83rem;max-width:180px;">${escapeHTML(h.concepto||'')}</td>
+      <td class="text-right mono">${fmt(h.montoHonorario||0)}</td>
+      <td class="text-right mono honorario-ret">− ${fmt(h.montoRetencion||0)}</td>
+      <td class="text-right mono" style="font-weight:700;">${fmt(h.montoLiquido||0)}</td>
+      <td><span class="badge ${h.estado==='pagado'?'badge-conciliado':'badge-pendiente'}">${h.estado==='pagado'?'Pagado':'Pendiente'}</span></td>
+      <td><div style="display:flex;gap:4px;">
+        <button class="btn" style="font-size:0.7rem;padding:2px 7px;" onclick="abrirModalHonorario(${h.id})">✏️</button>
+        <button class="btn" style="font-size:0.7rem;padding:2px 7px;" onclick="centralizarHonorario(${h.id})" title="Generar asiento contable">📒</button>
+        <button class="btn btn-danger" style="font-size:0.7rem;padding:2px 7px;" onclick="eliminarHonorario(${h.id})">🗑️</button>
+      </div></td>
+    </tr>`).join('')}
+    </tbody>
+  </table></div>`;
+}
+
+function abrirModalHonorario(id=null) {
+  editingHonorarioId = id;
+  const h = id ? honorariosBoletas.find(x=>x.id===id) : {};
+  document.getElementById('hon-fecha').value = h?.fecha || new Date().toISOString().slice(0,10);
+  document.getElementById('hon-rut').value = h?.rutEmisor || '';
+  document.getElementById('hon-nombre').value = h?.nombreEmisor || '';
+  document.getElementById('hon-concepto').value = h?.concepto || '';
+  document.getElementById('hon-tasa').value = h?.tasaRetencion || (getRETENCION_VIGENTE()*100).toFixed(2);
+  setMiles('hon-monto', h?.montoHonorario || 0);
+  document.getElementById('hon-estado').value = h?.estado || 'pendiente';
+  calcularHonorarioPreview();
+  document.getElementById('modal-honorario').classList.add('open');
+}
+
+function calcularHonorarioPreview() {
+  const monto = getMiles('hon-monto');
+  const tasa  = parseFloat(document.getElementById('hon-tasa')?.value||'0') / 100;
+  const ret   = Math.round(monto * tasa);
+  const liq   = monto - ret;
+  const el = document.getElementById('hon-preview');
+  if (el) el.innerHTML = `<div style="display:flex;gap:1.5rem;padding:10px;background:var(--bg3);border-radius:8px;font-size:0.82rem;">
+    <span>Bruto: <strong>${fmt(monto)}</strong></span>
+    <span style="color:var(--red);">Retención: <strong>− ${fmt(ret)}</strong></span>
+    <span style="color:var(--green);">Líquido: <strong>${fmt(liq)}</strong></span>
+  </div>`;
+}
+
+async function guardarHonorario() {
+  const fecha = document.getElementById('hon-fecha').value;
+  const rutEmisor = document.getElementById('hon-rut').value.trim();
+  const nombreEmisor = document.getElementById('hon-nombre').value.trim();
+  const concepto = document.getElementById('hon-concepto').value.trim();
+  const montoHonorario = getMiles('hon-monto');
+  const tasaRetencion = parseFloat(document.getElementById('hon-tasa').value||'0');
+  const estado = document.getElementById('hon-estado').value;
+  if (!fecha||!nombreEmisor||!montoHonorario) { toast('Fecha, nombre y monto son obligatorios','error'); return; }
+  const montoRetencion = Math.round(montoHonorario * tasaRetencion/100);
+  const montoLiquido   = montoHonorario - montoRetencion;
+  const obj = { fecha, rutEmisor, nombreEmisor, concepto, montoHonorario, tasaRetencion, montoRetencion, montoLiquido, estado };
+  if (editingHonorarioId) obj.id = editingHonorarioId;
+  await put('honorarios', obj);
+  honorariosBoletas = await getAll('honorarios');
+  cerrarModal('modal-honorario');
+  renderHonorarios();
+  toast('✓ Boleta guardada');
+}
+
+async function eliminarHonorario(id) {
+  if (!confirm('¿Eliminar esta boleta de honorario?')) return;
+  await del('honorarios', id);
+  honorariosBoletas = await getAll('honorarios');
+  renderHonorarios();
+  toast('Boleta eliminada');
+}
+
+async function centralizarHonorario(id) {
+  const h = honorariosBoletas.find(x=>x.id===id);
+  if (!h) return;
+  if (h.asientoId) { if (!confirm('Ya existe un asiento para esta boleta. ¿Reemplazar?')) return; await del('asientos',h.asientoId); }
+  // Asiento: Débito Honorarios Contratados / Crédito Ret. Honorarios por pagar + Banco/CxP
+  const lineas = [
+    { cuenta:'5-02-001-0001', debito: h.montoHonorario, credito:0 }, // Honorarios contratados
+    { cuenta:'2-01-003-0001', debito:0, credito: h.montoRetencion }, // Retención honorarios x pagar
+    { cuenta:'2-01-001-0001', debito:0, credito: h.montoLiquido  }, // CxP proveedor / banco
+  ];
+  const asientoObj = {
+    fecha: h.fecha,
+    glosa: `Boleta Honorarios — ${h.nombreEmisor}${h.concepto?' — '+h.concepto:''}`,
+    referencia: h.rutEmisor||'',
+    lineas
+  };
+  const newId = await put('asientos', asientoObj);
+  asientos = await getAll('asientos'); invalidarCacheSaldos();
+  // Link back
+  h.asientoId = newId;
+  await put('honorarios', h);
+  honorariosBoletas = await getAll('honorarios');
+  renderHonorarios();
+  toast('✓ Asiento de honorarios generado');
+}
+
+// =========================================================
+// ===== ACTIVOS FIJOS =====================================
+// =========================================================
+// Schema: { id, codigo, descripcion, fechaAdquisicion, valorAdquisicion, vidaUtilAnios, metodoDep('lineal'|'acelerada'), cuentaActivo, cuentaDepAcum, cuentaGastoDep, estado('activo'|'vendido'|'dado_baja') }
+
+function calcularDepreciacion(activo, hasta=null) {
+  const fechaAdq = new Date(activo.fechaAdquisicion+'T00:00:00');
+  const fechaHasta = hasta ? new Date(hasta+'T00:00:00') : new Date();
+  const vidaMeses = (activo.vidaUtilAnios||1) * 12;
+  const mesesTotales = Math.max(0, (fechaHasta.getFullYear()-fechaAdq.getFullYear())*12 + (fechaHasta.getMonth()-fechaAdq.getMonth()));
+  const mesesDepreciados = Math.min(mesesTotales, vidaMeses);
+  const valorAdq = activo.valorAdquisicion||0;
+
+  let depAcumulada = 0, depMensual = 0;
+  if (activo.metodoDep === 'acelerada') {
+    // Depreciación acelerada: vida útil = 1/3 de la normal
+    const vidaAcel = Math.max(1, Math.round(vidaMeses/3));
+    depMensual = valorAdq / vidaAcel;
+    depAcumulada = Math.min(valorAdq, depMensual * mesesDepreciados);
+  } else {
+    // Lineal
+    depMensual = valorAdq / vidaMeses;
+    depAcumulada = Math.min(valorAdq, depMensual * mesesDepreciados);
+  }
+  const valorNeto = Math.max(0, valorAdq - depAcumulada);
+  const porcDepreciado = valorAdq > 0 ? (depAcumulada/valorAdq*100) : 0;
+  return { depAcumulada: Math.round(depAcumulada), depMensual: Math.round(depMensual), valorNeto: Math.round(valorNeto), porcDepreciado, mesesDepreciados, vidaMeses };
+}
+
+function renderActivosFijos() {
+  const cont = document.getElementById('contenido-activos-fijos');
+  if (!cont) return;
+  const filtroEst = document.getElementById('filtro-activo-estado')?.value||'activo';
+  const lista = activosFijos.filter(a=>!filtroEst||a.estado===filtroEst).sort((a,b)=>a.codigo?.localeCompare(b.codigo||'')||0);
+
+  const totAdq  = lista.reduce((s,a)=>s+(a.valorAdquisicion||0),0);
+  const totDep  = lista.reduce((s,a)=>s+calcularDepreciacion(a).depAcumulada,0);
+  const totNeto = lista.reduce((s,a)=>s+calcularDepreciacion(a).valorNeto,0);
+
+  if (!activosFijos.length) {
+    cont.innerHTML = `<div class="empty-state"><div class="empty-icon">🏗️</div><div class="empty-title">Sin activos fijos registrados</div><div class="empty-sub">Registra los bienes del activo fijo para controlar su depreciación</div></div>`;
+    return;
+  }
+
+  cont.innerHTML = `
+  <div class="concil-stats" style="margin-bottom:1.5rem;">
+    <div class="concil-stat"><div class="concil-stat-label">Valor Adquisición Total</div><div class="concil-stat-val">${fmt(totAdq)}</div></div>
+    <div class="concil-stat"><div class="concil-stat-label">Depreciación Acumulada</div><div class="concil-stat-val" style="color:var(--red);">${fmt(totDep)}</div></div>
+    <div class="concil-stat"><div class="concil-stat-label">Valor Neto Total</div><div class="concil-stat-val" style="color:var(--green);">${fmt(totNeto)}</div></div>
+    <div class="concil-stat"><div class="concil-stat-label">N° Activos</div><div class="concil-stat-val">${lista.length}</div></div>
+  </div>
+  <div style="display:flex;gap:8px;margin-bottom:1rem;">
+    <button class="btn btn-green" onclick="depreciarMasivo()">📅 Generar Dep. del Mes</button>
+    <button class="btn" onclick="exportarActivosFijosPDF()">🖨️ PDF Cuadro AF</button>
+  </div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Código</th><th>Descripción</th><th>Adquisición</th><th>Método</th><th>Vida Útil</th><th class="text-right">Valor Adq.</th><th class="text-right">Dep. Acum.</th><th class="text-right">Valor Neto</th><th>% Dep.</th><th>Estado</th><th>Acciones</th></tr></thead>
+    <tbody>
+    ${lista.map(a => {
+      const dep = calcularDepreciacion(a);
+      const pct = dep.porcDepreciado.toFixed(1);
+      return `<tr>
+        <td class="mono" style="font-size:0.78rem;color:var(--accent);">${escapeHTML(a.codigo||'')}</td>
+        <td style="font-weight:600;font-size:0.85rem;">${escapeHTML(a.descripcion||'')}</td>
+        <td style="font-size:0.8rem;">${a.fechaAdquisicion||'—'}</td>
+        <td style="font-size:0.78rem;">${a.metodoDep==='acelerada'?'Acelerada':'Lineal'}</td>
+        <td style="font-size:0.78rem;">${a.vidaUtilAnios||'—'} años</td>
+        <td class="text-right mono">${fmt(a.valorAdquisicion||0)}</td>
+        <td class="text-right mono" style="color:var(--red);">${fmt(dep.depAcumulada)}</td>
+        <td class="text-right mono" style="font-weight:700;">${fmt(dep.valorNeto)}</td>
+        <td style="min-width:80px;">
+          <div style="font-size:0.73rem;color:var(--text3);margin-bottom:2px;">${pct}%</div>
+          <div class="dep-bar"><div class="dep-bar-inner" style="width:${Math.min(100,dep.porcDepreciado)}%;"></div></div>
+        </td>
+        <td><span class="badge ${a.estado==='activo'?'badge-blue':a.estado==='vendido'?'badge-green':'badge-red'}">${a.estado||'activo'}</span></td>
+        <td><div style="display:flex;gap:3px;">
+          <button class="btn" style="font-size:0.7rem;padding:2px 7px;" onclick="abrirModalActivo(${a.id})">✏️</button>
+          <button class="btn btn-danger" style="font-size:0.7rem;padding:2px 7px;" onclick="eliminarActivo(${a.id})">🗑️</button>
+        </div></td>
+      </tr>`;
+    }).join('')}
+    </tbody>
+  </table></div>`;
+}
+
+function abrirModalActivo(id=null) {
+  editingActivoId = id;
+  const a = id ? activosFijos.find(x=>x.id===id)||{} : {};
+  document.getElementById('af-codigo').value = a.codigo||'';
+  document.getElementById('af-descripcion').value = a.descripcion||'';
+  document.getElementById('af-fecha-adq').value = a.fechaAdquisicion||new Date().toISOString().slice(0,10);
+  setMiles('af-valor-adq', a.valorAdquisicion||0);
+  document.getElementById('af-vida-util').value = a.vidaUtilAnios||5;
+  document.getElementById('af-metodo').value = a.metodoDep||'lineal';
+  document.getElementById('af-estado').value = a.estado||'activo';
+  // Poblar cuentas
+  const ctasActivo = cuentas.filter(c=>c.tipo==='Activo'&&c.codigo.startsWith('1-03')).sort((a,b)=>a.codigo.localeCompare(b.codigo));
+  const ctasDepAcum = cuentas.filter(c=>c.tipo==='Activo'&&(c.nombre.toLowerCase().includes('dep')||c.nombre.toLowerCase().includes('amort'))).sort((a,b)=>a.codigo.localeCompare(b.codigo));
+  const ctasGasto = cuentas.filter(c=>c.tipo==='Gasto').sort((a,b)=>a.codigo.localeCompare(b.codigo));
+  ['af-cta-activo','af-cta-dep-acum','af-cta-gasto-dep'].forEach((selId, i) => {
+    const sel = document.getElementById(selId); if(!sel) return;
+    const lista = i===0?ctasActivo:i===1?ctasDepAcum:ctasGasto;
+    const val = i===0?a.cuentaActivo:i===1?a.cuentaDepAcum:a.cuentaGastoDep;
+    sel.innerHTML = '<option value="">— Seleccionar —</option>' + lista.map(c=>`<option value="${c.codigo}" ${val===c.codigo?'selected':''}>${c.codigo} — ${c.nombre}</option>`).join('');
+  });
+  document.getElementById('modal-activo').classList.add('open');
+}
+
+async function guardarActivo() {
+  const descripcion = document.getElementById('af-descripcion').value.trim();
+  const valorAdquisicion = getMiles('af-valor-adq');
+  if (!descripcion||!valorAdquisicion) { toast('Descripción y valor son obligatorios','error'); return; }
+  const obj = {
+    codigo: document.getElementById('af-codigo').value.trim(),
+    descripcion,
+    fechaAdquisicion: document.getElementById('af-fecha-adq').value,
+    valorAdquisicion,
+    vidaUtilAnios: parseInt(document.getElementById('af-vida-util').value)||5,
+    metodoDep: document.getElementById('af-metodo').value,
+    estado: document.getElementById('af-estado').value,
+    cuentaActivo:   document.getElementById('af-cta-activo').value,
+    cuentaDepAcum:  document.getElementById('af-cta-dep-acum').value,
+    cuentaGastoDep: document.getElementById('af-cta-gasto-dep').value,
+  };
+  if (editingActivoId) obj.id = editingActivoId;
+  await put('activos_fijos', obj);
+  activosFijos = await getAll('activos_fijos');
+  cerrarModal('modal-activo');
+  renderActivosFijos();
+  toast('✓ Activo fijo guardado');
+}
+
+async function eliminarActivo(id) {
+  if (!confirm('¿Eliminar este activo fijo?')) return;
+  await del('activos_fijos', id);
+  activosFijos = await getAll('activos_fijos');
+  renderActivosFijos();
+}
+
+async function depreciarMasivo() {
+  const activos = activosFijos.filter(a=>a.estado==='activo'&&a.cuentaGastoDep&&a.cuentaDepAcum);
+  if (!activos.length) { toast('Sin activos con cuentas de depreciación configuradas','error'); return; }
+  const mesActual = new Date().toISOString().slice(0,7);
+  const ref = `DEP-${mesActual}`;
+  // Verify not already done
+  const ya = asientos.find(a=>a.referencia===ref);
+  if (ya && !confirm(`Ya existe asiento de depreciación ${ref}. ¿Reemplazar?`)) return;
+  if (ya) { await del('asientos',ya.id); asientos=await getAll('asientos'); }
+
+  const lineas = [];
+  activos.forEach(a => {
+    const dep = calcularDepreciacion(a);
+    if (dep.depMensual <= 0) return;
+    lineas.push({ cuenta: a.cuentaGastoDep, debito: dep.depMensual, credito: 0 });
+    lineas.push({ cuenta: a.cuentaDepAcum,  debito: 0, credito: dep.depMensual });
+  });
+  if (!lineas.length) { toast('Sin depreciación que generar este mes','info'); return; }
+  const obj = {
+    fecha: new Date().toISOString().slice(0,10),
+    glosa: `Depreciación mensual activos fijos — ${mesActual}`,
+    referencia: ref, lineas
+  };
+  await put('asientos', obj);
+  asientos = await getAll('asientos'); invalidarCacheSaldos();
+  renderActivosFijos();
+  renderAll();
+  toast(`✓ Asiento de depreciación generado (${activos.length} activos)`);
+}
+
+function exportarActivosFijosPDF() {
+  const lista = activosFijos.filter(a=>a.estado==='activo');
+  const $ = v => Math.round(v||0).toLocaleString('es-CL');
+  const rows = lista.map(a => {
+    const dep = calcularDepreciacion(a);
+    return `<tr><td>${escapeHTML(a.codigo||'')}</td><td>${escapeHTML(a.descripcion||'')}</td><td>${a.fechaAdquisicion||''}</td><td>${a.metodoDep==='acelerada'?'Acel.':'Lineal'}</td><td>${a.vidaUtilAnios||''} años</td><td class="n">${$(a.valorAdquisicion)}</td><td class="n">${$(dep.depAcumulada)}</td><td class="n">${$(dep.valorNeto)}</td><td>${dep.porcDepreciado.toFixed(1)}%</td></tr>`;
+  }).join('');
+  const win=window.open('','_blank');
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Activos Fijos</title><style>body{font-family:Arial,sans-serif;font-size:9px;margin:16px}table{width:100%;border-collapse:collapse}th,td{border:1px solid #ccc;padding:2px 5px}th{background:#f0f0f0;font-weight:700}td.n{text-align:right;font-family:monospace}</style></head><body>
+  ${empresaPrintHeader('Cuadro de Activos Fijos', new Date().toLocaleDateString('es-CL'))}
+  <table><thead><tr><th>Código</th><th>Descripción</th><th>F. Adq.</th><th>Método</th><th>Vida Útil</th><th>V. Adq.</th><th>Dep. Acum.</th><th>V. Neto</th><th>% Dep.</th></tr></thead><tbody>${rows}</tbody></table>
+  </body></html>`);
+  win.document.close(); setTimeout(()=>win.print(),400);
+}
+
+
+// =========================================================
+// ===== LOADING OVERLAY ===================================
+// =========================================================
+function mostrarCargando(msg='Cargando...') {
+  let ov = document.getElementById('loading-overlay');
+  if (!ov) {
+    ov = document.createElement('div');
+    ov.id='loading-overlay'; ov.className='loading-overlay';
+    ov.innerHTML=`<div class="loading-box"><div class="spinner"></div><div id="loading-msg">${msg}</div></div>`;
+    document.body.appendChild(ov);
+  } else {
+    const el=document.getElementById('loading-msg'); if(el) el.textContent=msg;
+    ov.style.display='flex';
+  }
+}
+function ocultarCargando() {
+  const ov=document.getElementById('loading-overlay'); if(ov) ov.style.display='none';
+}
+
+// =========================================================
+// ===== PICKER INIT FOR NEW PAGES ========================
+// =========================================================
+const _prevPickerInited = {};
+function ensurePicker(pageId, contId) {
+  if (_prevPickerInited[contId]) return;
+  const cont = document.getElementById(contId);
+  if (!cont) return;
+  const hoy = new Date();
+  const m = String(hoy.getMonth()+1).padStart(2,'0');
+  const y = hoy.getFullYear();
+  cont.innerHTML = `<select id="picker-${pageId}-m" onchange="renderPagina('${pageId}')" style="background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:var(--text);padding:6px 10px;font-size:0.82rem;">`
+    + Array.from({length:12},(_,i)=>`<option value="${String(i+1).padStart(2,'0')}" ${String(i+1).padStart(2,'0')===m?'selected':''}>${['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'][i]}</option>`).join('')
+    + `</select><select id="picker-${pageId}-a" onchange="renderPagina('${pageId}')" style="background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:var(--text);padding:6px 10px;font-size:0.82rem;">`
+    + Array.from({length:5},(_,i)=>`<option value="${y-2+i}" ${y-2+i===y?'selected':''}>${y-2+i}</option>`).join('')
+    + '</select>';
+  _prevPickerInited[contId] = true;
+}
+
+// Helper: get picker range for new pages
+function getPickerMesAnio(pageId) {
+  ensurePicker(pageId, `picker-${pageId}`);
+  const m = document.getElementById(`picker-${pageId}-m`)?.value || String(new Date().getMonth()+1).padStart(2,'0');
+  const a = document.getElementById(`picker-${pageId}-a`)?.value || String(new Date().getFullYear());
+  const desde = `${a}-${m}-01`;
+  const hasta = `${a}-${m}-31`;
+  const label = `${['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'][parseInt(m)-1]} ${a}`;
+  return { desde, hasta, label, mes: m, anio: a };
+}
+
+// Override renderLCV/renderPrevired/renderLRE to use new picker
+function renderLCV() { _renderLCV(); }
+function renderPrevired() { _renderPrevired(); }
+function renderLRE() { _renderLRE(); }
 
 </script>
 </body>
