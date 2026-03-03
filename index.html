@@ -3536,6 +3536,7 @@ async function onLoginExitoso(fbUser) {
   usuarioActual = { ...perfil, _uid: fbUser.uid, email: fbUser.email };
   actualizarHeaderUsuario();
   ocultarLogin();
+  ocultarCargando();
   await getEmpresasAsync();
   const empId = localStorage.getItem('contacl-empresa-activa-' + fbUser.uid);
   const empresas = getEmpresas();
@@ -3543,6 +3544,7 @@ async function onLoginExitoso(fbUser) {
     empresaActualId = empId;
     mostrarCargando('Cargando datos…');
     await cargarEmpresaDB();
+    ocultarCargando();
   } else {
     mostrarSelectorEmpresas();
   }
