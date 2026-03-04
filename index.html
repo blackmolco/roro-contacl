@@ -7,26 +7,38 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
 
 <!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
   var fbAuth, fbDb;
-  document.addEventListener('DOMContentLoaded', function() {
-    var firebaseConfig = {
-      apiKey: "AIzaSyCed-1dw_5izo6beNSrSvw6NprgPMFsP1g",
-      authDomain: "contabilidad-roro.firebaseapp.com",
-      projectId: "contabilidad-roro",
-      storageBucket: "contabilidad-roro.firebasestorage.app",
-      messagingSenderId: "539799662803",
-      appId: "1:539799662803:web:65b8faac51dc9908212426"
-    };
-    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-    fbAuth = firebase.auth();
-    fbDb   = firebase.firestore();
-    // Iniciar app después de Firebase listo
-    if (typeof init === 'function') init();
-  });
+  var _firebaseReady = false;
+
+  function initFirebase() {
+    try {
+      if (typeof firebase === 'undefined') {
+        setTimeout(initFirebase, 100); // reintentar si aún no cargó
+        return;
+      }
+      var firebaseConfig = {
+        apiKey: "AIzaSyCed-1dw_5izo6beNSrSvw6NprgPMFsP1g",
+        authDomain: "contabilidad-roro.firebaseapp.com",
+        projectId: "contabilidad-roro",
+        storageBucket: "contabilidad-roro.firebasestorage.app",
+        messagingSenderId: "539799662803",
+        appId: "1:539799662803:web:65b8faac51dc9908212426"
+      };
+      if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+      fbAuth = firebase.auth();
+      fbDb   = firebase.firestore();
+      _firebaseReady = true;
+      if (typeof init === 'function') init();
+    } catch(e) {
+      console.error('Firebase init error:', e);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', initFirebase);
 </script>
 <style>
   /* ===== TEMA OSCURO (por defecto) ===== */
@@ -1457,6 +1469,7 @@
             </div>
             <div class="form-group"><label>AFP *</label>
               <select id="t-afp">
+                <option value="ninguna">Sin afiliación (0%)</option>
                 <option value="capital">Capital (11.44%)</option>
                 <option value="cuprum">Cuprum (11.44%)</option>
                 <option value="habitat">Habitat (11.27%)</option>
@@ -1467,9 +1480,14 @@
               </select>
             </div>
             <div class="form-group"><label>Salud</label>
-              <select id="t-salud"><option value="fonasa">Fonasa (7%)</option><option value="isapre">Isapre (7% + adicional)</option></select>
+              <select id="t-salud" onchange="toggleIsapreFields()">
+                <option value="fonasa">Fonasa (7%)</option>
+                <option value="isapre_uf">Isapre (plan en UF)</option>
+                <option value="isapre">Isapre (7% + adicional %)</option>
+              </select>
             </div>
-            <div class="form-group"><label>Adicional Isapre (%)</label><input type="number" id="t-isapre-adic" value="0" min="0" step="0.01" placeholder="Solo si Isapre"></div>
+            <div class="form-group" id="field-isapre-uf" style="display:none"><label>Plan Isapre (UF)</label><input type="number" id="t-isapre-uf" value="0" min="0" step="0.01" placeholder="Ej: 3.5"></div>
+            <div class="form-group" id="field-isapre-adic"><label>Adicional Isapre (%)</label><input type="number" id="t-isapre-adic" value="0" min="0" step="0.01" placeholder="Solo si Isapre %"></div>
             <div class="form-group"><label>Seguro Cesantía</label>
               <select id="t-sc-tipo"><option value="indefinido">Indefinido (3% trab.)</option><option value="fijo">Plazo Fijo (0% trab.)</option></select>
             </div>
@@ -2784,6 +2802,21 @@ function setMiles(id, val) {
   el.value = Math.round(val).toLocaleString('es-CL');
 }
 
+// Normaliza cualquier RUT al formato canónico xx.xxx.xxx-x
+function normalizeRut(rut) {
+  if (!rut) return '';
+  let v = rut.replace(/[^0-9kK]/g,'');
+  if (v.length < 2) return rut;
+  const cuerpo = v.slice(0,-1);
+  const dv = v.slice(-1).toUpperCase();
+  let f = '', i = 0;
+  for (let j = cuerpo.length - 1; j >= 0; j--) {
+    f = cuerpo[j] + f; i++;
+    if (i % 3 === 0 && j !== 0) f = '.' + f;
+  }
+  return f + '-' + dv;
+}
+
 function formatRut(input) {
   let v = input.value.replace(/[^0-9kK]/g,'');
   if (v.length > 1) {
@@ -3230,8 +3263,10 @@ function abrirModalAsiento(id=null) {
 
 // fmtMiles defined above
 function parseMiles(str) {
-  if (!str) return 0;
-  return parseFloat(String(str).replace(/\./g, '').replace(',', '.')) || 0;
+  if (!str && str !== 0) return 0;
+  // Eliminar símbolo $, espacios y puntos de miles, convertir coma decimal a punto
+  const clean = String(str).trim().replace(/\$/g,'').replace(/\s/g,'').replace(/\./g,'').replace(',','.');
+  return parseFloat(clean) || 0;
 }
 
 function addLinea(data=null) {
@@ -3324,15 +3359,15 @@ function actualizarAuxSelector(selectEl, lineaId) {
 function getLineas() {
   const lineas=[];
   document.querySelectorAll('#lineas-container .linea-row').forEach(row=>{
-    // Usar hidden input para cuenta (búsqueda en tiempo real)
     const ctaHidden = row.querySelector('input[id^="cta-sel-"]');
     const cuenta = ctaHidden ? ctaHidden.value : (row.querySelector('select')?.value||'');
     const ins = row.querySelectorAll('input[type=text]');
     // ins[0] = search box, ins[1] = debito, ins[2] = credito
     const debIdx = ctaHidden ? 1 : 0;
     const creIdx = ctaHidden ? 2 : 1;
-    const debito = parseFloat(ins[debIdx]?.dataset.raw||0) || parseMiles(ins[debIdx]?.value||'0');
-    const credito = parseFloat(ins[creIdx]?.dataset.raw||0) || parseMiles(ins[creIdx]?.value||'0');
+    // Usar siempre parseMiles para evitar que parseFloat corte números con puntos de miles
+    const debito  = parseMiles(ins[debIdx]?.value||'0');
+    const credito = parseMiles(ins[creIdx]?.value||'0');
     if(cuenta&&(debito>0||credito>0)) {
       const auxSel = row.querySelector('.linea-aux-selector');
       const auxiliarId = auxSel && auxSel.value ? parseInt(auxSel.value) : null;
@@ -5069,11 +5104,12 @@ async function revertirCierre(anio) {
 // Tasas AFP por nombre
 // AFP_TASAS: valores por defecto — configurables en Parámetros
 const AFP_TASAS_DEFAULT = {
-  capital:0.1144, cuprum:0.1144, habitat:0.1127,
+  ninguna:0, capital:0.1144, cuprum:0.1144, habitat:0.1127,
   planvital:0.1116, provida:0.1145, modelo:0.1058, uno:0.1049
 };
 // Getter dinámico: usa paramsRem si está cargado, sino defaults
 function getAfpTasa(afp) {
+  if (!afp || afp === 'ninguna') return 0;
   const key = 'afp_' + (afp||'').toLowerCase();
   return paramsRem[key] ?? AFP_TASAS_DEFAULT[afp] ?? 0.1144;
 }
@@ -5217,6 +5253,14 @@ function renderTrabajadores() {
     </div>`).join('');
 }
 
+function toggleIsapreFields() {
+  const salud = document.getElementById('t-salud')?.value;
+  const fieldUF   = document.getElementById('field-isapre-uf');
+  const fieldAdic = document.getElementById('field-isapre-adic');
+  if (fieldUF)   fieldUF.style.display   = salud === 'isapre_uf' ? '' : 'none';
+  if (fieldAdic) fieldAdic.style.display = salud === 'isapre'    ? '' : 'none';
+}
+
 function abrirModalTrabajador(id=null) {
   editingTrabajadorId = id;
   const t = id ? trabajadores.find(x=>x.id===id) : {};
@@ -5236,6 +5280,9 @@ function abrirModalTrabajador(id=null) {
   }
   // Porcentaje (sin formato miles)
   document.getElementById('t-isapre-adic').value = t.isapre_adic || 0;
+  document.getElementById('t-isapre-uf').value = t.isapre_uf || 0;
+  document.getElementById('t-salud').value = t.salud || 'fonasa';
+  toggleIsapreFields();
   // Selects
   if (t.contrato) document.getElementById('t-contrato').value = t.contrato;
   if (t.gratificacion) document.getElementById('t-gratificacion').value = t.gratificacion;
@@ -5253,7 +5300,7 @@ async function guardarTrabajador() {
   const rutTrab = document.getElementById('t-rut').value.trim();
   if (rutTrab && !validarRut(rutTrab)) { toast('RUT del trabajador inválido — verifica el dígito verificador','err'); return; }
   const obj = {
-    nombre, rut: document.getElementById('t-rut').value.trim(),
+    nombre, rut: normalizeRut(document.getElementById('t-rut').value.trim()),
     cargo: document.getElementById('t-cargo').value.trim(),
     fingreso: document.getElementById('t-fingreso').value,
     fnac: document.getElementById('t-fnac').value,
@@ -5269,6 +5316,7 @@ async function guardarTrabajador() {
     afp: document.getElementById('t-afp').value,
     salud: document.getElementById('t-salud').value,
     isapre_adic: parseFloat(document.getElementById('t-isapre-adic').value)||0,
+    isapre_uf:   parseFloat(document.getElementById('t-isapre-uf').value)||0,
     sc_tipo: document.getElementById('t-sc-tipo').value,
     desc_judicial: getMiles('t-desc-judicial'),
     prestamo: getMiles('t-prestamo'),
@@ -5361,7 +5409,16 @@ function calcularLiquidacion(t, periodo, vars={}) {
   const tasaAFP = getAfpTasa(t.afp);
   const cotAFP = Math.round(totalImponible * tasaAFP);
   const tasaSalud = t.salud === 'isapre' ? (0.07 + (t.isapre_adic||0)/100) : 0.07;
-  const cotSalud = Math.round(totalImponible * tasaSalud);
+  // Isapre en UF: descuento fijo = plan_uf × valor_uf (mínimo 7% base imponible)
+  let cotSalud;
+  if (t.salud === 'isapre_uf') {
+    const planUF = t.isapre_uf || 0;
+    const montoUF = Math.round(planUF * uf);
+    const minimoLegal = Math.round(totalImponible * 0.07);
+    cotSalud = Math.max(montoUF, minimoLegal);
+  } else {
+    cotSalud = Math.round(totalImponible * tasaSalud);
+  }
   // Seguro Cesantía: indefinido = empleador 2.41% + trabajador 0.6%
   //                    plazo fijo = empleador 3% total (trabajador NO cotiza)
   const esIndefinido = (t.sc_tipo||t.contrato||'indefinido').toLowerCase().includes('indefinido');
@@ -5398,7 +5455,9 @@ function calcularLiquidacion(t, periodo, vars={}) {
     totalNoImponible, totalImponible, totalHaberes,
     haberesImp: totalImponibleBruto,
     haberesNoImp: totalNoImponible,
-    tasaAFP, cotAFP, tasaSalud, cotSalud, cotSC,
+    tasaAFP, cotAFP,
+    tasaSalud: t.salud === 'isapre_uf' ? (cotSalud / (totalImponible||1)) : tasaSalud,
+    cotSalud, cotSC,
     totalDescLegales, impuesto2Cat, descJudicial, prestamo, otrosDesc, anticipos, totalDescuentos,
     sueldoLiquido, cotSC_emp, cotSIS, cotMut, costoEmpleador,
     afp: t.afp, salud: t.salud,
@@ -5428,16 +5487,17 @@ function calcularImpuesto2Cat(base, uf) {
       }
     }
   }
-  // Fallback: tramos hardcodeados Art. 43 LIR (en UTM)
+  // Fallback: tramos hardcodeados Art. 43 LIR vigentes (en UTM)
+  // Fuente: SII — tabla aplicable desde enero 2024
   const T = [
-    [13.5, 0,     0     ],
-    [30,   0.04,  0.54  ],
-    [50,   0.08,  1.74  ],
-    [70,   0.135, 4.49  ],
-    [90,   0.23,  11.14 ],
-    [120,  0.304, 17.80 ],
-    [150,  0.355, 23.92 ],
-    [null, 0.40,  31.17 ],
+    [13.5,  0,      0      ],
+    [30,    0.04,   0.54   ],
+    [50,    0.08,   1.74   ],
+    [70,    0.135,  4.49   ],
+    [90,    0.23,   11.14  ],
+    [120,   0.304,  17.80  ],
+    [310,   0.35,   23.32  ],
+    [null,  0.40,   38.82  ],
   ];
   for (const [lim, tasa, rebUTM] of T) {
     if (lim === null || base <= lim * utm) {
@@ -5981,16 +6041,26 @@ let _empresasCache = [];
 async function getEmpresasAsync() {
   if (!usuarioActual?._uid) return [];
   try {
-    const snap = await fbDb.collection('usuarios').doc(usuarioActual._uid).collection('empresas').get();
+    let snap;
+    if (usuarioActual.perfil === 'administrador') {
+      // Admin ve TODAS las empresas
+      snap = await fbDb.collection('empresas_registro').get();
+    } else {
+      // Contador ve solo las suyas
+      snap = await fbDb.collection('empresas_registro')
+                       .where('creadoPor', '==', usuarioActual._uid).get();
+    }
     _empresasCache = snap.docs.map(d => ({ ...d.data(), id: d.id }));
     return _empresasCache;
-  } catch(e) { return _empresasCache; }
+  } catch(e) { console.warn('getEmpresasAsync error', e); return _empresasCache; }
 }
 function getEmpresas() { return _empresasCache; }
 
 async function saveEmpresa(emp) {
   if (!usuarioActual?._uid) return;
-  await fbDb.collection('usuarios').doc(usuarioActual._uid).collection('empresas').doc(emp.id).set(emp);
+  // Asegurar que siempre tiene creadoPor
+  if (!emp.creadoPor) emp.creadoPor = usuarioActual._uid;
+  await fbDb.collection('empresas_registro').doc(emp.id).set(emp);
   await getEmpresasAsync();
 }
 async function saveEmpresas(lista) {
@@ -6024,6 +6094,7 @@ function renderListaEmpresas() {
       <div>
         <div class="emp-card-nombre">${e.nombre || '(Sin nombre)'}</div>
         <div class="emp-card-rut">${e.rut ? 'RUT: ' + e.rut : ''} ${e.giro || ''}</div>
+        ${usuarioActual?.perfil==='administrador' && e.creadoPor !== usuarioActual._uid ? `<div style="font-size:0.72rem;color:var(--text3);margin-top:2px;">👤 ${e.creadoPorEmail||'otro usuario'}</div>` : ''}
       </div>
       <div class="emp-card-acciones" onclick="event.stopPropagation()">
         <button class="btn" style="font-size:0.72rem;padding:3px 8px;" onclick="editarEmpresaEnLista('${e.id}')">✏️</button>
@@ -6046,12 +6117,17 @@ async function crearEmpresa() {
   if(!validarRut(rut)){showErr('⚠️ RUT inválido.');const rutEl=document.getElementById('ne-rut');if(rutEl){rutEl.style.borderColor='var(--red)';rutEl.focus();}return;}
   errEl.style.display='none';if(btnCrear)btnCrear.disabled=false;
   const lista=getEmpresas();
+  const rutNorm=rut.replace(/[.\s]/g,'').toLowerCase();
+  const duplicado=lista.find(e=>e.rut&&e.rut.replace(/[.\s]/g,'').toLowerCase()===rutNorm);
+  if(duplicado){showErr(`⚠️ El RUT ya está registrado en la empresa "${duplicado.nombre}".`);return;}
   if(lista.length>=10){toast('Máximo 10 empresas','warn');return;}
   const id='emp_'+Date.now();
-  const nueva={id,nombre,rut,giro,direccion,ciudad,
+  const nueva={id,nombre,rut:normalizeRut(rut),giro,direccion,ciudad,
     region:document.getElementById('ne-region').value.trim(),
     telefono:document.getElementById('ne-telefono').value.trim(),
-    email:document.getElementById('ne-email').value.trim()};
+    email:document.getElementById('ne-email').value.trim(),
+    creadoPor: usuarioActual._uid,
+    creadoPorEmail: usuarioActual.email};
   lista.push(nueva);
   await saveEmpresas(lista);
   ['ne-nombre','ne-rut','ne-giro','ne-direccion','ne-ciudad','ne-region','ne-telefono','ne-email'].forEach(id2=>{const el=document.getElementById(id2);if(el)el.value='';});
@@ -6077,7 +6153,10 @@ async function guardarEdicionEmpresa() {
   const nombre=document.getElementById('ee-nombre')?.value.trim(), rut=document.getElementById('ee-rut')?.value.trim();
   if(!nombre){toast('El nombre es obligatorio','err');return;}
   if(rut&&!validarRut(rut)){const errEl=document.getElementById('ee-rut-error');if(errEl)errEl.style.display='';toast('RUT inválido','err');return;}
-  e.nombre=nombre;e.rut=rut;
+  const rutNormE=rut?rut.replace(/[.\s]/g,'').toLowerCase():'';
+  const dupE=lista.find(x=>x.id!==_editingEmpresaId&&x.rut&&x.rut.replace(/[.\s]/g,'').toLowerCase()===rutNormE);
+  if(rutNormE&&dupE){toast(`El RUT ya está registrado en "${dupE.nombre}"`, 'err');return;}
+  e.nombre=nombre;e.rut=normalizeRut(rut);
   e.giro=document.getElementById('ee-giro')?.value.trim()||e.giro||'';
   e.regimen=document.getElementById('ee-regimen')?.value||e.regimen||'';
   e.acteco=document.getElementById('ee-acteco')?.value.trim()||e.acteco||'';
@@ -6092,9 +6171,13 @@ async function guardarEdicionEmpresa() {
 }
 async function eliminarEmpresaLista(id) {
   const lista=getEmpresas(), e=lista.find(x=>x.id===id);
+  // Solo el creador o un admin puede eliminar
+  if (usuarioActual.perfil !== 'administrador' && e?.creadoPor !== usuarioActual._uid) {
+    toast('Solo el Administrador puede eliminar empresas de otros usuarios', 'err'); return;
+  }
   if(!confirm(`¿Eliminar "${e?.nombre}"? Se borrarán TODOS los datos. Esta acción no se puede deshacer.`))return;
   try {
-    await fbDb.collection('usuarios').doc(usuarioActual._uid).collection('empresas').doc(id).delete();
+    await fbDb.collection('empresas_registro').doc(id).delete();
     const stores=['cuentas','asientos','cierres','trabajadores','liquidaciones','params_rem','productos','mov_inv','auxiliares','conciliaciones','honorarios','activos_fijos','audit_log','periodos_cerrados','rut_memoria','_counters'];
     for(const store of stores){
       const snap=await fbDb.collection('empresas').doc(id).collection(store).get();
@@ -6730,11 +6813,11 @@ function abrirModalAuxiliar(id=null) {
 
 async function guardarAuxiliar() {
   const nombre = document.getElementById('aux-nombre').value.trim();
-  const rut = document.getElementById('aux-rut').value.trim();
+  const rut = normalizeRut(document.getElementById('aux-rut').value.trim());
   if (!nombre || !rut) { toast('Nombre y RUT son obligatorios','err'); return; }
   if (!validarRut(rut)) { toast('RUT inválido — verifica el dígito verificador','err'); return; }
-  // Verificar RUT duplicado
-  const dup = auxiliares.find(a => a.rut === rut && a.id !== editingAuxiliarId);
+  // Verificar RUT duplicado (comparando normalizado)
+  const dup = auxiliares.find(a => normalizeRut(a.rut) === rut && a.id !== editingAuxiliarId);
   if (dup) { toast(`Ya existe auxiliar con RUT ${rut}: ${dup.nombre}`,'err'); return; }
   const obj = {
     tipo: document.getElementById('aux-tipo').value,
@@ -8576,7 +8659,7 @@ function calcularHonorarioPreview() {
 
 async function guardarHonorario() {
   const fecha = document.getElementById('hon-fecha').value;
-  const rutEmisor = document.getElementById('hon-rut').value.trim();
+  const rutEmisor = normalizeRut(document.getElementById('hon-rut').value.trim());
   const nombreEmisor = document.getElementById('hon-nombre').value.trim();
   const concepto = document.getElementById('hon-concepto').value.trim();
   const montoHonorario = getMiles('hon-monto');
