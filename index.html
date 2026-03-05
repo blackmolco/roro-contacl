@@ -848,6 +848,20 @@
     .empresa-card { padding: 14px; }
     .page { padding: 1rem 0.75rem 1rem 52px; }
   }
+
+.acteco-wrapper { position: relative; }
+.acteco-sugerencias {
+  display: none; position: absolute; z-index: 9999;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,.3);
+  max-height: 220px; overflow-y: auto; width: 100%; top: 100%; left: 0; margin-top: 2px;
+}
+.acteco-item {
+  padding: 7px 12px; font-size: 0.82rem; cursor: pointer; color: var(--text2);
+  border-bottom: 1px solid var(--border);
+}
+.acteco-item:hover { background: var(--bg3); color: var(--text); }
+.acteco-cod { font-family: 'DM Mono', monospace; font-weight: 700; color: var(--accent); margin-right: 6px; }
 </style>
 </head>
 <body>
@@ -908,10 +922,24 @@
             <option value="micro">Microempresa Familiar</option>
           </select>
         </div>
-        <div class="form-group"><label>Código Actividad Económica (SII)</label><input type="text" id="ne-acteco" placeholder="Ej: 4719"></div>
+        <div class="form-group acteco-wrapper">
+          <label>Actividad Económica SII</label>
+          <input type="text" id="ne-acteco" placeholder="Buscar por código o descripción..." autocomplete="off">
+          <div id="ne-acteco-sug" class="acteco-sugerencias"></div>
+        </div>
         <div class="form-group"><label>Dirección <span style="color:var(--red)">*</span></label><input type="text" id="ne-direccion" placeholder="Ej: Av. Providencia 1234"></div>
-        <div class="form-group"><label>Ciudad <span style="color:var(--red)">*</span></label><input type="text" id="ne-ciudad" placeholder="Ej: Santiago"></div>
-        <div class="form-group"><label>Región</label><input type="text" id="ne-region" placeholder="Ej: Región Metropolitana"></div>
+        <div class="form-group">
+          <label>Región <span style="color:var(--red)">*</span></label>
+          <select id="ne-region" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:var(--text);padding:8px 10px;font-size:0.83rem;">
+            <option value="">Seleccionar región...</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Ciudad / Comuna <span style="color:var(--red)">*</span></label>
+          <select id="ne-ciudad" disabled style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:var(--text);padding:8px 10px;font-size:0.83rem;">
+            <option value="">Primero selecciona región</option>
+          </select>
+        </div>
         <div class="form-group"><label>Teléfono</label><input type="text" id="ne-telefono" placeholder="+56 2 2345 6789"></div>
         <div class="form-group"><label>Email</label><input type="email" id="ne-email" placeholder="contacto@empresa.cl"></div>
       </div>
@@ -921,7 +949,7 @@
         <button class="btn btn-green" onclick="crearEmpresa()">✓ Crear Empresa</button>
       </div>
     </div>
-    <button class="btn btn-accent" onclick="document.getElementById('form-nueva-empresa').style.display='';document.getElementById('ne-nombre').focus()" style="width:100%;margin-top:1rem;" id="btn-nueva-emp">+ Nueva Empresa</button>
+    <button class="btn btn-accent" onclick="document.getElementById('form-nueva-empresa').style.display='';document.getElementById('ne-nombre').focus();initSelectRegion('ne-region','ne-ciudad');initBuscadorActeco('ne-acteco','ne-acteco-sug')" style="width:100%;margin-top:1rem;" id="btn-nueva-emp">+ Nueva Empresa</button>
   </div>
 </div>
 
@@ -958,9 +986,10 @@
             <option value="micro">Microempresa Familiar</option>
           </select>
         </div>
-        <div class="form-group">
-          <label>Código Actividad Económica (SII)</label>
-          <input type="text" id="ee-acteco" placeholder="Ej: 4719">
+        <div class="form-group acteco-wrapper">
+          <label>Actividad Económica SII</label>
+          <input type="text" id="ee-acteco" placeholder="Buscar por código o descripción..." autocomplete="off">
+          <div id="ee-acteco-sug" class="acteco-sugerencias"></div>
         </div>
         <div class="form-group full">
           <label>Dirección</label>
@@ -968,11 +997,15 @@
         </div>
         <div class="form-group">
           <label>Ciudad / Comuna</label>
-          <input type="text" id="ee-ciudad" placeholder="Ej: Santiago">
+          <select id="ee-ciudad" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:var(--text);padding:8px 10px;font-size:0.83rem;">
+            <option value="">Seleccionar comuna...</option>
+          </select>
         </div>
         <div class="form-group">
           <label>Región</label>
-          <input type="text" id="ee-region" placeholder="Ej: Región Metropolitana">
+          <select id="ee-region" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:var(--text);padding:8px 10px;font-size:0.83rem;">
+            <option value="">Seleccionar región...</option>
+          </select>
         </div>
         <div class="form-group">
           <label>Teléfono</label>
@@ -2506,51 +2539,614 @@ async function dbOp(fn, errorMsg='Error al guardar') {
 }
 
 // ===== Plan Inicial Chileno =====
+
+// ── Regiones y Comunas de Chile ──────────────────────────────────
+const REGIONES_COMUNAS = {
+  'Región de Arica y Parinacota': ['Arica','Camarones','General Lagos','Putre'],
+  'Región de Tarapacá': ['Alto Hospicio','Camiña','Colchane','Huara','Iquique','Pica','Pozo Almonte'],
+  'Región de Antofagasta': ['Antofagasta','Calama','María Elena','Mejillones','Ollagüe','San Pedro de Atacama','Sierra Gorda','Taltal','Tocopilla'],
+  'Región de Atacama': ['Alto del Carmen','Caldera','Chañaral','Copiapó','Diego de Almagro','Freirina','Huasco','Tierra Amarilla','Vallenar'],
+  'Región de Coquimbo': ['Andacollo','Canela','Combarbalá','Coquimbo','Illapel','La Higuera','La Serena','Los Vilos','Monte Patria','Ovalle','Paiguano','Punitaqui','Río Hurtado','Salamanca','Vicuña'],
+  'Región de Valparaíso': ['Algarrobo','Cabildo','Calera','Calle Larga','Cartagena','Casablanca','Catemu','Concón','El Quisco','El Tabo','Hijuelas','Isla de Pascua','Juan Fernández','La Cruz','La Ligua','Limache','Llaillay','Los Andes','Nogales','Olmué','Panquehue','Papudo','Petorca','Puchuncaví','Putaendo','Quillota','Quilpué','Quintero','Rinconada','San Antonio','San Esteban','San Felipe','Santa María','Santo Domingo','Valparaíso','Villa Alemana','Viña del Mar','Zapallar'],
+  'Región Metropolitana de Santiago': ['Alhué','Buin','Calera de Tango','Cerrillos','Cerro Navia','Colina','Conchalí','Curacaví','El Bosque','El Monte','Estación Central','Huechuraba','Independencia','Isla de Maipo','La Cisterna','La Florida','La Granja','La Pintana','La Reina','Lampa','Las Condes','Lo Barnechea','Lo Espejo','Lo Prado','Macul','Maipú','María Pinto','Melipilla','Noviciado','Ñuñoa','Padre Hurtado','Paine','Peñaflor','Peñalolén','Pedro Aguirre Cerda','Pirque','Providencia','Pudahuel','Puente Alto','Quilicura','Quinta Normal','Recoleta','Renca','San Bernardo','San Joaquín','San José de Maipo','San Miguel','San Pedro','San Ramón','Santiago','Talagante','Tiltil','Vitacura'],
+  'Región del Libertador Bernardo O\'Higgins': ['Chépica','Chimbarongo','Codegua','Coinco','Coltauco','Doñihue','Graneros','La Estrella','Las Cabras','Litueche','Lolol','Machalí','Malloa','Marchigüe','Mostazal','Nancagua','Navidad','Olivar','Palmilla','Paredones','Peralillo','Peumo','Pichidegua','Pichilemu','Placilla','Pumanque','Quinta de Tilcoco','Rancagua','Rengo','Requínoa','San Fernando','Santa Cruz','San Vicente'],
+  'Región del Maule': ['Cauquenes','Chanco','Colbún','Constitución','Curepto','Curicó','Empedrado','Hualañé','Licantén','Linares','Longaví','Maule','Molina','Parral','Pelarco','Pelluhue','Pencahue','Rauco','Retiro','Río Claro','Romeral','Sagrada Familia','San Clemente','San Javier','San Rafael','Talca','Teno','Vichuquén','Villa Alegre','Yerbas Buenas'],
+  'Región de Ñuble': ['Bulnes','Chillán','Chillán Viejo','Cobquecura','Coelemu','Coihueco','El Carmen','Ninhue','Ñiquén','Pemuco','Pinto','Portezuelo','Quillón','Quirihue','Ránquil','San Carlos','San Fabián','San Ignacio','San Nicolás','Treguaco','Yungay'],
+  'Región del Biobío': ['Alto Biobío','Antuco','Arauco','Biobío','Cabrero','Cañete','Concepción','Contulmo','Coronel','Curanilahue','Florida','Hualpén','Hualqui','Laja','Lebu','Los Álamos','Los Ángeles','Lota','Mulchén','Nacimiento','Negrete','Penco','Quilaco','Quilleco','San Pedro de la Paz','San Rosendo','Santa Bárbara','Santa Juana','Talcahuano','Tirúa','Tomé','Tucapel','Yumbel'],
+  'Región de La Araucanía': ['Angol','Carahue','Cholchol','Collipulli','Cunco','Curacautín','Curarrehue','Ercilla','Freire','Galvarino','Gorbea','Lautaro','Loncoche','Lonquimay','Los Sauces','Lumaco','Melipeuco','Nueva Imperial','Padre las Casas','Perquenco','Pitrufquén','Pucón','Purén','Renaico','Saavedra','Temuco','Teodoro Schmidt','Toltén','Traiguén','Victoria','Vilcún','Villarrica'],
+  'Región de Los Ríos': ['Corral','Futrono','La Unión','Lago Ranco','Lanco','Los Lagos','Máfil','Mariquina','Paillaco','Panguipulli','Río Bueno','Valdivia'],
+  'Región de Los Lagos': ['Ancud','Castro','Chaitén','Chonchi','Cochamó','Curaco de Vélez','Dalcahue','Fresia','Frutillar','Futaleufú','Hualaihué','Lago Ranco','Llanquihue','Los Muermos','Maullín','Osorno','Palena','Puerto Montt','Puerto Octay','Puerto Varas','Puqueldón','Purranque','Puyehue','Queilén','Quemchi','Quínchao','Río Negro','San Juan de la Costa','San Pablo'],
+  'Región de Aysén': ['Aysén','Chile Chico','Cisnes','Cochrane','Coyhaique','Guaitecas','Lago Verde','O\'Higgins','Río Ibáñez','Tortel'],
+  'Región de Magallanes y la Antártica Chilena': ['Antártica','Cabo de Hornos','Laguna Blanca','Natales','Porvenir','Primavera','Punta Arenas','Río Verde','San Gregorio','Timaukel','Torres del Paine']
+};
+
+// ── Actividades Económicas SII (principales) ─────────────────────
+const ACTIVIDADES_SII = [
+  {codigo:'0111',desc:'Cultivo de trigo'},
+  {codigo:'0112',desc:'Cultivo de maíz'},
+  {codigo:'0113',desc:'Cultivo de hortalizas y legumbres'},
+  {codigo:'0114',desc:'Cultivo de caña de azúcar'},
+  {codigo:'0119',desc:'Cultivo de otros cereales'},
+  {codigo:'0121',desc:'Cultivo de uvas'},
+  {codigo:'0122',desc:'Cultivo de frutas tropicales'},
+  {codigo:'0123',desc:'Cultivo de cítricos'},
+  {codigo:'0124',desc:'Cultivo de frutas de pepita y de hueso'},
+  {codigo:'0125',desc:'Cultivo de otros frutos y nueces'},
+  {codigo:'0126',desc:'Cultivo de frutos oleaginosos'},
+  {codigo:'0127',desc:'Cultivo de plantas para la preparación de bebidas'},
+  {codigo:'0128',desc:'Cultivo de especias y plantas aromáticas'},
+  {codigo:'0130',desc:'Cultivos en combinación con cría de animales'},
+  {codigo:'0141',desc:'Cría de ganado bovino y búfalos'},
+  {codigo:'0142',desc:'Cría de caballos y otros équidos'},
+  {codigo:'0143',desc:'Cría de camélidos'},
+  {codigo:'0144',desc:'Cría de ovejas y cabras'},
+  {codigo:'0145',desc:'Cría de cerdos'},
+  {codigo:'0146',desc:'Cría de aves de corral'},
+  {codigo:'0149',desc:'Cría de otros animales'},
+  {codigo:'0150',desc:'Explotación mixta, agrícola y pecuaria'},
+  {codigo:'0161',desc:'Actividades de apoyo a la agricultura'},
+  {codigo:'0162',desc:'Actividades de apoyo a la ganadería'},
+  {codigo:'0163',desc:'Actividades poscosecha'},
+  {codigo:'0164',desc:'Tratamiento de semillas para propagación'},
+  {codigo:'0170',desc:'Caza ordinaria y mediante trampas; actividades de servicios conexas'},
+  {codigo:'0210',desc:'Silvicultura y otras actividades forestales'},
+  {codigo:'0220',desc:'Extracción de madera'},
+  {codigo:'0230',desc:'Recolección de productos forestales distintos de la madera'},
+  {codigo:'0240',desc:'Servicios de apoyo a la silvicultura'},
+  {codigo:'0311',desc:'Pesca marítima'},
+  {codigo:'0312',desc:'Pesca en agua dulce'},
+  {codigo:'0321',desc:'Acuicultura marítima'},
+  {codigo:'0322',desc:'Acuicultura en agua dulce'},
+  {codigo:'0510',desc:'Extracción de carbón de piedra'},
+  {codigo:'0610',desc:'Extracción de petróleo crudo'},
+  {codigo:'0620',desc:'Extracción de gas natural'},
+  {codigo:'0710',desc:'Extracción de minerales de hierro'},
+  {codigo:'0721',desc:'Extracción de minerales de uranio y torio'},
+  {codigo:'0729',desc:'Extracción de otros minerales metalíferos no ferrosos'},
+  {codigo:'0810',desc:'Extracción de piedra, arena y arcilla'},
+  {codigo:'0891',desc:'Extracción de minerales para la fabricación de abonos'},
+  {codigo:'0892',desc:'Extracción de turba'},
+  {codigo:'0893',desc:'Extracción de sal'},
+  {codigo:'0899',desc:'Explotación de otras minas y canteras'},
+  {codigo:'0910',desc:'Actividades de apoyo para la extracción de petróleo y gas natural'},
+  {codigo:'0990',desc:'Actividades de apoyo para otras actividades de explotación de minas y canteras'},
+  {codigo:'1010',desc:'Elaboración y conservación de carne'},
+  {codigo:'1020',desc:'Elaboración y conservación de pescados, crustáceos y moluscos'},
+  {codigo:'1030',desc:'Elaboración y conservación de frutas, legumbres y hortalizas'},
+  {codigo:'1040',desc:'Elaboración de aceites y grasas de origen vegetal y animal'},
+  {codigo:'1050',desc:'Elaboración de productos lácteos'},
+  {codigo:'1061',desc:'Elaboración de productos de molinería'},
+  {codigo:'1062',desc:'Elaboración de almidones y productos derivados del almidón'},
+  {codigo:'1071',desc:'Elaboración de productos de panadería'},
+  {codigo:'1072',desc:'Elaboración de azúcar'},
+  {codigo:'1073',desc:'Elaboración de cacao, chocolate y productos de confitería'},
+  {codigo:'1074',desc:'Elaboración de macarrones, fideos y productos farináceos similares'},
+  {codigo:'1075',desc:'Elaboración de comidas y platos preparados'},
+  {codigo:'1079',desc:'Elaboración de otros productos alimenticios'},
+  {codigo:'1080',desc:'Elaboración de alimentos preparados para animales'},
+  {codigo:'1101',desc:'Destilación, rectificación y mezcla de bebidas alcohólicas'},
+  {codigo:'1102',desc:'Elaboración de vinos'},
+  {codigo:'1103',desc:'Elaboración de bebidas malteadas y de malta'},
+  {codigo:'1104',desc:'Elaboración de bebidas no alcohólicas; producción de aguas minerales'},
+  {codigo:'1200',desc:'Elaboración de productos de tabaco'},
+  {codigo:'1311',desc:'Preparación e hilatura de fibras textiles'},
+  {codigo:'1312',desc:'Tejedura de productos textiles'},
+  {codigo:'1313',desc:'Acabado de productos textiles'},
+  {codigo:'1391',desc:'Fabricación de tejidos de punto y ganchillo'},
+  {codigo:'1392',desc:'Fabricación de artículos confeccionados de materiales textiles'},
+  {codigo:'1393',desc:'Fabricación de tapices y alfombras'},
+  {codigo:'1399',desc:'Fabricación de otros productos textiles'},
+  {codigo:'1410',desc:'Fabricación de prendas de vestir, excepto prendas de piel'},
+  {codigo:'1420',desc:'Fabricación de artículos de piel'},
+  {codigo:'1430',desc:'Fabricación de artículos de punto y ganchillo'},
+  {codigo:'1511',desc:'Curtido y adobo de cueros; adobo y teñido de pieles'},
+  {codigo:'1512',desc:'Fabricación de maletas, bolsos de mano y artículos similares'},
+  {codigo:'1520',desc:'Fabricación de calzado'},
+  {codigo:'1610',desc:'Aserrado y acepillado de madera'},
+  {codigo:'1621',desc:'Fabricación de hojas de madera para enchapado y tableros'},
+  {codigo:'1622',desc:'Fabricación de partes y piezas de carpintería para edificios y construcciones'},
+  {codigo:'1623',desc:'Fabricación de recipientes de madera'},
+  {codigo:'1629',desc:'Fabricación de otros productos de madera; fabricación de artículos de corcho, paja y materiales trenzables'},
+  {codigo:'1701',desc:'Fabricación de pasta de madera, papel y cartón'},
+  {codigo:'1702',desc:'Fabricación de papel y cartón ondulado y de envases de papel y cartón'},
+  {codigo:'1709',desc:'Fabricación de otros artículos de papel y cartón'},
+  {codigo:'1811',desc:'Impresión'},
+  {codigo:'1812',desc:'Actividades de servicios relacionadas con la impresión'},
+  {codigo:'1820',desc:'Reproducción de grabaciones'},
+  {codigo:'1910',desc:'Fabricación de productos de hornos de coque'},
+  {codigo:'1920',desc:'Fabricación de productos de la refinación del petróleo'},
+  {codigo:'2011',desc:'Fabricación de sustancias químicas básicas'},
+  {codigo:'2012',desc:'Fabricación de abonos y compuestos de nitrógeno'},
+  {codigo:'2013',desc:'Fabricación de plásticos y de caucho sintético en formas primarias'},
+  {codigo:'2021',desc:'Fabricación de plaguicidas y otros productos agroquímicos'},
+  {codigo:'2022',desc:'Fabricación de pinturas, barnices y productos de revestimiento similares'},
+  {codigo:'2023',desc:'Fabricación de jabones, detergentes, preparados para limpiar y pulir'},
+  {codigo:'2029',desc:'Fabricación de otros productos químicos'},
+  {codigo:'2030',desc:'Fabricación de fibras artificiales'},
+  {codigo:'2100',desc:'Fabricación de productos farmacéuticos, sustancias químicas medicinales y productos botánicos'},
+  {codigo:'2211',desc:'Fabricación de cubiertas y cámaras de caucho; recauchutado y renovación de cubiertas de caucho'},
+  {codigo:'2219',desc:'Fabricación de otros productos de caucho'},
+  {codigo:'2220',desc:'Fabricación de productos de plástico'},
+  {codigo:'2310',desc:'Fabricación de vidrio y productos de vidrio'},
+  {codigo:'2391',desc:'Fabricación de productos refractarios'},
+  {codigo:'2392',desc:'Fabricación de materiales de construcción de arcilla'},
+  {codigo:'2393',desc:'Fabricación de otros productos de porcelana y cerámica'},
+  {codigo:'2394',desc:'Fabricación de cemento, cal y yeso'},
+  {codigo:'2395',desc:'Fabricación de artículos de hormigón, cemento y yeso'},
+  {codigo:'2396',desc:'Corte, talla y acabado de la piedra'},
+  {codigo:'2399',desc:'Fabricación de otros productos minerales no metálicos'},
+  {codigo:'2410',desc:'Industrias básicas de hierro y de acero'},
+  {codigo:'2420',desc:'Fabricación de productos primarios de metales preciosos y metales no ferrosos'},
+  {codigo:'2431',desc:'Fundición de hierro y acero'},
+  {codigo:'2432',desc:'Fundición de metales no ferrosos'},
+  {codigo:'2511',desc:'Fabricación de productos metálicos para uso estructural'},
+  {codigo:'2512',desc:'Fabricación de tanques, depósitos y recipientes de metal'},
+  {codigo:'2513',desc:'Fabricación de generadores de vapor'},
+  {codigo:'2591',desc:'Forja, prensado, estampado y laminado de metal; pulvimetalurgia'},
+  {codigo:'2592',desc:'Tratamiento y revestimiento de metales; maquinado'},
+  {codigo:'2593',desc:'Fabricación de artículos de cuchillería, herramientas de mano y artículos de ferretería'},
+  {codigo:'2599',desc:'Fabricación de otros productos elaborados de metal'},
+  {codigo:'2610',desc:'Fabricación de componentes y tableros electrónicos'},
+  {codigo:'2620',desc:'Fabricación de ordenadores y equipo periférico'},
+  {codigo:'2630',desc:'Fabricación de equipo de comunicaciones'},
+  {codigo:'2640',desc:'Fabricación de aparatos electrónicos de consumo'},
+  {codigo:'2651',desc:'Fabricación de instrumentos y aparatos para medir, verificar, ensayar, navegar y otros fines'},
+  {codigo:'2652',desc:'Fabricación de relojes'},
+  {codigo:'2660',desc:'Fabricación de equipo de irradiación y equipo electrónico de uso médico y terapéutico'},
+  {codigo:'2670',desc:'Fabricación de instrumentos ópticos y equipo fotográfico'},
+  {codigo:'2680',desc:'Fabricación de soportes magnéticos y ópticos'},
+  {codigo:'2711',desc:'Fabricación de motores, generadores y transformadores eléctricos'},
+  {codigo:'2712',desc:'Fabricación de aparatos de distribución y control de la energía eléctrica'},
+  {codigo:'2720',desc:'Fabricación de pilas y acumuladores eléctricos'},
+  {codigo:'2731',desc:'Fabricación de cables de fibra óptica'},
+  {codigo:'2732',desc:'Fabricación de otros hilos y cables eléctricos y electrónicos'},
+  {codigo:'2733',desc:'Fabricación de dispositivos de cableado'},
+  {codigo:'2740',desc:'Fabricación de lámparas eléctricas y equipo de iluminación'},
+  {codigo:'2750',desc:'Fabricación de aparatos de uso doméstico'},
+  {codigo:'2790',desc:'Fabricación de otros tipos de equipo eléctrico'},
+  {codigo:'2811',desc:'Fabricación de motores y turbinas'},
+  {codigo:'2812',desc:'Fabricación de equipo de transmisión de fluidos'},
+  {codigo:'2813',desc:'Fabricación de otras bombas, compresores, grifos y válvulas'},
+  {codigo:'2814',desc:'Fabricación de cojinetes, engranajes, trenes de engranajes y piezas de transmisión'},
+  {codigo:'2815',desc:'Fabricación de hornos, hogueras y quemadores para la alimentación de hogares'},
+  {codigo:'2816',desc:'Fabricación de equipo de elevación y manipulación'},
+  {codigo:'2817',desc:'Fabricación de maquinaria y equipo de oficina'},
+  {codigo:'2818',desc:'Fabricación de herramientas manuales con motor'},
+  {codigo:'2819',desc:'Fabricación de otros tipos de maquinaria de uso general'},
+  {codigo:'2821',desc:'Fabricación de maquinaria agropecuaria y forestal'},
+  {codigo:'2822',desc:'Fabricación de máquinas formadoras de metal y de máquinas herramienta'},
+  {codigo:'2823',desc:'Fabricación de maquinaria para la metalurgia'},
+  {codigo:'2824',desc:'Fabricación de maquinaria para explotación de minas, canteras e industrias de la construcción'},
+  {codigo:'2825',desc:'Fabricación de maquinaria para la elaboración de alimentos, bebidas y tabaco'},
+  {codigo:'2826',desc:'Fabricación de maquinaria para la elaboración de productos textiles'},
+  {codigo:'2829',desc:'Fabricación de otros tipos de maquinaria de uso especial'},
+  {codigo:'2910',desc:'Fabricación de vehículos automotores'},
+  {codigo:'2920',desc:'Fabricación de carrocerías para vehículos automotores; fabricación de remolques y semirremolques'},
+  {codigo:'2930',desc:'Fabricación de partes, piezas y accesorios para vehículos automotores'},
+  {codigo:'3011',desc:'Construcción de barcos y estructuras flotantes'},
+  {codigo:'3012',desc:'Construcción de embarcaciones de recreo y deporte'},
+  {codigo:'3020',desc:'Fabricación de locomotoras y de material rodante para ferrocarriles'},
+  {codigo:'3030',desc:'Fabricación de aeronaves, naves espaciales y maquinaria conexa'},
+  {codigo:'3040',desc:'Fabricación de vehículos militares de combate'},
+  {codigo:'3091',desc:'Fabricación de motocicletas'},
+  {codigo:'3092',desc:'Fabricación de bicicletas y de vehículos para inválidos'},
+  {codigo:'3099',desc:'Fabricación de otros tipos de equipo de transporte'},
+  {codigo:'3100',desc:'Fabricación de muebles'},
+  {codigo:'3211',desc:'Fabricación de joyas y artículos conexos'},
+  {codigo:'3212',desc:'Fabricación de bisutería y artículos conexos'},
+  {codigo:'3220',desc:'Fabricación de instrumentos de música'},
+  {codigo:'3230',desc:'Fabricación de artículos de deporte'},
+  {codigo:'3240',desc:'Fabricación de juegos y juguetes'},
+  {codigo:'3250',desc:'Fabricación de instrumentos y materiales médicos y odontológicos'},
+  {codigo:'3290',desc:'Industrias manufactureras'},
+  {codigo:'3311',desc:'Reparación de productos elaborados de metal'},
+  {codigo:'3312',desc:'Reparación de maquinaria'},
+  {codigo:'3313',desc:'Reparación de equipo electrónico y óptico'},
+  {codigo:'3314',desc:'Reparación de equipo eléctrico'},
+  {codigo:'3315',desc:'Reparación y mantenimiento de buques y embarcaciones'},
+  {codigo:'3316',desc:'Reparación y mantenimiento de aeronaves y naves espaciales'},
+  {codigo:'3317',desc:'Reparación y mantenimiento de otro equipo de transporte'},
+  {codigo:'3319',desc:'Reparación de otros tipos de equipo'},
+  {codigo:'3320',desc:'Instalación de maquinaria y equipo industriales'},
+  {codigo:'3510',desc:'Generación, transmisión y distribución de energía eléctrica'},
+  {codigo:'3520',desc:'Fabricación de gas; distribución de combustibles gaseosos por tuberías'},
+  {codigo:'3530',desc:'Suministro de vapor y de aire acondicionado'},
+  {codigo:'3600',desc:'Captación, tratamiento y distribución de agua'},
+  {codigo:'3700',desc:'Evacuación de aguas residuales'},
+  {codigo:'3811',desc:'Recogida de desechos no peligrosos'},
+  {codigo:'3812',desc:'Recogida de desechos peligrosos'},
+  {codigo:'3821',desc:'Tratamiento y eliminación de desechos no peligrosos'},
+  {codigo:'3822',desc:'Tratamiento y eliminación de desechos peligrosos'},
+  {codigo:'3830',desc:'Recuperación de materiales'},
+  {codigo:'3900',desc:'Actividades de descontaminación y otros servicios de gestión de desechos'},
+  {codigo:'4100',desc:'Construcción de edificios'},
+  {codigo:'4210',desc:'Construcción de carreteras y vías de ferrocarril'},
+  {codigo:'4220',desc:'Construcción de proyectos de servicio público'},
+  {codigo:'4290',desc:'Construcción de otras obras de ingeniería civil'},
+  {codigo:'4311',desc:'Demolición'},
+  {codigo:'4312',desc:'Preparación del terreno'},
+  {codigo:'4321',desc:'Instalaciones eléctricas'},
+  {codigo:'4322',desc:'Instalaciones de fontanería, calefacción y aire acondicionado'},
+  {codigo:'4329',desc:'Otras instalaciones para obras de construcción'},
+  {codigo:'4330',desc:'Terminación y acabado de edificios'},
+  {codigo:'4390',desc:'Otras actividades especializadas de construcción'},
+  {codigo:'4511',desc:'Venta de vehículos automotores'},
+  {codigo:'4512',desc:'Venta de vehículos automotores usados'},
+  {codigo:'4520',desc:'Mantenimiento y reparación de vehículos automotores'},
+  {codigo:'4530',desc:'Venta de partes, piezas y accesorios para vehículos automotores'},
+  {codigo:'4540',desc:'Venta, mantenimiento y reparación de motocicletas y de sus repuestos y accesorios'},
+  {codigo:'4610',desc:'Venta al por mayor a cambio de una retribución o por contrata'},
+  {codigo:'4620',desc:'Venta al por mayor de materias primas agropecuarias y animales vivos'},
+  {codigo:'4630',desc:'Venta al por mayor de alimentos, bebidas y tabaco'},
+  {codigo:'4641',desc:'Venta al por mayor de artículos de uso doméstico'},
+  {codigo:'4649',desc:'Venta al por mayor de otros enseres domésticos'},
+  {codigo:'4651',desc:'Venta al por mayor de computadores, equipo periférico y programas de computación'},
+  {codigo:'4652',desc:'Venta al por mayor de equipo, partes y piezas electrónicas y de telecomunicaciones'},
+  {codigo:'4653',desc:'Venta al por mayor de maquinaria, equipo y materiales agropecuarios'},
+  {codigo:'4659',desc:'Venta al por mayor de otros tipos de maquinaria y equipo'},
+  {codigo:'4661',desc:'Venta al por mayor de combustibles sólidos, líquidos y gaseosos'},
+  {codigo:'4662',desc:'Venta al por mayor de metales y minerales metalíferos'},
+  {codigo:'4663',desc:'Venta al por mayor de materiales de construcción, artículos de ferretería'},
+  {codigo:'4669',desc:'Venta al por mayor de otros productos'},
+  {codigo:'4690',desc:'Venta al por mayor no especializada'},
+  {codigo:'4711',desc:'Venta al por menor en comercios no especializados con predominio de la venta de alimentos'},
+  {codigo:'4719',desc:'Venta al por menor en comercios no especializados'},
+  {codigo:'4721',desc:'Venta al por menor de alimentos en comercios especializados'},
+  {codigo:'4722',desc:'Venta al por menor de bebidas en comercios especializados'},
+  {codigo:'4723',desc:'Venta al por menor de tabaco en comercios especializados'},
+  {codigo:'4730',desc:'Venta al por menor de combustibles para vehículos automotores'},
+  {codigo:'4741',desc:'Venta al por menor de computadores, equipo periférico, programas informáticos'},
+  {codigo:'4742',desc:'Venta al por menor de equipo de telecomunicaciones'},
+  {codigo:'4743',desc:'Venta al por menor de equipo de audio y de video'},
+  {codigo:'4751',desc:'Venta al por menor de productos textiles'},
+  {codigo:'4752',desc:'Venta al por menor de artículos de ferretería, pinturas y productos de vidrio'},
+  {codigo:'4753',desc:'Venta al por menor de tapices, alfombras y cubrimientos para paredes y pisos'},
+  {codigo:'4754',desc:'Venta al por menor de electrodomésticos'},
+  {codigo:'4759',desc:'Venta al por menor de muebles, equipo de iluminación y otros artículos para el hogar'},
+  {codigo:'4761',desc:'Venta al por menor de libros, periódicos y artículos de papelería'},
+  {codigo:'4762',desc:'Venta al por menor de grabaciones de música y de vídeo'},
+  {codigo:'4763',desc:'Venta al por menor de equipos de deporte'},
+  {codigo:'4764',desc:'Venta al por menor de juegos y juguetes'},
+  {codigo:'4771',desc:'Venta al por menor de prendas de vestir, calzado y artículos de cuero'},
+  {codigo:'4772',desc:'Venta al por menor de productos farmacéuticos y médicos'},
+  {codigo:'4773',desc:'Venta al por menor de otros productos nuevos'},
+  {codigo:'4774',desc:'Venta al por menor de artículos de segunda mano'},
+  {codigo:'4781',desc:'Venta al por menor en puestos de venta y mercados de alimentos, bebidas y tabaco'},
+  {codigo:'4782',desc:'Venta al por menor en puestos de venta y mercados de artículos textiles'},
+  {codigo:'4789',desc:'Venta al por menor en puestos de venta y mercados de otros productos'},
+  {codigo:'4791',desc:'Venta al por menor por correo y por internet'},
+  {codigo:'4799',desc:'Otras actividades de venta al por menor no realizadas en comercios'},
+  {codigo:'4911',desc:'Transporte interurbano de pasajeros por ferrocarril'},
+  {codigo:'4912',desc:'Transporte de carga por ferrocarril'},
+  {codigo:'4921',desc:'Transporte urbano y suburbano de pasajeros por vía terrestre'},
+  {codigo:'4922',desc:'Otras actividades de transporte por vía terrestre'},
+  {codigo:'4923',desc:'Transporte de carga por carretera'},
+  {codigo:'4930',desc:'Transporte por oleoductos y gasoductos'},
+  {codigo:'5011',desc:'Transporte marítimo y de cabotaje de pasajeros'},
+  {codigo:'5012',desc:'Transporte marítimo y de cabotaje de carga'},
+  {codigo:'5021',desc:'Transporte de pasajeros por vías de navegación interiores'},
+  {codigo:'5022',desc:'Transporte de carga por vías de navegación interiores'},
+  {codigo:'5110',desc:'Transporte aéreo de pasajeros'},
+  {codigo:'5120',desc:'Transporte aéreo de carga'},
+  {codigo:'5210',desc:'Almacenamiento y depósito'},
+  {codigo:'5221',desc:'Actividades de servicio prestadas a empresas de transporte terrestre'},
+  {codigo:'5222',desc:'Actividades de servicio prestadas a empresas de transporte acuático'},
+  {codigo:'5223',desc:'Actividades de servicio prestadas a empresas de transporte aéreo'},
+  {codigo:'5224',desc:'Manipulación de la carga'},
+  {codigo:'5229',desc:'Otras actividades de apoyo al transporte'},
+  {codigo:'5310',desc:'Actividades postales'},
+  {codigo:'5320',desc:'Actividades de mensajería'},
+  {codigo:'5510',desc:'Hoteles y alojamientos similares'},
+  {codigo:'5520',desc:'Alojamiento para vacaciones y otro alojamiento de corta duración'},
+  {codigo:'5530',desc:'Campamentos y parques para casas rodantes y remolques'},
+  {codigo:'5590',desc:'Otros tipos de alojamiento'},
+  {codigo:'5610',desc:'Actividades de restaurantes y de servicio móvil de comidas'},
+  {codigo:'5621',desc:'Suministro de comidas para eventos'},
+  {codigo:'5629',desc:'Otras actividades de servicio de comidas'},
+  {codigo:'5630',desc:'Actividades de servicio de bebidas'},
+  {codigo:'5811',desc:'Edición de libros'},
+  {codigo:'5812',desc:'Edición de directorios y de listas de correo'},
+  {codigo:'5813',desc:'Edición de periódicos, revistas y otras publicaciones periódicas'},
+  {codigo:'5819',desc:'Otras actividades de edición'},
+  {codigo:'5820',desc:'Edición de programas informáticos'},
+  {codigo:'5911',desc:'Actividades de producción de películas cinematográficas, vídeos y programas de televisión'},
+  {codigo:'5912',desc:'Actividades de posproducción de películas cinematográficas, vídeos y programas de televisión'},
+  {codigo:'5913',desc:'Actividades de distribución de películas cinematográficas, vídeos y programas de televisión'},
+  {codigo:'5914',desc:'Actividades de exhibición de películas cinematográficas y cintas de vídeo'},
+  {codigo:'5920',desc:'Actividades de grabación de sonido y edición de música'},
+  {codigo:'6010',desc:'Transmisiones de radio'},
+  {codigo:'6020',desc:'Programación y transmisiones de televisión'},
+  {codigo:'6110',desc:'Actividades de telecomunicaciones alámbrica'},
+  {codigo:'6120',desc:'Actividades de telecomunicaciones inalámbrica'},
+  {codigo:'6130',desc:'Actividades de telecomunicaciones por satélite'},
+  {codigo:'6190',desc:'Otras actividades de telecomunicaciones'},
+  {codigo:'6201',desc:'Actividades de programación informática'},
+  {codigo:'6202',desc:'Actividades de consultoría informática'},
+  {codigo:'6209',desc:'Otras actividades de tecnología de la información'},
+  {codigo:'6311',desc:'Procesamiento de datos, hospedaje y actividades conexas'},
+  {codigo:'6312',desc:'Portales web'},
+  {codigo:'6391',desc:'Actividades de agencias de noticias'},
+  {codigo:'6399',desc:'Otras actividades de servicios de información'},
+  {codigo:'6411',desc:'Actividades del banco central'},
+  {codigo:'6419',desc:'Otras actividades de intermediación monetaria'},
+  {codigo:'6420',desc:'Actividades de sociedades de cartera'},
+  {codigo:'6430',desc:'Fideicomisos, fondos y entidades financieras similares'},
+  {codigo:'6491',desc:'Arrendamiento financiero'},
+  {codigo:'6492',desc:'Otras actividades de concesión de crédito'},
+  {codigo:'6499',desc:'Otras actividades de servicios financieros'},
+  {codigo:'6511',desc:'Seguro de vida'},
+  {codigo:'6512',desc:'Seguros generales'},
+  {codigo:'6520',desc:'Reaseguros'},
+  {codigo:'6530',desc:'Fondos de pensiones'},
+  {codigo:'6611',desc:'Administración de mercados financieros'},
+  {codigo:'6612',desc:'Corretaje de valores y de contratos de productos básicos'},
+  {codigo:'6619',desc:'Otras actividades auxiliares de las actividades de servicios financieros'},
+  {codigo:'6621',desc:'Evaluación de riesgos y daños'},
+  {codigo:'6622',desc:'Actividades de agentes y corredores de seguros'},
+  {codigo:'6629',desc:'Otras actividades auxiliares de las actividades de seguros y fondos de pensiones'},
+  {codigo:'6630',desc:'Actividades de gestión de fondos'},
+  {codigo:'6810',desc:'Actividades inmobiliarias con bienes propios o arrendados'},
+  {codigo:'6820',desc:'Actividades inmobiliarias a cambio de una retribución o por contrata'},
+  {codigo:'6910',desc:'Actividades jurídicas'},
+  {codigo:'6920',desc:'Actividades de contabilidad, teneduría de libros y auditoría; asesoría en materia de impuestos'},
+  {codigo:'7010',desc:'Actividades de administración empresarial'},
+  {codigo:'7020',desc:'Actividades de consultoría de gestión empresarial'},
+  {codigo:'7110',desc:'Actividades de arquitectura e ingeniería y actividades conexas de consultoría técnica'},
+  {codigo:'7120',desc:'Ensayos y análisis técnicos'},
+  {codigo:'7210',desc:'Investigaciones y desarrollo experimental en el campo de las ciencias naturales y la ingeniería'},
+  {codigo:'7220',desc:'Investigaciones y desarrollo experimental en el campo de las ciencias sociales y las humanidades'},
+  {codigo:'7310',desc:'Publicidad'},
+  {codigo:'7320',desc:'Estudios de mercado y encuestas de opinión pública'},
+  {codigo:'7410',desc:'Actividades especializadas de diseño'},
+  {codigo:'7420',desc:'Actividades de fotografía'},
+  {codigo:'7490',desc:'Otras actividades profesionales, científicas y técnicas'},
+  {codigo:'7500',desc:'Actividades veterinarias'},
+  {codigo:'7711',desc:'Alquiler y arrendamiento de automóviles y vehículos automotores livianos'},
+  {codigo:'7712',desc:'Alquiler y arrendamiento de camiones'},
+  {codigo:'7721',desc:'Alquiler y arrendamiento de equipo recreativo y deportivo'},
+  {codigo:'7722',desc:'Alquiler de cintas de vídeo y discos'},
+  {codigo:'7729',desc:'Alquiler y arrendamiento de otros efectos personales y enseres domésticos'},
+  {codigo:'7730',desc:'Alquiler y arrendamiento de otros tipos de maquinaria, equipo y bienes tangibles'},
+  {codigo:'7740',desc:'Arrendamiento de propiedad intelectual y productos similares'},
+  {codigo:'7810',desc:'Actividades de agencias de empleo'},
+  {codigo:'7820',desc:'Actividades de agencias de empleo temporal'},
+  {codigo:'7830',desc:'Otras actividades de dotación de recursos humanos'},
+  {codigo:'7911',desc:'Actividades de agencias de viajes'},
+  {codigo:'7912',desc:'Actividades de operadores turísticos'},
+  {codigo:'7990',desc:'Otros servicios de reservas y actividades conexas'},
+  {codigo:'8010',desc:'Actividades de seguridad privada'},
+  {codigo:'8020',desc:'Actividades de servicios de sistemas de seguridad'},
+  {codigo:'8030',desc:'Actividades de investigación'},
+  {codigo:'8110',desc:'Actividades de servicios a edificios y paisajismo'},
+  {codigo:'8121',desc:'Limpieza general de edificios'},
+  {codigo:'8129',desc:'Otras actividades de limpieza de edificios e instalaciones industriales'},
+  {codigo:'8130',desc:'Actividades de paisajismo y servicios de mantenimiento conexos'},
+  {codigo:'8211',desc:'Actividades combinadas de servicios administrativos de oficina'},
+  {codigo:'8219',desc:'Fotocopiado, preparación de documentos y otras actividades especializadas de apoyo de oficina'},
+  {codigo:'8220',desc:'Actividades de centros de llamadas'},
+  {codigo:'8230',desc:'Organización de convenciones y eventos comerciales'},
+  {codigo:'8291',desc:'Actividades de agencias de cobro y agencias de calificación crediticia'},
+  {codigo:'8292',desc:'Actividades de envasado'},
+  {codigo:'8299',desc:'Otras actividades de servicios de apoyo a las empresas'},
+  {codigo:'8411',desc:'Actividades de la administración pública en general'},
+  {codigo:'8412',desc:'Regulación de las actividades de organismos que prestan servicios sanitarios'},
+  {codigo:'8413',desc:'Regulación y facilitación de la actividad económica'},
+  {codigo:'8421',desc:'Relaciones exteriores'},
+  {codigo:'8422',desc:'Actividades de defensa'},
+  {codigo:'8423',desc:'Actividades de mantenimiento del orden público y de seguridad'},
+  {codigo:'8424',desc:'Actividades de justicia'},
+  {codigo:'8425',desc:'Actividades de protección civil'},
+  {codigo:'8430',desc:'Actividades de planes de seguridad social de afiliación obligatoria'},
+  {codigo:'8510',desc:'Enseñanza preescolar'},
+  {codigo:'8521',desc:'Enseñanza primaria'},
+  {codigo:'8522',desc:'Enseñanza secundaria de formación general'},
+  {codigo:'8523',desc:'Enseñanza secundaria de formación técnica y profesional'},
+  {codigo:'8530',desc:'Enseñanza superior'},
+  {codigo:'8541',desc:'Educación deportiva y recreativa'},
+  {codigo:'8542',desc:'Educación cultural'},
+  {codigo:'8549',desc:'Otros tipos de enseñanza'},
+  {codigo:'8550',desc:'Actividades de apoyo a la enseñanza'},
+  {codigo:'8610',desc:'Actividades de hospitales'},
+  {codigo:'8620',desc:'Actividades de médicos y odontólogos'},
+  {codigo:'8690',desc:'Otras actividades de atención de la salud humana'},
+  {codigo:'8710',desc:'Actividades de atención de enfermería en instituciones'},
+  {codigo:'8720',desc:'Actividades de atención en instituciones para personas con discapacidad mental y drogadictos'},
+  {codigo:'8730',desc:'Actividades de atención en instituciones para personas mayores y discapacitadas'},
+  {codigo:'8790',desc:'Otras actividades de atención en instituciones'},
+  {codigo:'8810',desc:'Actividades de asistencia social sin alojamiento para personas mayores y discapacitadas'},
+  {codigo:'8890',desc:'Otras actividades de asistencia social sin alojamiento'},
+  {codigo:'9000',desc:'Actividades creativas, artísticas y de entretenimiento'},
+  {codigo:'9101',desc:'Actividades de bibliotecas y archivos'},
+  {codigo:'9102',desc:'Actividades de museos y gestión de lugares y edificios históricos'},
+  {codigo:'9103',desc:'Actividades de jardines botánicos, zoológicos y reservas naturales'},
+  {codigo:'9200',desc:'Actividades de juegos de azar y apuestas'},
+  {codigo:'9311',desc:'Gestión de instalaciones deportivas'},
+  {codigo:'9312',desc:'Actividades de clubes deportivos'},
+  {codigo:'9319',desc:'Otras actividades deportivas'},
+  {codigo:'9321',desc:'Actividades de parques de atracciones y parques temáticos'},
+  {codigo:'9329',desc:'Otras actividades de esparcimiento y recreación'},
+  {codigo:'9411',desc:'Actividades de asociaciones empresariales y de empleadores'},
+  {codigo:'9412',desc:'Actividades de asociaciones profesionales'},
+  {codigo:'9420',desc:'Actividades de sindicatos de empleados'},
+  {codigo:'9491',desc:'Actividades de organizaciones religiosas'},
+  {codigo:'9492',desc:'Actividades de organizaciones políticas'},
+  {codigo:'9499',desc:'Actividades de otras asociaciones'},
+  {codigo:'9511',desc:'Reparación de computadores y equipo periférico'},
+  {codigo:'9512',desc:'Reparación de equipo de comunicaciones'},
+  {codigo:'9521',desc:'Reparación de aparatos electrónicos de consumo'},
+  {codigo:'9522',desc:'Reparación de aparatos domésticos y de jardinería'},
+  {codigo:'9523',desc:'Reparación de calzado y artículos de cuero'},
+  {codigo:'9524',desc:'Reparación de muebles y artículos domésticos'},
+  {codigo:'9529',desc:'Reparación de otros efectos personales y enseres domésticos'},
+  {codigo:'9601',desc:'Lavado y limpieza de prendas de tela y de piel, incluso la limpieza en seco'},
+  {codigo:'9602',desc:'Peluquería y otros tratamientos de belleza'},
+  {codigo:'9603',desc:'Pompas fúnebres y actividades conexas'},
+  {codigo:'9609',desc:'Otras actividades de servicios personales'},
+  {codigo:'9700',desc:'Actividades de los hogares como empleadores de personal doméstico'},
+  {codigo:'9900',desc:'Actividades de organizaciones y órganos extraterritoriales'},
+];
+
+// ── Funciones de búsqueda UI ─────────────────────────────────────
+function initSelectRegion(idRegion, idCiudad) {
+  const selReg = document.getElementById(idRegion);
+  if (!selReg) return;
+  selReg.innerHTML = '<option value="">Seleccionar región...</option>' +
+    Object.keys(REGIONES_COMUNAS).map(r => `<option value="${r}">${r}</option>`).join('');
+  selReg.onchange = () => {
+    const selCiu = document.getElementById(idCiudad);
+    if (!selCiu) return;
+    const comunas = REGIONES_COMUNAS[selReg.value] || [];
+    selCiu.innerHTML = '<option value="">Seleccionar comuna...</option>' +
+      comunas.map(c => `<option value="${c}">${c}</option>`).join('');
+    selCiu.disabled = !comunas.length;
+  };
+  // Trigger si ya tiene valor
+  if (selReg.value) selReg.onchange();
+}
+
+function initBuscadorActeco(idInput, idSugerencias) {
+  const input = document.getElementById(idInput);
+  const sug   = document.getElementById(idSugerencias);
+  if (!input || !sug) return;
+  input.autocomplete = 'off';
+  input.oninput = () => {
+    const q = input.value.toLowerCase().trim();
+    if (q.length < 2) { sug.style.display='none'; return; }
+    const matches = ACTIVIDADES_SII.filter(a =>
+      a.codigo.startsWith(q) || a.desc.toLowerCase().includes(q)
+    ).slice(0, 8);
+    if (!matches.length) { sug.style.display='none'; return; }
+    sug.innerHTML = matches.map(a =>
+      `<div class="acteco-item" onclick="seleccionarActeco('${idInput}','${idSugerencias}','${a.codigo}','${a.desc.replace(/'/g,"\\'")}')">
+        <span class="acteco-cod">${a.codigo}</span> ${a.desc}
+      </div>`
+    ).join('');
+    sug.style.display = 'block';
+  };
+  document.addEventListener('click', e => {
+    if (!input.contains(e.target) && !sug.contains(e.target)) sug.style.display='none';
+  }, { capture: true });
+}
+function seleccionarActeco(idInput, idSug, codigo, desc) {
+  const input = document.getElementById(idInput);
+  if (input) input.value = codigo + ' — ' + desc;
+  const sug = document.getElementById(idSug);
+  if (sug) sug.style.display='none';
+}
+
 const PLAN_INICIAL = [
-  {codigo:'1-01-001-0001',nombre:'Caja Moneda Nacional',tipo:'Activo',naturaleza:'Deudora',sii:'',descripcion:''},
-  {codigo:'1-01-001-0002',nombre:'Caja Moneda Extranjera',tipo:'Activo',naturaleza:'Deudora',sii:'',descripcion:''},
-  {codigo:'1-01-002-0001',nombre:'Banco Cuenta Corriente',tipo:'Activo',naturaleza:'Deudora',sii:'',descripcion:''},
-  {codigo:'1-01-002-0002',nombre:'Banco Cuenta Ahorro',tipo:'Activo',naturaleza:'Deudora',sii:'',descripcion:''},
-  {codigo:'1-02-001-0001',nombre:'Clientes',tipo:'Activo',naturaleza:'Deudora',sii:'',descripcion:'Deudores por ventas'},
-  {codigo:'1-02-001-0002',nombre:'Deudores Varios',tipo:'Activo',naturaleza:'Deudora',sii:'',descripcion:''},
-  {codigo:'1-02-002-0001',nombre:'IVA Crédito Fiscal',tipo:'Activo',naturaleza:'Deudora',sii:'F29',descripcion:'IVA soportado en compras'},
-  {codigo:'1-02-002-0002',nombre:'Pagos Provisionales Mensuales (PPM)',tipo:'Activo',naturaleza:'Deudora',sii:'F29',descripcion:''},
-  {codigo:'1-02-003-0001',nombre:'Existencias Mercaderías',tipo:'Activo',naturaleza:'Deudora',sii:'',descripcion:''},
-  {codigo:'1-02-003-0002',nombre:'Existencias Materias Primas',tipo:'Activo',naturaleza:'Deudora',sii:'',descripcion:''},
-  {codigo:'1-03-001-0001',nombre:'Maquinaria y Equipos',tipo:'Activo',naturaleza:'Deudora',sii:'',descripcion:''},
-  {codigo:'1-03-001-0002',nombre:'Dep. Acumulada Maquinaria',tipo:'Activo',naturaleza:'Acreedora',sii:'',descripcion:''},
-  {codigo:'1-03-002-0001',nombre:'Vehículos',tipo:'Activo',naturaleza:'Deudora',sii:'',descripcion:''},
-  {codigo:'1-03-002-0002',nombre:'Dep. Acumulada Vehículos',tipo:'Activo',naturaleza:'Acreedora',sii:'',descripcion:''},
-  {codigo:'1-03-003-0001',nombre:'Terrenos',tipo:'Activo',naturaleza:'Deudora',sii:'',descripcion:''},
-  {codigo:'1-03-004-0001',nombre:'Construcciones e Instalaciones',tipo:'Activo',naturaleza:'Deudora',sii:'',descripcion:''},
-  {codigo:'2-01-001-0001',nombre:'Proveedores',tipo:'Pasivo',naturaleza:'Acreedora',sii:'',descripcion:''},
-  {codigo:'2-01-001-0002',nombre:'Acreedores Varios',tipo:'Pasivo',naturaleza:'Acreedora',sii:'',descripcion:''},
-  {codigo:'2-01-002-0001',nombre:'IVA Débito Fiscal',tipo:'Pasivo',naturaleza:'Acreedora',sii:'F29',descripcion:'IVA recargado en ventas'},
-  {codigo:'2-01-002-0002',nombre:'Impuesto Renta por Pagar',tipo:'Pasivo',naturaleza:'Acreedora',sii:'',descripcion:''},
-  {codigo:'2-01-003-0001',nombre:'Remuneraciones por Pagar',tipo:'Pasivo',naturaleza:'Acreedora',sii:'',descripcion:''},
-  {codigo:'2-01-003-0002',nombre:'Provisión Vacaciones',tipo:'Pasivo',naturaleza:'Acreedora',sii:'',descripcion:''},
-  {codigo:'2-01-004-0001',nombre:'Préstamos Bancarios Corto Plazo',tipo:'Pasivo',naturaleza:'Acreedora',sii:'',descripcion:''},
-  {codigo:'2-02-001-0001',nombre:'Préstamos Bancarios Largo Plazo',tipo:'Pasivo',naturaleza:'Acreedora',sii:'',descripcion:''},
-  {codigo:'3-01-001-0001',nombre:'Capital Pagado',tipo:'Patrimonio',naturaleza:'Acreedora',sii:'',descripcion:''},
-  {codigo:'3-01-002-0001',nombre:'Utilidad del Ejercicio',tipo:'Patrimonio',naturaleza:'Acreedora',sii:'',descripcion:''},
-  {codigo:'3-01-002-0002',nombre:'Pérdida del Ejercicio',tipo:'Patrimonio',naturaleza:'Deudora',sii:'',descripcion:''},
-  {codigo:'3-01-003-0001',nombre:'Utilidades Acumuladas',tipo:'Patrimonio',naturaleza:'Acreedora',sii:'',descripcion:''},
-  {codigo:'4-01-001-0001',nombre:'Ventas Gravadas con IVA',tipo:'Ingreso',naturaleza:'Acreedora',sii:'F29',descripcion:''},
-  {codigo:'4-01-001-0002',nombre:'Ventas Exentas de IVA',tipo:'Ingreso',naturaleza:'Acreedora',sii:'F29',descripcion:''},
-  {codigo:'4-01-002-0001',nombre:'Prestación de Servicios',tipo:'Ingreso',naturaleza:'Acreedora',sii:'',descripcion:''},
-  {codigo:'4-02-001-0001',nombre:'Ingresos Financieros',tipo:'Ingreso',naturaleza:'Acreedora',sii:'',descripcion:''},
-  {codigo:'4-02-002-0001',nombre:'Otros Ingresos No Operacionales',tipo:'Ingreso',naturaleza:'Acreedora',sii:'',descripcion:''},
-  {codigo:'5-01-001-0001',nombre:'Costo Ventas',tipo:'Gasto',naturaleza:'Deudora',sii:'',descripcion:''},
-  {codigo:'5-02-001-0001',nombre:'Remuneraciones',tipo:'Gasto',naturaleza:'Deudora',sii:'',descripcion:'Sueldos y salarios'},
-  {codigo:'5-02-001-0002',nombre:'Honorarios',tipo:'Gasto',naturaleza:'Deudora',sii:'',descripcion:''},
-  {codigo:'5-02-002-0001',nombre:'Cotizaciones Previsionales Empleador',tipo:'Gasto',naturaleza:'Deudora',sii:'',descripcion:'AFP y Salud empleador'},
-  {codigo:'5-02-003-0001',nombre:'Arriendos',tipo:'Gasto',naturaleza:'Deudora',sii:'',descripcion:''},
-  {codigo:'5-02-003-0002',nombre:'Servicios Básicos',tipo:'Gasto',naturaleza:'Deudora',sii:'',descripcion:'Luz, agua, gas, internet'},
-  {codigo:'5-02-004-0001',nombre:'Depreciación del Ejercicio',tipo:'Gasto',naturaleza:'Deudora',sii:'',descripcion:''},
-  {codigo:'5-02-005-0001',nombre:'Gastos Generales de Administración',tipo:'Gasto',naturaleza:'Deudora',sii:'',descripcion:''},
-  {codigo:'5-02-006-0001',nombre:'Gastos Financieros',tipo:'Gasto',naturaleza:'Deudora',sii:'',descripcion:'Intereses pagados'},
-  {codigo:'5-02-007-0001',nombre:'Impuesto de Primera Categoría',tipo:'Gasto',naturaleza:'Deudora',sii:'',descripcion:''},
-  {codigo:'5-02-008-0001',nombre:'Otros Gastos No Operacionales',tipo:'Gasto',naturaleza:'Deudora',sii:'',descripcion:''},
+  // ── ACTIVO CIRCULANTE ──────────────────────────────────────────
+  {codigo:'1-01-001-0001',nombre:'Caja Moneda Nacional',        tipo:'Activo',naturaleza:'Deudora',  sii:'',    descripcion:'Efectivo en caja MN'},
+  {codigo:'1-01-001-0002',nombre:'Caja Moneda Extranjera',      tipo:'Activo',naturaleza:'Deudora',  sii:'',    descripcion:'Efectivo en caja ME'},
+  {codigo:'1-01-002-0001',nombre:'Banco Cuenta Corriente',      tipo:'Activo',naturaleza:'Deudora',  sii:'',    descripcion:''},
+  {codigo:'1-01-002-0002',nombre:'Banco Cuenta Ahorro',         tipo:'Activo',naturaleza:'Deudora',  sii:'',    descripcion:''},
+  {codigo:'1-01-003-0001',nombre:'Fondos por Rendir',           tipo:'Activo',naturaleza:'Deudora',  sii:'',    descripcion:'Anticipos a rendir cuentas'},
+  {codigo:'1-02-001-0001',nombre:'Clientes (Deudores por Ventas)',tipo:'Activo',naturaleza:'Deudora', sii:'DJ1887',descripcion:'Cuentas por cobrar clientes'},
+  {codigo:'1-02-001-0002',nombre:'Documentos por Cobrar',       tipo:'Activo',naturaleza:'Deudora',  sii:'',    descripcion:'Letras y pagarés'},
+  {codigo:'1-02-001-0003',nombre:'Deudores Varios',             tipo:'Activo',naturaleza:'Deudora',  sii:'',    descripcion:''},
+  {codigo:'1-02-001-0004',nombre:'Provisión Deudores Incobrables',tipo:'Activo',naturaleza:'Acreedora',sii:'',  descripcion:'Estimación pérdida cartera'},
+  {codigo:'1-02-002-0001',nombre:'IVA Crédito Fiscal',          tipo:'Activo',naturaleza:'Deudora',  sii:'F29', descripcion:'IVA soportado en compras — Cód. 520 F29'},
+  {codigo:'1-02-002-0002',nombre:'Pagos Provisionales Mensuales (PPM)',tipo:'Activo',naturaleza:'Deudora',sii:'F29',descripcion:'PPM Art. 84 LIR — Cód. 563 F29'},
+  {codigo:'1-02-002-0003',nombre:'Retenciones de Impuesto por Recuperar',tipo:'Activo',naturaleza:'Deudora',sii:'',descripcion:''},
+  {codigo:'1-02-003-0001',nombre:'Existencias Mercaderías',     tipo:'Activo',naturaleza:'Deudora',  sii:'',    descripcion:'Inventario de bienes para venta'},
+  {codigo:'1-02-003-0002',nombre:'Existencias Materias Primas', tipo:'Activo',naturaleza:'Deudora',  sii:'',    descripcion:''},
+  {codigo:'1-02-003-0003',nombre:'Existencias Productos en Proceso',tipo:'Activo',naturaleza:'Deudora',sii:'',  descripcion:''},
+  {codigo:'1-02-003-0004',nombre:'Existencias Productos Terminados',tipo:'Activo',naturaleza:'Deudora',sii:'',  descripcion:''},
+  {codigo:'1-02-004-0001',nombre:'Gastos Pagados por Anticipado',tipo:'Activo',naturaleza:'Deudora', sii:'',    descripcion:'Seguros, arriendos anticipados'},
+  {codigo:'1-02-005-0001',nombre:'Impuesto a la Renta por Recuperar',tipo:'Activo',naturaleza:'Deudora',sii:'F22',descripcion:'IDPC a recuperar F22'},
+  // ── ACTIVO NO CIRCULANTE ───────────────────────────────────────
+  {codigo:'1-03-001-0001',nombre:'Terrenos',                    tipo:'Activo',naturaleza:'Deudora',  sii:'',    descripcion:'No deprecia'},
+  {codigo:'1-03-002-0001',nombre:'Construcciones e Instalaciones',tipo:'Activo',naturaleza:'Deudora',sii:'',    descripcion:''},
+  {codigo:'1-03-002-0002',nombre:'Dep. Acumulada Construcciones',tipo:'Activo',naturaleza:'Acreedora',sii:'',   descripcion:''},
+  {codigo:'1-03-003-0001',nombre:'Maquinaria y Equipos',        tipo:'Activo',naturaleza:'Deudora',  sii:'',    descripcion:''},
+  {codigo:'1-03-003-0002',nombre:'Dep. Acumulada Maquinaria',   tipo:'Activo',naturaleza:'Acreedora',sii:'',   descripcion:''},
+  {codigo:'1-03-004-0001',nombre:'Vehículos y Equipos de Transporte',tipo:'Activo',naturaleza:'Deudora',sii:'',descripcion:''},
+  {codigo:'1-03-004-0002',nombre:'Dep. Acumulada Vehículos',    tipo:'Activo',naturaleza:'Acreedora',sii:'',   descripcion:''},
+  {codigo:'1-03-005-0001',nombre:'Muebles y Útiles de Oficina', tipo:'Activo',naturaleza:'Deudora',  sii:'',    descripcion:''},
+  {codigo:'1-03-005-0002',nombre:'Dep. Acumulada Muebles y Útiles',tipo:'Activo',naturaleza:'Acreedora',sii:'',descripcion:''},
+  {codigo:'1-03-006-0001',nombre:'Equipos Computacionales',     tipo:'Activo',naturaleza:'Deudora',  sii:'',    descripcion:''},
+  {codigo:'1-03-006-0002',nombre:'Dep. Acumulada Equipos Computacionales',tipo:'Activo',naturaleza:'Acreedora',sii:'',descripcion:''},
+  {codigo:'1-04-001-0001',nombre:'Software y Licencias',        tipo:'Activo',naturaleza:'Deudora',  sii:'',    descripcion:'Activos intangibles'},
+  {codigo:'1-04-001-0002',nombre:'Amortización Acumulada Software',tipo:'Activo',naturaleza:'Acreedora',sii:'',descripcion:''},
+  {codigo:'1-04-002-0001',nombre:'Inversiones en Empresas Relacionadas',tipo:'Activo',naturaleza:'Deudora',sii:'',descripcion:''},
+  {codigo:'1-04-003-0001',nombre:'Mayor Valor de Inversiones',  tipo:'Activo',naturaleza:'Deudora',  sii:'',    descripcion:'Goodwill'},
+  // ── PASIVO CIRCULANTE ──────────────────────────────────────────
+  {codigo:'2-01-001-0001',nombre:'Proveedores (Acreedores por Compras)',tipo:'Pasivo',naturaleza:'Acreedora',sii:'DJ1879',descripcion:'Cuentas por pagar proveedores'},
+  {codigo:'2-01-001-0002',nombre:'Documentos por Pagar',        tipo:'Pasivo',naturaleza:'Acreedora', sii:'',   descripcion:'Letras y pagarés por pagar'},
+  {codigo:'2-01-001-0003',nombre:'Acreedores Varios',           tipo:'Pasivo',naturaleza:'Acreedora', sii:'',   descripcion:''},
+  {codigo:'2-01-002-0001',nombre:'IVA Débito Fiscal',           tipo:'Pasivo',naturaleza:'Acreedora', sii:'F29',descripcion:'IVA recargado en ventas — Cód. 502 F29'},
+  {codigo:'2-01-002-0002',nombre:'IVA por Pagar (Neto)',        tipo:'Pasivo',naturaleza:'Acreedora', sii:'F29',descripcion:'Resultado neto IVA'},
+  {codigo:'2-01-002-0003',nombre:'Impuesto de Primera Categoría por Pagar',tipo:'Pasivo',naturaleza:'Acreedora',sii:'F22',descripcion:'IDPC — Arts. 20 y 84 LIR'},
+  {codigo:'2-01-002-0004',nombre:'Impuesto Único Segunda Categoría por Pagar',tipo:'Pasivo',naturaleza:'Acreedora',sii:'LRE',descripcion:'IUSC retenido trabajadores'},
+  {codigo:'2-01-002-0005',nombre:'Retenciones Honorarios por Enterar',tipo:'Pasivo',naturaleza:'Acreedora',sii:'F29',descripcion:'Ret. honorarios — Cód. 151/152 F29'},
+  {codigo:'2-01-003-0001',nombre:'Remuneraciones por Pagar',    tipo:'Pasivo',naturaleza:'Acreedora', sii:'LRE', descripcion:'Sueldos devengados no pagados'},
+  {codigo:'2-01-003-0002',nombre:'AFP por Pagar',               tipo:'Pasivo',naturaleza:'Acreedora', sii:'',   descripcion:'Cotizaciones AFP pendientes'},
+  {codigo:'2-01-003-0003',nombre:'Salud por Pagar (Fonasa/Isapre)',tipo:'Pasivo',naturaleza:'Acreedora',sii:'',  descripcion:''},
+  {codigo:'2-01-003-0004',nombre:'Seguro Cesantía por Pagar',   tipo:'Pasivo',naturaleza:'Acreedora', sii:'',   descripcion:''},
+  {codigo:'2-01-003-0005',nombre:'Provisión Vacaciones',        tipo:'Pasivo',naturaleza:'Acreedora', sii:'',   descripcion:''},
+  {codigo:'2-01-003-0006',nombre:'Provisión Indemnización por Años de Servicio',tipo:'Pasivo',naturaleza:'Acreedora',sii:'',descripcion:''},
+  {codigo:'2-01-004-0001',nombre:'Préstamos Bancarios Corto Plazo',tipo:'Pasivo',naturaleza:'Acreedora',sii:'', descripcion:'Vencimiento < 1 año'},
+  {codigo:'2-01-004-0002',nombre:'Porción Corriente Deuda Largo Plazo',tipo:'Pasivo',naturaleza:'Acreedora',sii:'',descripcion:'Cuotas LP vencen en 12 meses'},
+  {codigo:'2-01-005-0001',nombre:'Ingresos Percibidos por Anticipado',tipo:'Pasivo',naturaleza:'Acreedora',sii:'',descripcion:''},
+  // ── PASIVO NO CIRCULANTE ───────────────────────────────────────
+  {codigo:'2-02-001-0001',nombre:'Préstamos Bancarios Largo Plazo',tipo:'Pasivo',naturaleza:'Acreedora',sii:'', descripcion:'Vencimiento > 1 año'},
+  {codigo:'2-02-002-0001',nombre:'Impuesto Diferido Pasivo',    tipo:'Pasivo',naturaleza:'Acreedora', sii:'',   descripcion:'NIC 12'},
+  // ── PATRIMONIO ─────────────────────────────────────────────────
+  {codigo:'3-01-001-0001',nombre:'Capital Pagado',              tipo:'Patrimonio',naturaleza:'Acreedora',sii:'F22',descripcion:'Capital social efectivamente pagado'},
+  {codigo:'3-01-001-0002',nombre:'Capital por Enterar',         tipo:'Patrimonio',naturaleza:'Acreedora',sii:'',   descripcion:'Capital suscrito no pagado'},
+  {codigo:'3-01-002-0001',nombre:'Reservas de Revalorización',  tipo:'Patrimonio',naturaleza:'Acreedora',sii:'',   descripcion:'Corrección monetaria Art. 41 LIR'},
+  {codigo:'3-01-003-0001',nombre:'Utilidades Retenidas',        tipo:'Patrimonio',naturaleza:'Acreedora',sii:'F22',descripcion:'FUT / RAI acumulado'},
+  {codigo:'3-01-003-0002',nombre:'Pérdidas Acumuladas',         tipo:'Patrimonio',naturaleza:'Deudora',  sii:'',   descripcion:''},
+  {codigo:'3-01-004-0001',nombre:'Utilidad del Ejercicio',      tipo:'Patrimonio',naturaleza:'Acreedora',sii:'F22',descripcion:'Resultado positivo del período'},
+  {codigo:'3-01-004-0002',nombre:'Pérdida del Ejercicio',       tipo:'Patrimonio',naturaleza:'Deudora',  sii:'',   descripcion:''},
+  {codigo:'3-01-005-0001',nombre:'Dividendos / Retiros Pagados',tipo:'Patrimonio',naturaleza:'Deudora',  sii:'DJ1879',descripcion:''},
+  // ── INGRESOS OPERACIONALES ─────────────────────────────────────
+  {codigo:'4-01-001-0001',nombre:'Ventas Gravadas con IVA',     tipo:'Ingreso',naturaleza:'Acreedora',  sii:'F29',descripcion:'Ventas afectas IVA — Cód. 503/504 F29'},
+  {codigo:'4-01-001-0002',nombre:'Ventas Exentas de IVA',       tipo:'Ingreso',naturaleza:'Acreedora',  sii:'F29',descripcion:'Ventas exentas — Cód. 505/506 F29'},
+  {codigo:'4-01-001-0003',nombre:'Ventas No Afectas',           tipo:'Ingreso',naturaleza:'Acreedora',  sii:'',   descripcion:'Ventas fuera del campo IVA'},
+  {codigo:'4-01-002-0001',nombre:'Prestación de Servicios Afectos IVA',tipo:'Ingreso',naturaleza:'Acreedora',sii:'F29',descripcion:''},
+  {codigo:'4-01-002-0002',nombre:'Prestación de Servicios Exentos',tipo:'Ingreso',naturaleza:'Acreedora',sii:'',  descripcion:''},
+  {codigo:'4-01-003-0001',nombre:'Devoluciones y Descuentos sobre Ventas',tipo:'Ingreso',naturaleza:'Deudora',sii:'',descripcion:'Nota de crédito emitida'},
+  // ── INGRESOS NO OPERACIONALES ──────────────────────────────────
+  {codigo:'4-02-001-0001',nombre:'Ingresos Financieros (Intereses)',tipo:'Ingreso',naturaleza:'Acreedora',sii:'F22',descripcion:'Art. 20 N°2 LIR'},
+  {codigo:'4-02-001-0002',nombre:'Dividendos Percibidos',       tipo:'Ingreso',naturaleza:'Acreedora',  sii:'F22',descripcion:'Art. 20 N°2 LIR'},
+  {codigo:'4-02-002-0001',nombre:'Utilidad en Venta de Activo Fijo',tipo:'Ingreso',naturaleza:'Acreedora',sii:'',  descripcion:''},
+  {codigo:'4-02-003-0001',nombre:'Otros Ingresos No Operacionales',tipo:'Ingreso',naturaleza:'Acreedora',sii:'',  descripcion:''},
+  // ── COSTO DE VENTAS ────────────────────────────────────────────
+  {codigo:'5-01-001-0001',nombre:'Costo de Ventas',             tipo:'Gasto',naturaleza:'Deudora',     sii:'',   descripcion:'CMV — Art. 30 LIR'},
+  {codigo:'5-01-002-0001',nombre:'Costo de Prestación de Servicios',tipo:'Gasto',naturaleza:'Deudora', sii:'',   descripcion:''},
+  // ── GASTOS OPERACIONALES ───────────────────────────────────────
+  {codigo:'5-02-001-0001',nombre:'Remuneraciones del Personal',  tipo:'Gasto',naturaleza:'Deudora',    sii:'LRE',descripcion:'Sueldos y salarios Art. 31 N°6 LIR'},
+  {codigo:'5-02-001-0002',nombre:'Horas Extraordinarias',        tipo:'Gasto',naturaleza:'Deudora',    sii:'',   descripcion:''},
+  {codigo:'5-02-001-0003',nombre:'Gratificaciones',              tipo:'Gasto',naturaleza:'Deudora',    sii:'',   descripcion:'Art. 47/50 CT'},
+  {codigo:'5-02-001-0004',nombre:'Honorarios a Terceros',        tipo:'Gasto',naturaleza:'Deudora',    sii:'DJ1879',descripcion:'Art. 31 N°12 LIR — sustenta DJ1879'},
+  {codigo:'5-02-002-0001',nombre:'Cotizaciones Previsionales Empleador',tipo:'Gasto',naturaleza:'Deudora',sii:'',descripcion:'AFP, salud, seguro cesantía empleador'},
+  {codigo:'5-02-002-0002',nombre:'Seguro de Accidentes del Trabajo',tipo:'Gasto',naturaleza:'Deudora', sii:'',   descripcion:'Mutualidad'},
+  {codigo:'5-02-003-0001',nombre:'Arriendo de Inmuebles',        tipo:'Gasto',naturaleza:'Deudora',    sii:'DJ1887',descripcion:'Art. 31 N°11 LIR'},
+  {codigo:'5-02-003-0002',nombre:'Arriendo de Bienes Muebles',   tipo:'Gasto',naturaleza:'Deudora',    sii:'',   descripcion:''},
+  {codigo:'5-02-004-0001',nombre:'Energía Eléctrica',            tipo:'Gasto',naturaleza:'Deudora',    sii:'',   descripcion:''},
+  {codigo:'5-02-004-0002',nombre:'Agua Potable',                 tipo:'Gasto',naturaleza:'Deudora',    sii:'',   descripcion:''},
+  {codigo:'5-02-004-0003',nombre:'Gas',                         tipo:'Gasto',naturaleza:'Deudora',    sii:'',   descripcion:''},
+  {codigo:'5-02-004-0004',nombre:'Telecomunicaciones e Internet', tipo:'Gasto',naturaleza:'Deudora',   sii:'',   descripcion:''},
+  {codigo:'5-02-005-0001',nombre:'Materiales y Suministros de Oficina',tipo:'Gasto',naturaleza:'Deudora',sii:'',  descripcion:''},
+  {codigo:'5-02-005-0002',nombre:'Gastos de Aseo y Mantención',  tipo:'Gasto',naturaleza:'Deudora',   sii:'',   descripcion:''},
+  {codigo:'5-02-005-0003',nombre:'Seguros',                      tipo:'Gasto',naturaleza:'Deudora',   sii:'',   descripcion:''},
+  {codigo:'5-02-005-0004',nombre:'Capacitación y Perfeccionamiento',tipo:'Gasto',naturaleza:'Deudora',sii:'',    descripcion:'Franquicia SENCE'},
+  {codigo:'5-02-005-0005',nombre:'Publicidad y Propaganda',      tipo:'Gasto',naturaleza:'Deudora',   sii:'',   descripcion:''},
+  {codigo:'5-02-005-0006',nombre:'Gastos de Representación',     tipo:'Gasto',naturaleza:'Deudora',   sii:'',   descripcion:'Art. 31 N°5 LIR — req. doc.'},
+  {codigo:'5-02-005-0007',nombre:'Gastos de Viaje y Viáticos',   tipo:'Gasto',naturaleza:'Deudora',   sii:'',   descripcion:''},
+  {codigo:'5-02-005-0008',nombre:'Gastos Generales de Administración',tipo:'Gasto',naturaleza:'Deudora',sii:'',  descripcion:''},
+  {codigo:'5-02-006-0001',nombre:'Depreciación del Ejercicio',   tipo:'Gasto',naturaleza:'Deudora',   sii:'',   descripcion:'Art. 31 N°5 LIR — Tributaria y Financiera'},
+  {codigo:'5-02-006-0002',nombre:'Amortización de Intangibles',  tipo:'Gasto',naturaleza:'Deudora',   sii:'',   descripcion:''},
+  {codigo:'5-02-006-0003',nombre:'Castigo de Activos',           tipo:'Gasto',naturaleza:'Deudora',   sii:'',   descripcion:''},
+  // ── GASTOS NO OPERACIONALES ────────────────────────────────────
+  {codigo:'5-03-001-0001',nombre:'Gastos Financieros (Intereses)',tipo:'Gasto',naturaleza:'Deudora',  sii:'',   descripcion:'Art. 31 N°1 LIR'},
+  {codigo:'5-03-001-0002',nombre:'Comisiones Bancarias',         tipo:'Gasto',naturaleza:'Deudora',   sii:'',   descripcion:''},
+  {codigo:'5-03-002-0001',nombre:'Pérdida en Venta de Activo Fijo',tipo:'Gasto',naturaleza:'Deudora', sii:'',   descripcion:''},
+  {codigo:'5-03-002-0002',nombre:'Pérdidas por Siniestros',      tipo:'Gasto',naturaleza:'Deudora',   sii:'',   descripcion:''},
+  {codigo:'5-03-003-0001',nombre:'Impuesto de Primera Categoría',tipo:'Gasto',naturaleza:'Deudora',   sii:'F22',descripcion:'IDPC — Art. 20 LIR'},
+  {codigo:'5-03-003-0002',nombre:'Gastos Rechazados Art. 21 LIR',tipo:'Gasto',naturaleza:'Deudora',  sii:'F22',descripcion:'Gastos no aceptados tributariamente'},
+  {codigo:'5-03-004-0001',nombre:'Otros Gastos No Operacionales', tipo:'Gasto',naturaleza:'Deudora',  sii:'',   descripcion:''},
 ];
 
 // ===== APP STATE (central) =====
@@ -6157,6 +6753,22 @@ function editarEmpresaEnLista(id) {
   set('ee-region',e.region);set('ee-telefono',e.telefono);set('ee-email',e.email);
   const errEl=document.getElementById('ee-rut-error');if(errEl)errEl.style.display='none';
   document.getElementById('modal-editar-empresa').classList.add('open');
+  initSelectRegion('ee-region','ee-ciudad');
+  initBuscadorActeco('ee-acteco','ee-acteco-sug');
+  // Restore saved values into selects
+  setTimeout(() => {
+    const selR = document.getElementById('ee-region');
+    const selC = document.getElementById('ee-ciudad');
+    const savedR = e.region||'';
+    const savedC = e.ciudad||'';
+    if (selR && savedR) {
+      selR.value = savedR;
+      selR.onchange();
+      setTimeout(() => { if(selC && savedC) selC.value = savedC; }, 50);
+    }
+    const actecoEl = document.getElementById('ee-acteco');
+    if (actecoEl && e.acteco) actecoEl.value = e.acteco;
+  }, 30);
 }
 async function guardarEdicionEmpresa() {
   const lista=getEmpresas(), e=lista.find(x=>x.id===_editingEmpresaId); if(!e)return;
