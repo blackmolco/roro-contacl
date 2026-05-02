@@ -2502,6 +2502,7 @@ const put = async (store, obj) => {
 
     if (docId) {
       await fsCol(store).doc(docId).set(obj, { merge: true });
+      _scheduleAutoBackup();
       return obj[keyField];
     } else {
       // Auto-ID stores (asientos, trabajadores, etc.)
@@ -2515,6 +2516,7 @@ const put = async (store, obj) => {
         tx.set(counterRef, { next: newId + 1 });
         tx.set(fsCol(store).doc(String(newId)), { ...obj, id: newId });
       });
+      _scheduleAutoBackup();
       return newId;
     }
   } catch(e) {
@@ -2527,11 +2529,19 @@ const put = async (store, obj) => {
 const del = async (store, key) => {
   try {
     await fsCol(store).doc(String(key)).delete();
+    _scheduleAutoBackup();
   } catch(e) {
     console.error('del error', store, e);
     throw e;
   }
 };
+
+// Dispara autoBackup con debounce de 2s para no saturar en escrituras rápidas
+let _backupDebounce = null;
+function _scheduleAutoBackup() {
+  clearTimeout(_backupDebounce);
+  _backupDebounce = setTimeout(() => { if (typeof autoBackup === 'function') autoBackup(); }, 2000);
+}
 // Helper para operaciones DB con manejo de error automático
 async function dbOp(fn, errorMsg='Error al guardar') {
   try { return await fn(); }
@@ -3248,7 +3258,6 @@ async function cargarEmpresaDB() {
     el.addEventListener('click', () => navegarA(el.dataset.page));
   });
   renderAll();
-  programarAutoBackup();
 }
 
 // PAGE→RENDER map (smart renderAll: only renders visible page)
@@ -8062,31 +8071,11 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-// =========================================================
-// ===== AUTO BACKUP =======================================
-// =========================================================
-let _backupTimer = null;
-async function autoBackup() {
-  try {
-    const data = {
-      cuentas, asientos, cierres, trabajadores, liquidaciones,
-      productos, movInventario, auxiliares, conciliaciones,
-      paramsRemArr: Object.entries(paramsRem).map(([clave,valor])=>({clave,valor})),
-      empresa: getEmpresaActual(),
-      ts: new Date().toISOString()
-    };
-    localStorage.setItem(`contacl-backup-${empresaActualId}`, JSON.stringify(data));
-  } catch(e) { console.warn('Backup automático falló:', e); }
-}
-
-function programarAutoBackup() {
-  if (_backupTimer) clearInterval(_backupTimer);
-  _backupTimer = setInterval(autoBackup, 5 * 60 * 1000); // every 5 min
-}
-
+// restaurarBackup: llamado desde el botón 🔄 Backup en la barra de herramientas
 function restaurarBackup() {
   try {
-    const raw = localStorage.getItem(`contacl-backup-${empresaActualId}`);
+    const key = `${BACKUP_KEY}-${empresaActualId}`;
+    const raw = localStorage.getItem(key);
     if (!raw) { toast('No hay backup disponible para esta empresa', 'error'); return; }
     const data = JSON.parse(raw);
     const ts = data.ts ? new Date(data.ts).toLocaleString('es-CL') : 'desconocida';
