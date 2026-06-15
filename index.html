@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Prueba 2 de Derecho Político - Formas de Gobierno y Teoría del Estado</title>
+<title>Prueba 3 de Derecho Político - Basada en los apuntes de clase</title>
 <style>
   :root{
     --primary:#1e3a5f;
@@ -15,172 +15,46 @@
     --border:#dde3ea;
   }
   *{box-sizing:border-box;}
-  body{
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background:var(--bg);
-    color:#222;
-    margin:0;
-    padding:0 0 60px 0;
-  }
-  header{
-    background:linear-gradient(135deg, var(--primary), var(--accent));
-    color:#fff;
-    padding:28px 20px;
-    text-align:center;
-  }
+  body{ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:var(--bg); color:#222; margin:0; padding:0 0 60px 0; }
+  header{ background:linear-gradient(135deg, var(--primary), var(--accent)); color:#fff; padding:28px 20px; text-align:center; }
   header h1{margin:0 0 6px 0; font-size:1.6em;}
   header p{margin:0; font-size:0.95em; opacity:0.9;}
   .container{max-width:780px; margin:0 auto; padding:20px;}
-  .tabs{
-    display:flex;
-    gap:10px;
-    margin:20px auto;
-    max-width:780px;
-    padding:0 20px;
-  }
-  .tab-btn{
-    flex:1;
-    padding:14px;
-    border:none;
-    border-radius:10px;
-    background:#dde7f3;
-    color:var(--primary);
-    font-weight:600;
-    font-size:1em;
-    cursor:pointer;
-    transition:0.2s;
-  }
-  .tab-btn.active{
-    background:var(--accent);
-    color:#fff;
-  }
+  .tabs{ display:flex; gap:10px; margin:20px auto; max-width:780px; padding:0 20px; }
+  .tab-btn{ flex:1; padding:14px; border:none; border-radius:10px; background:#dde7f3; color:var(--primary); font-weight:600; font-size:1em; cursor:pointer; transition:0.2s; }
+  .tab-btn.active{ background:var(--accent); color:#fff; }
   .tab-content{display:none;}
   .tab-content.active{display:block;}
-  .score-bar{
-    background:var(--card);
-    border:1px solid var(--border);
-    border-radius:10px;
-    padding:14px 18px;
-    margin-bottom:18px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    flex-wrap:wrap;
-    gap:10px;
-  }
+  .score-bar{ background:var(--card); border:1px solid var(--border); border-radius:10px; padding:14px 18px; margin-bottom:18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; }
   .score-bar .score{font-weight:700; font-size:1.1em; color:var(--primary);}
-  .reshuffle-btn{
-    background:var(--primary);
-    color:#fff;
-    border:none;
-    padding:10px 16px;
-    border-radius:8px;
-    cursor:pointer;
-    font-size:0.9em;
-    font-weight:600;
-  }
+  .reshuffle-btn{ background:var(--primary); color:#fff; border:none; padding:10px 16px; border-radius:8px; cursor:pointer; font-size:0.9em; font-weight:600; }
   .reshuffle-btn:hover{background:var(--accent);}
-  .question-card{
-    background:var(--card);
-    border:1px solid var(--border);
-    border-radius:12px;
-    padding:18px 20px;
-    margin-bottom:16px;
-    box-shadow:0 1px 3px rgba(0,0,0,0.04);
-  }
-  .question-card h3{
-    margin:0 0 12px 0;
-    font-size:1.05em;
-    color:var(--primary);
-  }
-  .q-number{
-    display:inline-block;
-    background:var(--accent);
-    color:#fff;
-    border-radius:50%;
-    width:26px;
-    height:26px;
-    text-align:center;
-    line-height:26px;
-    font-size:0.85em;
-    margin-right:8px;
-    flex-shrink:0;
-  }
-  .option{
-    display:block;
-    width:100%;
-    text-align:left;
-    background:#f8f9fb;
-    border:1.5px solid var(--border);
-    border-radius:8px;
-    padding:10px 14px;
-    margin:6px 0;
-    cursor:pointer;
-    font-size:0.96em;
-    transition:0.15s;
-    color:#333;
-  }
-  .option:hover:not(.disabled){
-    border-color:var(--accent);
-    background:#eef4fb;
-  }
-  .option.correct{
-    background:#e6f4ea;
-    border-color:var(--green);
-    color:var(--green);
-    font-weight:600;
-  }
-  .option.incorrect{
-    background:#fdecea;
-    border-color:var(--red);
-    color:var(--red);
-    font-weight:600;
-  }
+  .question-card{ background:var(--card); border:1px solid var(--border); border-radius:12px; padding:18px 20px; margin-bottom:16px; box-shadow:0 1px 3px rgba(0,0,0,0.04); }
+  .question-card h3{ margin:0 0 12px 0; font-size:1.05em; color:var(--primary); }
+  .q-number{ display:inline-block; background:var(--accent); color:#fff; border-radius:50%; width:26px; height:26px; text-align:center; line-height:26px; font-size:0.85em; margin-right:8px; flex-shrink:0; }
+  .option{ display:block; width:100%; text-align:left; background:#f8f9fb; border:1.5px solid var(--border); border-radius:8px; padding:10px 14px; margin:6px 0; cursor:pointer; font-size:0.96em; transition:0.15s; color:#333; }
+  .option:hover:not(.disabled){ border-color:var(--accent); background:#eef4fb; }
+  .option.correct{ background:#e6f4ea; border-color:var(--green); color:var(--green); font-weight:600; }
+  .option.incorrect{ background:#fdecea; border-color:var(--red); color:var(--red); font-weight:600; }
   .option.disabled{cursor:default;}
   .vf-buttons{display:flex; gap:10px; margin-top:6px;}
-  .vf-btn{
-    flex:1;
-    padding:12px;
-    border:1.5px solid var(--border);
-    border-radius:8px;
-    background:#f8f9fb;
-    cursor:pointer;
-    font-weight:600;
-    font-size:0.96em;
-    transition:0.15s;
-  }
+  .vf-btn{ flex:1; padding:12px; border:1.5px solid var(--border); border-radius:8px; background:#f8f9fb; cursor:pointer; font-weight:600; font-size:0.96em; transition:0.15s; }
   .vf-btn:hover:not(.disabled){border-color:var(--accent); background:#eef4fb;}
   .vf-btn.correct{background:#e6f4ea; border-color:var(--green); color:var(--green);}
   .vf-btn.incorrect{background:#fdecea; border-color:var(--red); color:var(--red);}
   .vf-btn.disabled{cursor:default;}
-  .feedback{
-    margin-top:10px;
-    padding:10px 12px;
-    border-radius:8px;
-    font-size:0.92em;
-    line-height:1.4;
-  }
+  .feedback{ margin-top:10px; padding:10px 12px; border-radius:8px; font-size:0.92em; line-height:1.4; }
   .feedback.ok{background:#e6f4ea; color:var(--green);}
   .feedback.bad{background:#fdecea; color:var(--red);}
-  .feedback .answer-line{
-    margin-top:6px;
-    font-weight:600;
-    color:#444;
-  }
-  footer{
-    text-align:center;
-    color:#888;
-    font-size:0.85em;
-    margin-top:30px;
-    padding:0 20px;
-  }
+  .feedback .answer-line{ margin-top:6px; font-weight:600; color:#444; }
+  footer{ text-align:center; color:#888; font-size:0.85em; margin-top:30px; padding:0 20px; }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>Prueba 2 de Derecho Político</h1>
-  <p>Formas de Gobierno, Régimen Político y Teoría del Estado (preguntas nuevas)</p>
+  <h1>Prueba 3 de Derecho Político</h1>
+  <p>Basada estrictamente en los apuntes: "Formas de Gobierno y Regímenes Políticos", "Clases de Derecho Político" y "Teoría del Estado" (Prof. Mg. Natanael Landaeta S.)</p>
 </header>
 
 <div class="tabs">
@@ -216,280 +90,310 @@
 <script>
 // ============ DATOS: PREGUNTAS DE OPCIÓN MÚLTIPLE ============
 const mcData = [
-{ q: "La Constitución RÍGIDA se caracteriza porque:",
-  options: [
-    "Su reforma requiere un procedimiento especial, más exigente que el de las leyes ordinarias",
-    "Puede modificarse mediante una ley ordinaria",
-    "No puede modificarse nunca",
-    "Es exclusiva de los Estados Unitarios"
-  ], correct: 0 },
-{ q: "El Poder Constituyente DERIVADO (o instituido) es aquel que:",
-  options: [
-    "Tiene la facultad de reformar la Constitución conforme a los procedimientos que ella misma establece",
-    "Crea una Constitución completamente nueva sin sujeción a límites",
-    "Es superior al Poder Constituyente Originario",
-    "No puede ejercerse en ningún caso"
-  ], correct: 0 },
-{ q: "El control de constitucionalidad de las leyes tiene por objeto:",
-  options: [
-    "Verificar que las normas jurídicas se ajusten a lo dispuesto en la Constitución",
-    "Eliminar la separación de poderes",
-    "Sustituir al Poder Legislativo en la creación de leyes",
-    "Otorgar mayores facultades al Poder Ejecutivo"
-  ], correct: 0 },
-{ q: "La democracia SEMIDIRECTA combina:",
-  options: [
-    "Mecanismos de democracia representativa con instrumentos de participación directa, como el plebiscito o el referéndum",
-    "Solo elecciones periódicas sin ningún mecanismo adicional",
-    "La ausencia total de representantes elegidos",
-    "El gobierno exclusivo de una asamblea de ciudadanos"
-  ], correct: 0 },
-{ q: "El referéndum es un mecanismo de democracia directa mediante el cual:",
-  options: [
-    "El cuerpo electoral se pronuncia directamente sobre una norma jurídica determinada (por ejemplo, una reforma constitucional)",
-    "Solo el Parlamento decide sin consulta ciudadana",
-    "Se eligen exclusivamente autoridades de gobierno",
-    "Se reforma la Constitución sin participación ciudadana"
-  ], correct: 0 },
-{ q: "Un sistema BICAMERAL se caracteriza por:",
-  options: [
-    "La existencia de dos cámaras legislativas (por ejemplo, Cámara de Diputados y Senado) que concurren a la formación de las leyes",
-    "La existencia de un solo Poder Legislativo sin división interna",
-    "La ausencia de Poder Legislativo",
-    "La fusión del Legislativo con el Judicial"
-  ], correct: 0 },
-{ q: "La inmunidad parlamentaria (o fuero) tiene como finalidad principal:",
-  options: [
-    "Proteger la independencia del parlamentario en el ejercicio de su función, frente a persecuciones políticas o judiciales infundadas",
-    "Otorgar impunidad absoluta y perpetua a los parlamentarios",
-    "Eliminar la responsabilidad penal de cualquier ciudadano",
-    "Sustituir al Poder Judicial"
-  ], correct: 0 },
-{ q: "Un Estado de Excepción Constitucional permite:",
-  options: [
-    "La restricción o suspensión transitoria de ciertos derechos y garantías ante situaciones de grave alteración del orden público o seguridad del Estado",
-    "La derogación permanente de la Constitución",
-    "La eliminación definitiva del Poder Judicial",
-    "La supresión del territorio del Estado"
-  ], correct: 0 },
-{ q: "La diferencia entre 'nacionalidad' y 'ciudadanía' radica en que:",
-  options: [
-    "La nacionalidad es el vínculo jurídico-político que une a una persona con un Estado; la ciudadanía añade el ejercicio de derechos políticos (como el voto)",
-    "Son conceptos idénticos en todo sentido",
-    "La ciudadanía es un concepto más amplio que incluye a todos los extranjeros",
-    "La nacionalidad solo se adquiere por elección popular"
-  ], correct: 0 },
-{ q: "Los derechos políticos, a diferencia de los derechos civiles, se caracterizan porque:",
-  options: [
-    "Habilitan a su titular para participar en la formación de la voluntad estatal (por ejemplo, el derecho a sufragio)",
-    "Pertenecen exclusivamente a los extranjeros",
-    "Son idénticos a los derechos civiles",
-    "No requieren la calidad de ciudadano"
-  ], correct: 0 },
-{ q: "El Estado Regional (o Autonómico) se diferencia del Estado Unitario clásico en que:",
-  options: [
-    "Reconoce a determinadas entidades territoriales un grado de autonomía política, aunque sin llegar a la condición de Estados federados",
-    "Carece por completo de gobierno central",
-    "Es idéntico a una Confederación",
-    "No tiene Constitución"
-  ], correct: 0 },
-{ q: "El principio de legalidad (o juridicidad) en la actuación de los órganos del Estado implica que:",
-  options: [
-    "Estos deben actuar dentro del marco de sus competencias y conforme al ordenamiento jurídico",
-    "Pueden actuar libremente sin sujeción a norma alguna",
-    "Solo se aplica al Poder Judicial",
-    "Es incompatible con el Estado de Derecho"
-  ], correct: 0 },
-{ q: "La descentralización POLÍTICA se diferencia de la descentralización ADMINISTRATIVA en que:",
-  options: [
-    "La descentralización política implica la transferencia de potestades de gobierno (incluida la elección de autoridades propias) a entes territoriales; la administrativa solo transfiere funciones de gestión",
-    "Son términos sinónimos",
-    "La descentralización administrativa otorga soberanía a los entes territoriales",
-    "La descentralización política es exclusiva de los Estados Unitarios"
-  ], correct: 0 },
-{ q: "El sistema electoral MAYORITARIO se caracteriza porque:",
-  options: [
-    "Resulta elegido el candidato (o lista) que obtiene el mayor número de votos en la circunscripción respectiva",
-    "Distribuye los escaños proporcionalmente entre todas las listas según sus votos",
-    "Excluye a las minorías de toda representación posible por definición",
-    "No existen circunscripciones"
-  ], correct: 0 },
-{ q: "El sistema electoral PROPORCIONAL busca, a diferencia del mayoritario:",
-  options: [
-    "Distribuir los escaños o cargos de manera proporcional a los votos obtenidos por cada lista o partido",
-    "Otorgar todos los cargos al partido más votado, sin excepción",
-    "Eliminar la existencia de partidos políticos",
-    "Establecer un sistema de partido único"
-  ], correct: 0 },
-{ q: "La revocatoria de mandato (o referéndum revocatorio) es un mecanismo que permite:",
-  options: [
-    "Al cuerpo electoral destituir, antes del término de su período, a una autoridad electa",
-    "Al Presidente disolver el Parlamento sin causa",
-    "Al Poder Judicial remover al Presidente sin proceso",
-    "Reformar la Constitución sin participación popular"
-  ], correct: 0 },
-{ q: "El concepto de 'Nación', en sentido político, se refiere principalmente a:",
-  options: [
-    "Una comunidad humana unida por vínculos históricos, culturales o de identidad, que puede o no coincidir con los límites de un Estado",
-    "Un sinónimo exacto de Estado en todos los casos",
-    "El territorio físico de un país, exclusivamente",
-    "Una organización internacional"
-  ], correct: 0 },
-{ q: "La distinción entre Constitución FORMAL y Constitución MATERIAL alude a que:",
-  options: [
-    "La Constitución formal es el texto escrito con valor jurídico superior; la material comprende el conjunto de normas y prácticas que efectivamente organizan el poder, estén o no en el texto escrito",
-    "Son sinónimos absolutos",
-    "La Constitución material es siempre superior a la formal",
-    "La Constitución formal nunca tiene fuerza vinculante"
-  ], correct: 0 },
-{ q: "La pertenencia de un Estado a organizaciones supranacionales o internacionales (como tratados de integración):",
-  options: [
-    "Puede implicar la cesión o limitación voluntaria de ciertas competencias soberanas en las materias reguladas por dichos acuerdos",
-    "Elimina por completo la soberanía del Estado",
-    "Es jurídicamente imposible",
-    "Convierte automáticamente al Estado en una Federación"
-  ], correct: 0 },
-{ q: "El pluralismo político, como elemento de la democracia, supone:",
-  options: [
-    "La coexistencia legítima de diversas corrientes ideológicas, partidos y organizaciones que compiten por el poder",
-    "La existencia de un partido único reconocido por la Constitución",
-    "La prohibición de toda organización política",
-    "La uniformidad ideológica obligatoria"
-  ], correct: 0 },
-{ q: "Un gobierno PROVISIONAL (o de transición) se caracteriza por:",
-  options: [
-    "Ejercer el poder por un período limitado, generalmente tras una ruptura institucional, hasta el restablecimiento de la normalidad constitucional",
-    "Tener un origen y duración idénticos a los de un gobierno constitucional ordinario",
-    "Carecer de cualquier función",
-    "Ser sinónimo de Estado Federal"
-  ], correct: 0 },
-{ q: "La acción de Habeas Corpus (o amparo ante la libertad personal) tiene por objeto:",
-  options: [
-    "Proteger la libertad personal y la seguridad individual frente a privaciones de libertad ilegales o arbitrarias",
-    "Reformar la Constitución",
-    "Elegir nuevas autoridades",
-    "Disolver el Parlamento"
-  ], correct: 0 },
-{ q: "El principio de irretroactividad de la ley implica, en general, que:",
-  options: [
-    "La ley rige hacia el futuro y, por regla general, no afecta situaciones jurídicas ya consolidadas con anterioridad a su entrada en vigencia",
-    "Toda ley se aplica siempre hacia el pasado",
-    "La ley nunca produce efectos",
-    "Solo se aplica a las leyes penales"
-  ], correct: 0 },
-{ q: "El término 'gobierno', en sentido AMPLIO, comprende:",
-  options: [
-    "El conjunto de órganos que ejercen las funciones Legislativa, Ejecutiva y Judicial del Estado",
-    "Únicamente al Presidente y sus ministros",
-    "Solo al Poder Judicial",
-    "Solo a las Fuerzas Armadas"
-  ], correct: 0 },
-{ q: "El término 'gobierno', en sentido RESTRINGIDO, se refiere generalmente a:",
-  options: [
-    "El Poder Ejecutivo y los órganos que de él dependen",
-    "El conjunto de los tres poderes del Estado",
-    "La totalidad del aparato estatal, incluidos los municipios",
-    "Los partidos políticos de oposición"
-  ], correct: 0 },
-{ q: "La autonomía de los gobiernos regionales o municipales en un Estado Unitario descentralizado implica que:",
-  options: [
-    "Cuentan con personalidad jurídica, patrimonio propio y ciertas competencias de gestión, sin que ello afecte la unidad del Estado",
-    "Son Estados soberanos independientes",
-    "Pueden dictar su propia Constitución al margen de la nacional",
-    "Equivale a una Confederación"
-  ], correct: 0 },
-{ q: "Una característica del 'Estado de Derecho' en sentido MATERIAL (y no solo formal) es que:",
-  options: [
-    "La sujeción del poder a la ley debe orientarse, además, al respeto y garantía efectiva de los derechos fundamentales",
-    "Basta con que existan leyes, sin importar su contenido",
-    "Excluye cualquier control judicial",
-    "Es incompatible con la separación de poderes"
-  ], correct: 0 },
-{ q: "La distinción entre Estado SIMPLE y Estado COMPUESTO se relaciona con:",
-  options: [
-    "La existencia (Estado compuesto) o no (Estado simple) de una pluralidad de entidades territoriales con cierto grado de autonomía o soberanía propia dentro de un mismo Estado",
-    "El número de habitantes del Estado",
-    "El tipo de moneda utilizada",
-    "La existencia de fuerzas armadas"
-  ], correct: 0 },
-{ q: "Las 'cláusulas de intangibilidad' (o límites materiales a la reforma constitucional) tienen por objeto:",
-  options: [
-    "Impedir que el Poder Constituyente derivado modifique ciertos contenidos esenciales de la Constitución",
-    "Permitir la reforma total de la Constitución sin restricción alguna",
-    "Eliminar el Poder Constituyente originario",
-    "Aplicarse únicamente a las leyes ordinarias"
-  ], correct: 0 },
-{ q: "La alternancia en el poder, como elemento característico de un sistema democrático, se refiere a:",
-  options: [
-    "La posibilidad real de que distintas fuerzas políticas accedan al gobierno mediante elecciones periódicas y competitivas",
-    "La imposibilidad de que cambie el partido gobernante",
-    "La obligación de reelegir indefinidamente a la misma autoridad",
-    "La designación del sucesor por el gobernante saliente"
-  ], correct: 0 }
+  {
+    q: "Según el profesor Landaeta, ¿qué estudia la 'Forma de Gobierno'?",
+    options: ["La realidad del ejercicio del poder en los hechos", "La estructura formal de los órganos estatales según las normas jurídicas (Constitución y leyes)", "La ideología del partido gobernante", "Las relaciones internacionales del Estado"],
+    correct: 1
+  },
+  {
+    q: "El 'Régimen Político' se define desde el punto de vista de...",
+    options: ["La estructura formal", "La estructura real, es decir, cómo se ejerce el poder en los hechos", "La estructura federal", "La estructura electoral"],
+    correct: 1
+  },
+  {
+    q: "Según Aristóteles, ¿cuál es el criterio para distinguir formas políticas puras de viciosas?",
+    options: ["El tamaño del territorio", "La búsqueda o no del Bien Común", "El número de habitantes", "La antigüedad del régimen"],
+    correct: 1
+  },
+  {
+    q: "¿Cuál de las siguientes es una 'forma política pura' según Aristóteles?",
+    options: ["Tiranía", "Oligarquía", "Aristocracia", "Demagogia"],
+    correct: 2
+  },
+  {
+    q: "Según Aristóteles, la Tiranía es la degeneración de...",
+    options: ["La Aristocracia", "La Democracia", "La Monarquía", "La Politeia"],
+    correct: 2
+  },
+  {
+    q: "La Oligarquía busca el interés de...",
+    options: ["Los pobres", "Los ricos", "El pueblo entero", "El monarca"],
+    correct: 1
+  },
+  {
+    q: "La Demagogia es la degeneración de...",
+    options: ["La Monarquía", "La Aristocracia", "La Politeia (democracia)", "La Tiranía"],
+    correct: 2
+  },
+  {
+    q: "Según la teoría cíclica de Platón y Aristóteles, ¿qué sucede tras la Tiranía?",
+    options: ["Se instaura directamente la Democracia", "Se produce un golpe de Estado o revolución y se instaura un gobierno aristocrático", "El sistema se mantiene sin cambios", "Surge directamente la Demagogia"],
+    correct: 1
+  },
+  {
+    q: "¿En qué consiste la Forma de Gobierno Mixta de Polibio?",
+    options: ["En eliminar todas las formas de gobierno anteriores", "En captar lo bueno de todas las formas de gobierno para construir un equilibrio favorable hacia el bien común", "En instaurar una monarquía absoluta", "En dividir el territorio en provincias autónomas"],
+    correct: 1
+  },
+  {
+    q: "En la Roma Republicana, ¿qué órgano representaba el elemento 'Aristocracia' dentro de la forma de gobierno mixta?",
+    options: ["Los Cónsules", "El Senado", "Los Comicios", "El Tribunado"],
+    correct: 1
+  },
+  {
+    q: "Según las clasificaciones contemporáneas mencionadas en el curso, ¿cuáles son las tres formas de gobierno/regímenes políticos?",
+    options: ["Monarquía, Aristocracia y Democracia", "Democracia, Autocracias y Totalitarismos", "Presidencialismo, Parlamentarismo y Semipresidencialismo", "Centralización, Desconcentración y Descentralización"],
+    correct: 1
+  },
+  {
+    q: "Para la democracia, ¿quién debe mandar según el principio del 'gobierno del pueblo'?",
+    options: ["El Estado", "El pueblo (demos)", "La aristocracia", "El ejército"],
+    correct: 1
+  },
+  {
+    q: "En la Atenas del siglo V, el 'demos' estaba compuesto solo por...",
+    options: ["Todos los habitantes sin distinción", "Varones, hijos de padre y madre ateniense, mayores de 18 años", "Las mujeres y los esclavos", "Los extranjeros residentes"],
+    correct: 1
+  },
+  {
+    q: "¿Qué reemplazó al sufragio censitario en las democracias del siglo XX?",
+    options: ["El sufragio universal", "El voto calificado", "La elección indirecta", "El sufragio restringido por edad"],
+    correct: 0
+  },
+  {
+    q: "El 'Recall', como mecanismo semi-representativo, consiste en...",
+    options: ["La creación de nuevos partidos políticos", "La opción del cuerpo electoral para destituir a un representante antes del término de su mandato", "La convocatoria automática a nuevas elecciones cada año", "Un referéndum sobre tratados internacionales"],
+    correct: 1
+  },
+  {
+    q: "La parte 'dogmática' de la Constitución se refiere a...",
+    options: ["La estructura y regulación de los órganos estatales", "El reconocimiento de los derechos fundamentales de las personas", "Las normas tributarias", "Las relaciones internacionales"],
+    correct: 1
+  },
+  {
+    q: "La parte 'orgánica' de la Constitución...",
+    options: ["Reconoce los derechos humanos", "Crea, fija y regula los órganos estatales, sus funciones y competencias", "Establece los símbolos patrios", "Define el territorio nacional"],
+    correct: 1
+  },
+  {
+    q: "Según el Principio de Bien Común, ¿cuáles son los tres factores que involucra?",
+    options: ["Paz social, Justicia y Bienestar", "Territorio, Pueblo y Poder", "Soberanía, Legalidad y Control", "Autonomía, Participación y Descentralización"],
+    correct: 0
+  },
+  {
+    q: "Una característica del Régimen Autoritario es...",
+    options: ["La existencia de un único detentador del poder, sin posibilidad real de participación política del pueblo", "La división estricta de poderes", "La participación activa de todos los ciudadanos en la formación de la voluntad estatal", "La ausencia total de ideología"],
+    correct: 0
+  },
+  {
+    q: "Una característica del Régimen Totalitario es...",
+    options: ["La pluralidad de partidos políticos", "La voluntad de modelar la vida en su integridad, con ideología única y excluyente, aparato policial compulsivo y partido único", "La descentralización administrativa", "El respeto irrestricto a las libertades individuales"],
+    correct: 1
+  },
+  {
+    q: "¿Con qué obra y autor se asocia el origen del Estado como forma política moderna?",
+    options: ["'El Contrato Social' de Rousseau", "'El Príncipe' de Maquiavelo", "'La Política' de Aristóteles", "'Leviatán' de Hobbes"],
+    correct: 1
+  },
+  {
+    q: "Según Jellinek, ¿cuáles son las tres perspectivas desde las que se puede definir el Estado?",
+    options: ["Económica, militar y cultural", "Sociológica, política y jurídica", "Territorial, demográfica y financiera", "Histórica, geográfica y lingüística"],
+    correct: 1
+  },
+  {
+    q: "Hans Kelsen define al Estado como...",
+    options: ["Una agrupación humana fijada en un territorio orientada al bien común", "La personificación del orden jurídico que lo constituye y con el cual se identifica", "El titular abstracto y permanente del poder", "Una estructura de dominio renovada por un obrar común"],
+    correct: 1
+  },
+  {
+    q: "Según Georges Burdeau, el Estado es...",
+    options: ["El titular abstracto y permanente del poder, del cual los gobernantes son agentes esencialmente pasajeros", "Un conjunto de tratados internacionales", "Una corporación formada exclusivamente por el territorio", "La suma de los individuos que lo habitan"],
+    correct: 0
+  },
+  {
+    q: "Según la distinción de Jellinek retomada en clases, ¿cuál es la diferencia entre Población y Pueblo?",
+    options: ["Son sinónimos sin diferencia jurídica", "La Población es más abarcadora (titulares de derechos y obligaciones civiles), mientras que el Pueblo es menos abarcador (solo ciudadanos, titulares también de derechos políticos)", "El Pueblo incluye solo a los extranjeros", "La Población se refiere solo al territorio, no a las personas"],
+    correct: 1
+  },
+  {
+    q: "Los elementos constitutivos del Estado mencionados en clase incluyen...",
+    options: ["Territorio, Pueblo, Poder, Orden Jurídico y Finalidad (Bien Común)", "Bandera, Himno y Escudo", "Presidente, Congreso y Tribunales", "Moneda, Idioma y Religión oficial"],
+    correct: 0
+  },
+  {
+    q: "El Territorio del Estado se caracteriza por ser...",
+    options: ["Variable, inclusivo e ilimitado", "Estable, excluyente y limitado", "Temporal, compartido y difuso", "Federal, provisional y abierto"],
+    correct: 1
+  },
+  {
+    q: "Según las características del Poder Estatal estudiadas, la Soberanía implica...",
+    options: ["La ausencia total de límites jurídicos", "Una supremacía interna limitada por el Derecho (Art. 5 inc. 2° CPR)", "La subordinación a otros Estados", "La eliminación de la Constitución"],
+    correct: 1
+  },
+  {
+    q: "¿Cuáles son los cinco principios del Estado de Derecho mencionados en el curso?",
+    options: ["Supremacía constitucional, Principio de juridicidad, Principio de control, Principio de responsabilidad y Principio de separación de poderes", "Centralización, Desconcentración, Descentralización, Autonomía y Participación", "Soberanía, Territorio, Pueblo, Poder y Finalidad", "Monarquía, Aristocracia, Democracia, Oligarquía y Tiranía"],
+    correct: 0
+  },
+  {
+    q: "El Recurso de Amparo (Art. 21 CPR) protege específicamente...",
+    options: ["La propiedad privada y el comercio", "La seguridad individual y la libertad personal", "Los derechos sociales prestacionales", "La libertad de culto exclusivamente"],
+    correct: 1
+  }
 ];
 
 // ============ DATOS: PREGUNTAS DE VERDADERO O FALSO ============
 const vfData = [
-{ s: "La Constitución rígida exige un procedimiento de reforma más exigente que el de las leyes ordinarias.",
-  a: true, exp: "Correcto, esa mayor exigencia procedimental es lo que distingue a la Constitución rígida de la flexible." },
-{ s: "El Poder Constituyente derivado es completamente ilimitado y no está sujeto a ningún procedimiento establecido por la Constitución.",
-  a: false, exp: "Está sujeto a los procedimientos y, en su caso, a los límites materiales (cláusulas de intangibilidad) que la propia Constitución establece." },
-{ s: "El control de constitucionalidad busca asegurar la conformidad de las normas inferiores con la Constitución.",
-  a: true, exp: "Correcto, esa es su finalidad esencial dentro del Estado de Derecho." },
-{ s: "La democracia semidirecta combina mecanismos representativos con instrumentos de participación directa como el plebiscito.",
-  a: true, exp: "Correcto, esa es la característica distintiva de la democracia semidirecta." },
-{ s: "En un referéndum, es el Parlamento quien decide sin que el cuerpo electoral se pronuncie directamente.",
-  a: false, exp: "En el referéndum es precisamente el cuerpo electoral quien se pronuncia directamente sobre la norma sometida a consulta." },
-{ s: "Un sistema bicameral cuenta con dos cámaras legislativas que concurren a la formación de la ley.",
-  a: true, exp: "Correcto, por ejemplo, la Cámara de Diputados y el Senado." },
-{ s: "La inmunidad parlamentaria otorga impunidad absoluta y perpetua frente a cualquier delito.",
-  a: false, exp: "Su finalidad es proteger la independencia en el ejercicio del cargo frente a persecuciones infundadas, no constituir una impunidad absoluta y perpetua." },
-{ s: "Un Estado de Excepción Constitucional puede habilitar la restricción transitoria de ciertos derechos ante una grave alteración del orden público.",
-  a: true, exp: "Correcto, esa es su finalidad, siempre con carácter transitorio y excepcional." },
-{ s: "La nacionalidad y la ciudadanía son conceptos exactamente equivalentes en todos los ordenamientos.",
-  a: false, exp: "La ciudadanía añade al vínculo de nacionalidad el ejercicio de derechos políticos, como el derecho a sufragio." },
-{ s: "Los derechos políticos habilitan a su titular para participar en la formación de la voluntad estatal, como el derecho a sufragio.",
-  a: true, exp: "Correcto, esa es su nota distintiva frente a los derechos civiles." },
-{ s: "El Estado Regional o Autonómico otorga a sus regiones un grado de autonomía política sin llegar a constituir Estados federados.",
-  a: true, exp: "Correcto, se trata de una forma intermedia entre el Estado Unitario clásico y el Estado Federal." },
-{ s: "El principio de legalidad exige que los órganos del Estado actúen conforme a sus competencias y al ordenamiento jurídico.",
-  a: true, exp: "Correcto, es uno de los pilares del Estado de Derecho." },
-{ s: "La descentralización administrativa implica que los entes territoriales eligen a sus propias autoridades de gobierno mediante voto popular.",
-  a: false, exp: "Eso corresponde a la descentralización política; la administrativa solo transfiere funciones de gestión, sin elección popular de autoridades propias." },
-{ s: "En un sistema electoral mayoritario, resulta elegido quien obtiene el mayor número de votos en su circunscripción.",
-  a: true, exp: "Correcto, esa es la regla básica del sistema mayoritario." },
-{ s: "El sistema electoral proporcional busca asignar todos los cargos al partido más votado, sin distribuir escaños entre las demás listas.",
-  a: false, exp: "Eso describe a un sistema mayoritario absoluto; el sistema proporcional distribuye los escaños según la proporción de votos obtenidos por cada lista." },
-{ s: "La revocatoria de mandato permite al cuerpo electoral destituir a una autoridad antes del término de su período.",
-  a: true, exp: "Correcto, es un mecanismo de control directo del cuerpo electoral sobre sus representantes." },
-{ s: "El concepto de 'Nación' siempre coincide exactamente con los límites territoriales de un Estado.",
-  a: false, exp: "Una Nación puede existir sin coincidir con los límites de un Estado, y un Estado puede comprender más de una Nación (o ninguna en sentido estricto)." },
-{ s: "La Constitución material comprende el conjunto de normas y prácticas que efectivamente organizan el poder, estén o no contenidas en el texto escrito.",
-  a: true, exp: "Correcto, se distingue así de la Constitución formal, que es el texto escrito con valor jurídico superior." },
-{ s: "La pertenencia a organizaciones internacionales de integración puede implicar la cesión voluntaria de ciertas competencias soberanas.",
-  a: true, exp: "Correcto, en las materias reguladas por los respectivos tratados o acuerdos." },
-{ s: "El pluralismo político supone la existencia de un único partido reconocido por la Constitución.",
-  a: false, exp: "El pluralismo político supone, por el contrario, la coexistencia legítima de diversas corrientes ideológicas y partidos." },
-{ s: "Un gobierno provisional ejerce el poder por un período indefinido y con la misma legitimidad que un gobierno constitucional ordinario.",
-  a: false, exp: "Ejerce el poder por un período limitado, generalmente tras una ruptura institucional, hasta restablecer la normalidad constitucional." },
-{ s: "La acción de Habeas Corpus protege la libertad personal frente a privaciones de libertad ilegales o arbitrarias.",
-  a: true, exp: "Correcto, esa es su finalidad esencial." },
-{ s: "El principio de irretroactividad implica que la ley se aplica, por regla general, hacia el futuro.",
-  a: true, exp: "Correcto, salvo las excepciones que el propio ordenamiento jurídico establezca." },
-{ s: "El término 'gobierno' en sentido amplio comprende a los tres poderes del Estado: Legislativo, Ejecutivo y Judicial.",
-  a: true, exp: "Correcto, en sentido amplio 'gobierno' equivale al conjunto de órganos que ejercen las funciones estatales." },
-{ s: "El término 'gobierno' en sentido restringido se refiere habitualmente al Poder Ejecutivo.",
-  a: true, exp: "Correcto, en sentido restringido se identifica con el Ejecutivo y los órganos que de él dependen." },
-{ s: "La autonomía municipal o regional en un Estado Unitario descentralizado equivale a la existencia de Estados soberanos independientes.",
-  a: false, exp: "Implica personalidad jurídica y competencias propias de gestión, pero sin afectar la unidad y soberanía del Estado." },
-{ s: "El Estado de Derecho en sentido material exige, además de la sujeción del poder a la ley, el respeto efectivo a los derechos fundamentales.",
-  a: true, exp: "Correcto, esa es la diferencia entre el Estado de Derecho formal y el material." },
-{ s: "Un Estado compuesto se caracteriza por la existencia de una pluralidad de entidades territoriales con cierto grado de autonomía o soberanía propia.",
-  a: true, exp: "Correcto, a diferencia del Estado simple, que no presenta esa pluralidad." },
-{ s: "Las cláusulas de intangibilidad permiten al Poder Constituyente derivado modificar libremente cualquier contenido de la Constitución.",
-  a: false, exp: "Precisamente impiden que se modifiquen ciertos contenidos esenciales de la Constitución por la vía de la reforma ordinaria." },
-{ s: "La alternancia en el poder se refiere a la posibilidad real de que distintas fuerzas políticas accedan al gobierno mediante elecciones periódicas.",
-  a: true, exp: "Correcto, es un elemento característico de los sistemas democráticos competitivos." }
+  {
+    s: "La Forma de Gobierno estudia las normas jurídicas (Constitución y leyes) que dan forma y competencias a los órganos estatales.",
+    a: true,
+    exp: "Correcto. La Forma de Gobierno corresponde a la estructura formal de los órganos estatales según la normativa jurídica."
+  },
+  {
+    s: "El Régimen Político y la regulación jurídica de la política (el Derecho) siempre coinciden.",
+    a: false,
+    exp: "Es posible que el Régimen Político no coincida con la regulación jurídica de la política, ya que los órganos estatales pueden no guiarse por el marco jurídico."
+  },
+  {
+    s: "Según Aristóteles, la Aristocracia es el gobierno de 'los mejores' (de más de uno, pero no de todos).",
+    a: true,
+    exp: "Correcto, 'aristoi' significa 'los mejores' y 'cracia' gobierno."
+  },
+  {
+    s: "Según la teoría cíclica de Platón y Aristóteles, la Demagogia da paso, por reacción, a un nuevo ciclo que comienza con la Monarquía.",
+    a: true,
+    exp: "Correcto, así se cierra el ciclo histórico de sucesión de formas de gobierno."
+  },
+  {
+    s: "En la Forma de Gobierno Mixta de Polibio, los Cónsules representaban el elemento Democracia.",
+    a: false,
+    exp: "Los Cónsules representaban el elemento Monarquía; los Comicios representaban la Democracia y el Senado la Aristocracia."
+  },
+  {
+    s: "El Recall permite al cuerpo electoral destituir a un representante antes del término de su mandato.",
+    a: true,
+    exp: "Correcto, es uno de los mecanismos semi-representativos y semi-directos de participación popular."
+  },
+  {
+    s: "En Atenas del siglo V, el 'demos' incluía a toda la población de la polis, incluyendo mujeres y esclavos.",
+    a: false,
+    exp: "El demos ateniense estaba compuesto solo por varones, hijos de padre y madre ateniense, mayores de 18 años, una minoría dentro de la población global."
+  },
+  {
+    s: "El sufragio censitario fue reemplazado por el sufragio universal en las democracias del siglo XX.",
+    a: true,
+    exp: "Correcto, esto significó que grandes masas se sumaron a la ciudadanía activa."
+  },
+  {
+    s: "La parte dogmática de la Constitución regula la estructura, funciones y competencias de los órganos estatales.",
+    a: false,
+    exp: "Eso corresponde a la parte orgánica; la parte dogmática reconoce los derechos fundamentales de las personas."
+  },
+  {
+    s: "El Principio de Bien Común incluye la Paz social, la Justicia y el Bienestar.",
+    a: true,
+    exp: "Correcto, son las tres funciones primordiales que involucra el Bien Común."
+  },
+  {
+    s: "En el Régimen Autoritario existe un único detentador del poder, que puede ser una persona, una asamblea, un comité, una junta o un partido.",
+    a: true,
+    exp: "Correcto, esa es una de sus características principales."
+  },
+  {
+    s: "El Régimen Totalitario se caracteriza por la pluralidad de partidos políticos y la ausencia de ideología oficial.",
+    a: false,
+    exp: "El Régimen Totalitario se caracteriza por partido único e ideología única y excluyente."
+  },
+  {
+    s: "En el Totalitarismo, el Estado absorbe completamente a la sociedad y a los individuos, privando las libertades individuales.",
+    a: true,
+    exp: "Correcto, además impone una ideología como verdad oficial y se sirve de los medios de comunicación."
+  },
+  {
+    s: "Maquiavelo, en 'El Príncipe', es asociado con el origen del Estado como forma política moderna ('lo Stato').",
+    a: true,
+    exp: "Correcto, su obra del siglo XVI se vincula al surgimiento del concepto moderno de Estado."
+  },
+  {
+    s: "Según Jellinek, el Estado puede definirse desde una perspectiva sociológica, política y jurídica.",
+    a: true,
+    exp: "Correcto, son las tres perspectivas que distingue Jellinek."
+  },
+  {
+    s: "Hans Kelsen define al Estado como 'la personificación del orden jurídico que lo constituye y con el cual se identifica'.",
+    a: true,
+    exp: "Correcto, es la definición jurídica de Kelsen citada en los apuntes."
+  },
+  {
+    s: "Para Georges Burdeau, los gobernantes son los titulares permanentes del poder del Estado.",
+    a: false,
+    exp: "Para Burdeau el Estado es el titular abstracto y permanente del poder; los gobernantes son solo agentes esencialmente pasajeros."
+  },
+  {
+    s: "André Hauriou define al Estado como una agrupación humana fijada en un territorio, con un orden social, político y jurídico orientado hacia el bien común.",
+    a: true,
+    exp: "Correcto, esta es descrita como una de las definiciones más completas en los apuntes."
+  },
+  {
+    s: "La Población es un concepto menos abarcador que el Pueblo, ya que el Pueblo incluye a toda persona sin importar su nacionalidad.",
+    a: false,
+    exp: "Es al revés: la Población es más abarcadora (titulares de derechos y obligaciones civiles), mientras que el Pueblo es menos abarcador (solo ciudadanos, con derechos políticos)."
+  },
+  {
+    s: "El Territorio del Estado se caracteriza por ser estable, excluyente y limitado.",
+    a: true,
+    exp: "Correcto, así se describe el territorio como elemento del Estado."
+  },
+  {
+    s: "La Soberanía, como característica del poder estatal, implica una supremacía interna que no tiene ningún límite jurídico.",
+    a: false,
+    exp: "La Soberanía implica una supremacía interna limitada por el Derecho, conforme al Art. 5 inc. 2° de la CPR (derechos esenciales de la naturaleza humana)."
+  },
+  {
+    s: "El 'Poder Temporal' como característica del poder estatal se relaciona con la separación entre el orden espiritual (Iglesia) y el orden temporal (Estado).",
+    a: true,
+    exp: "Correcto, se cita a Max Weber sobre esta separación."
+  },
+  {
+    s: "El Monopolio legítimo de la fuerza significa que solo el Estado puede ejercer la violencia física legítima mediante sanciones.",
+    a: true,
+    exp: "Correcto, esta es una de las características del poder estatal."
+  },
+  {
+    s: "El Poder Institucionalizado implica que el Estado es el titular del poder y los gobernantes son agentes de su ejercicio.",
+    a: true,
+    exp: "Correcto, esto distingue al poder estatal del poder personal de un gobernante."
+  },
+  {
+    s: "Entre los cinco principios del Estado de Derecho se encuentran la Supremacía Constitucional y el Principio de Separación de Poderes.",
+    a: true,
+    exp: "Correcto, junto con el Principio de Juridicidad, el Principio de Control y el Principio de Responsabilidad."
+  },
+  {
+    s: "El Recurso de Amparo (Art. 21 CPR) protege la propiedad privada y los derechos sociales prestacionales.",
+    a: false,
+    exp: "El Recurso de Amparo protege la seguridad individual y la libertad personal; ambos recursos (Amparo y Protección) excluyen los derechos sociales prestacionales."
+  },
+  {
+    s: "Para Hobbes, sin un poder común no existen ni la ley ni la propiedad, y la fuerza y el fraude son consideradas 'virtudes cardinales'.",
+    a: true,
+    exp: "Correcto, en el estado de naturaleza hobbesiano, sin Leviatán no hay ley ni propiedad."
+  },
+  {
+    s: "Para Locke, la propiedad es uno de los derechos naturales más importantes que el Estado debe garantizar, junto con la vida y la libertad.",
+    a: true,
+    exp: "Correcto, según Locke el poder político nace del consentimiento y el Estado garantiza Vida, Libertad y Propiedad."
+  },
+  {
+    s: "Chile es clasificado como un Estado Unitario con un presidencialismo moderado.",
+    a: true,
+    exp: "Correcto, así lo señala el profesor Meléndez citado en los apuntes."
+  },
+  {
+    s: "Según Antonio Carro, el Estado Federal es una unión de Estados en torno a una soberanía común a todos ellos.",
+    a: true,
+    exp: "Correcto, esa es la definición atribuida a Antonio Carro."
+  }
 ];
 
 // ============ UTILIDADES ============
@@ -522,7 +426,6 @@ function initMC(){
   const shuffledQuestions = shuffle(mcData);
 
   shuffledQuestions.forEach((item, idx) => {
-    // Mezclar opciones manteniendo referencia al texto correcto
     const correctText = item.options[item.correct];
     const opts = shuffle(item.options.map((text, i) => ({ text, isCorrect: i === item.correct })));
 
@@ -540,7 +443,6 @@ function initMC(){
       btn.className = 'option';
       btn.textContent = opt.text;
       btn.onclick = function(){
-        // Deshabilitar todas las opciones de esta tarjeta
         const allOpts = optionsWrap.querySelectorAll('.option');
         allOpts.forEach(o => o.classList.add('disabled'));
         allOpts.forEach(o => o.onclick = null);
@@ -555,7 +457,6 @@ function initMC(){
           btn.classList.add('incorrect');
           feedback.className = 'feedback bad';
           feedback.innerHTML = '❌ Incorrecto.<div class="answer-line">Respuesta correcta: ' + correctText + '</div>';
-          // resaltar la opción correcta
           allOpts.forEach(o => { if(o.textContent === correctText) o.classList.add('correct'); });
         }
         card.appendChild(feedback);
