@@ -2,544 +2,434 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Prueba 3 de Derecho Político - Basada en los apuntes de clase</title>
+<title>Prueba — Teoría del Estado</title>
 <style>
   :root{
-    --primary:#1e3a5f;
-    --accent:#2c6fbb;
-    --green:#2e7d32;
-    --red:#c62828;
-    --bg:#f4f6f9;
-    --card:#ffffff;
-    --border:#dde3ea;
+    --dark-blue:#1F3864;
+    --med-blue:#2E75B6;
+    --light-blue:#D6E4F0;
+    --light-gray:#F2F2F2;
+    --green:#2E7D32;
+    --green-bg:#E8F5E9;
+    --red:#C62828;
+    --red-bg:#FDECEA;
+    --white:#FFFFFF;
   }
   *{box-sizing:border-box;}
-  body{ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:var(--bg); color:#222; margin:0; padding:0 0 60px 0; }
-  header{ background:linear-gradient(135deg, var(--primary), var(--accent)); color:#fff; padding:28px 20px; text-align:center; }
-  header h1{margin:0 0 6px 0; font-size:1.6em;}
-  header p{margin:0; font-size:0.95em; opacity:0.9;}
-  .container{max-width:780px; margin:0 auto; padding:20px;}
-  .tabs{ display:flex; gap:10px; margin:20px auto; max-width:780px; padding:0 20px; }
-  .tab-btn{ flex:1; padding:14px; border:none; border-radius:10px; background:#dde7f3; color:var(--primary); font-weight:600; font-size:1em; cursor:pointer; transition:0.2s; }
-  .tab-btn.active{ background:var(--accent); color:#fff; }
-  .tab-content{display:none;}
-  .tab-content.active{display:block;}
-  .score-bar{ background:var(--card); border:1px solid var(--border); border-radius:10px; padding:14px 18px; margin-bottom:18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; }
-  .score-bar .score{font-weight:700; font-size:1.1em; color:var(--primary);}
-  .reshuffle-btn{ background:var(--primary); color:#fff; border:none; padding:10px 16px; border-radius:8px; cursor:pointer; font-size:0.9em; font-weight:600; }
-  .reshuffle-btn:hover{background:var(--accent);}
-  .question-card{ background:var(--card); border:1px solid var(--border); border-radius:12px; padding:18px 20px; margin-bottom:16px; box-shadow:0 1px 3px rgba(0,0,0,0.04); }
-  .question-card h3{ margin:0 0 12px 0; font-size:1.05em; color:var(--primary); }
-  .q-number{ display:inline-block; background:var(--accent); color:#fff; border-radius:50%; width:26px; height:26px; text-align:center; line-height:26px; font-size:0.85em; margin-right:8px; flex-shrink:0; }
-  .option{ display:block; width:100%; text-align:left; background:#f8f9fb; border:1.5px solid var(--border); border-radius:8px; padding:10px 14px; margin:6px 0; cursor:pointer; font-size:0.96em; transition:0.15s; color:#333; }
-  .option:hover:not(.disabled){ border-color:var(--accent); background:#eef4fb; }
-  .option.correct{ background:#e6f4ea; border-color:var(--green); color:var(--green); font-weight:600; }
-  .option.incorrect{ background:#fdecea; border-color:var(--red); color:var(--red); font-weight:600; }
-  .option.disabled{cursor:default;}
-  .vf-buttons{display:flex; gap:10px; margin-top:6px;}
-  .vf-btn{ flex:1; padding:12px; border:1.5px solid var(--border); border-radius:8px; background:#f8f9fb; cursor:pointer; font-weight:600; font-size:0.96em; transition:0.15s; }
-  .vf-btn:hover:not(.disabled){border-color:var(--accent); background:#eef4fb;}
-  .vf-btn.correct{background:#e6f4ea; border-color:var(--green); color:var(--green);}
-  .vf-btn.incorrect{background:#fdecea; border-color:var(--red); color:var(--red);}
-  .vf-btn.disabled{cursor:default;}
-  .feedback{ margin-top:10px; padding:10px 12px; border-radius:8px; font-size:0.92em; line-height:1.4; }
-  .feedback.ok{background:#e6f4ea; color:var(--green);}
-  .feedback.bad{background:#fdecea; color:var(--red);}
-  .feedback .answer-line{ margin-top:6px; font-weight:600; color:#444; }
-  footer{ text-align:center; color:#888; font-size:0.85em; margin-top:30px; padding:0 20px; }
+  body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:var(--light-gray);
+    margin:0;
+    padding:0;
+    color:#222;
+  }
+  header{
+    background:var(--dark-blue);
+    color:var(--white);
+    padding:28px 24px 22px;
+    text-align:center;
+  }
+  header h1{margin:0 0 6px;font-size:26px;}
+  header p{margin:0;font-size:14px;color:#cfe0f5;}
+  .container{
+    max-width:860px;
+    margin:0 auto;
+    padding:22px 18px 60px;
+  }
+  .tabs{
+    display:flex;
+    gap:10px;
+    margin:18px 0 22px;
+  }
+  .tab-btn{
+    flex:1;
+    padding:14px 10px;
+    border:2px solid var(--med-blue);
+    background:var(--white);
+    color:var(--dark-blue);
+    font-weight:bold;
+    font-size:15px;
+    border-radius:8px;
+    cursor:pointer;
+    transition:.15s;
+  }
+  .tab-btn.active{
+    background:var(--med-blue);
+    color:var(--white);
+  }
+  .scorebar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:var(--white);
+    border:1px solid #ddd;
+    border-radius:8px;
+    padding:12px 16px;
+    margin-bottom:18px;
+    font-size:14px;
+    color:var(--dark-blue);
+    font-weight:bold;
+  }
+  .scorebar button{
+    background:var(--dark-blue);
+    color:var(--white);
+    border:none;
+    padding:8px 14px;
+    border-radius:6px;
+    font-size:13px;
+    cursor:pointer;
+    font-weight:bold;
+  }
+  .scorebar button:hover{background:var(--med-blue);}
+  .section{display:none;}
+  .section.active{display:block;}
+  .qcard{
+    background:var(--white);
+    border:1px solid #ddd;
+    border-left:5px solid var(--med-blue);
+    border-radius:8px;
+    padding:18px 20px;
+    margin-bottom:16px;
+  }
+  .qnum{
+    display:inline-block;
+    background:var(--light-blue);
+    color:var(--dark-blue);
+    font-size:12px;
+    font-weight:bold;
+    padding:3px 9px;
+    border-radius:12px;
+    margin-bottom:8px;
+  }
+  .qtext{
+    font-size:15.5px;
+    font-weight:bold;
+    color:#222;
+    margin-bottom:14px;
+    line-height:1.4;
+  }
+  .options{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+  .opt-btn{
+    text-align:left;
+    padding:11px 14px;
+    border:2px solid #ccc;
+    background:var(--white);
+    border-radius:7px;
+    cursor:pointer;
+    font-size:14.5px;
+    color:#222;
+    transition:.12s;
+  }
+  .opt-btn:hover:not(:disabled){border-color:var(--med-blue);background:#F7FBFF;}
+  .opt-btn:disabled{cursor:default;}
+  .opt-btn.correct{
+    background:var(--green-bg);
+    border-color:var(--green);
+    color:var(--green);
+    font-weight:bold;
+  }
+  .opt-btn.incorrect{
+    background:var(--red-bg);
+    border-color:var(--red);
+    color:var(--red);
+    font-weight:bold;
+  }
+  .feedback{
+    margin-top:12px;
+    padding:12px 14px;
+    border-radius:7px;
+    font-size:14px;
+    line-height:1.45;
+    display:none;
+  }
+  .feedback.show{display:block;}
+  .feedback.ok{background:var(--green-bg);color:var(--green);border:1px solid var(--green);}
+  .feedback.bad{background:var(--red-bg);color:var(--red);border:1px solid var(--red);}
+  .feedback b{color:inherit;}
+  footer{
+    text-align:center;
+    color:#888;
+    font-size:12px;
+    padding:18px 0 30px;
+  }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>Prueba 3 de Derecho Político</h1>
-  <p>Basada estrictamente en los apuntes: "Formas de Gobierno y Regímenes Políticos", "Clases de Derecho Político" y "Teoría del Estado" (Prof. Mg. Natanael Landaeta S.)</p>
+  <h1>Prueba de Teoría del Estado</h1>
+  <p>Derecho Político · Verdadero/Falso y Selección Múltiple · Preguntas y opciones aleatorias en cada apertura</p>
 </header>
-
-<div class="tabs">
-  <button class="tab-btn active" onclick="showTab('mc')">Opción Múltiple</button>
-  <button class="tab-btn" onclick="showTab('vf')">Verdadero o Falso</button>
-</div>
 
 <div class="container">
 
-  <div id="mc" class="tab-content active">
-    <div class="score-bar">
-      <div class="score">Puntaje: <span id="mc-score">0</span> / <span id="mc-total">0</span></div>
-      <button class="reshuffle-btn" onclick="initMC()">🔀 Mezclar y reiniciar</button>
-    </div>
-    <div id="mc-questions"></div>
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="vf">Verdadero / Falso</button>
+    <button class="tab-btn" data-tab="mc">Selección Múltiple</button>
   </div>
 
-  <div id="vf" class="tab-content">
-    <div class="score-bar">
-      <div class="score">Puntaje: <span id="vf-score">0</span> / <span id="vf-total">0</span></div>
-      <button class="reshuffle-btn" onclick="initVF()">🔀 Mezclar y reiniciar</button>
-    </div>
-    <div id="vf-questions"></div>
+  <div class="scorebar">
+    <span id="scoreLabel">Puntaje: 0 / 0</span>
+    <button id="reshuffleBtn">🔀 Volver a mezclar</button>
   </div>
+
+  <div class="section active" id="section-vf"></div>
+  <div class="section" id="section-mc"></div>
 
 </div>
 
-<footer>
-  El orden de las preguntas (y de las alternativas) se mezcla automáticamente cada vez que se abre o reinicia este archivo.<br>
-  Si la respuesta es incorrecta, se mostrará la respuesta correcta.
-</footer>
+<footer>Material de apoyo académico — Teoría del Estado · Generado para estudio personal</footer>
 
 <script>
-// ============ DATOS: PREGUNTAS DE OPCIÓN MÚLTIPLE ============
-const mcData = [
-  {
-    q: "Según el profesor Landaeta, ¿qué estudia la 'Forma de Gobierno'?",
-    options: ["La realidad del ejercicio del poder en los hechos", "La estructura formal de los órganos estatales según las normas jurídicas (Constitución y leyes)", "La ideología del partido gobernante", "Las relaciones internacionales del Estado"],
-    correct: 1
-  },
-  {
-    q: "El 'Régimen Político' se define desde el punto de vista de...",
-    options: ["La estructura formal", "La estructura real, es decir, cómo se ejerce el poder en los hechos", "La estructura federal", "La estructura electoral"],
-    correct: 1
-  },
-  {
-    q: "Según Aristóteles, ¿cuál es el criterio para distinguir formas políticas puras de viciosas?",
-    options: ["El tamaño del territorio", "La búsqueda o no del Bien Común", "El número de habitantes", "La antigüedad del régimen"],
-    correct: 1
-  },
-  {
-    q: "¿Cuál de las siguientes es una 'forma política pura' según Aristóteles?",
-    options: ["Tiranía", "Oligarquía", "Aristocracia", "Demagogia"],
-    correct: 2
-  },
-  {
-    q: "Según Aristóteles, la Tiranía es la degeneración de...",
-    options: ["La Aristocracia", "La Democracia", "La Monarquía", "La Politeia"],
-    correct: 2
-  },
-  {
-    q: "La Oligarquía busca el interés de...",
-    options: ["Los pobres", "Los ricos", "El pueblo entero", "El monarca"],
-    correct: 1
-  },
-  {
-    q: "La Demagogia es la degeneración de...",
-    options: ["La Monarquía", "La Aristocracia", "La Politeia (democracia)", "La Tiranía"],
-    correct: 2
-  },
-  {
-    q: "Según la teoría cíclica de Platón y Aristóteles, ¿qué sucede tras la Tiranía?",
-    options: ["Se instaura directamente la Democracia", "Se produce un golpe de Estado o revolución y se instaura un gobierno aristocrático", "El sistema se mantiene sin cambios", "Surge directamente la Demagogia"],
-    correct: 1
-  },
-  {
-    q: "¿En qué consiste la Forma de Gobierno Mixta de Polibio?",
-    options: ["En eliminar todas las formas de gobierno anteriores", "En captar lo bueno de todas las formas de gobierno para construir un equilibrio favorable hacia el bien común", "En instaurar una monarquía absoluta", "En dividir el territorio en provincias autónomas"],
-    correct: 1
-  },
-  {
-    q: "En la Roma Republicana, ¿qué órgano representaba el elemento 'Aristocracia' dentro de la forma de gobierno mixta?",
-    options: ["Los Cónsules", "El Senado", "Los Comicios", "El Tribunado"],
-    correct: 1
-  },
-  {
-    q: "Según las clasificaciones contemporáneas mencionadas en el curso, ¿cuáles son las tres formas de gobierno/regímenes políticos?",
-    options: ["Monarquía, Aristocracia y Democracia", "Democracia, Autocracias y Totalitarismos", "Presidencialismo, Parlamentarismo y Semipresidencialismo", "Centralización, Desconcentración y Descentralización"],
-    correct: 1
-  },
-  {
-    q: "Para la democracia, ¿quién debe mandar según el principio del 'gobierno del pueblo'?",
-    options: ["El Estado", "El pueblo (demos)", "La aristocracia", "El ejército"],
-    correct: 1
-  },
-  {
-    q: "En la Atenas del siglo V, el 'demos' estaba compuesto solo por...",
-    options: ["Todos los habitantes sin distinción", "Varones, hijos de padre y madre ateniense, mayores de 18 años", "Las mujeres y los esclavos", "Los extranjeros residentes"],
-    correct: 1
-  },
-  {
-    q: "¿Qué reemplazó al sufragio censitario en las democracias del siglo XX?",
-    options: ["El sufragio universal", "El voto calificado", "La elección indirecta", "El sufragio restringido por edad"],
-    correct: 0
-  },
-  {
-    q: "El 'Recall', como mecanismo semi-representativo, consiste en...",
-    options: ["La creación de nuevos partidos políticos", "La opción del cuerpo electoral para destituir a un representante antes del término de su mandato", "La convocatoria automática a nuevas elecciones cada año", "Un referéndum sobre tratados internacionales"],
-    correct: 1
-  },
-  {
-    q: "La parte 'dogmática' de la Constitución se refiere a...",
-    options: ["La estructura y regulación de los órganos estatales", "El reconocimiento de los derechos fundamentales de las personas", "Las normas tributarias", "Las relaciones internacionales"],
-    correct: 1
-  },
-  {
-    q: "La parte 'orgánica' de la Constitución...",
-    options: ["Reconoce los derechos humanos", "Crea, fija y regula los órganos estatales, sus funciones y competencias", "Establece los símbolos patrios", "Define el territorio nacional"],
-    correct: 1
-  },
-  {
-    q: "Según el Principio de Bien Común, ¿cuáles son los tres factores que involucra?",
-    options: ["Paz social, Justicia y Bienestar", "Territorio, Pueblo y Poder", "Soberanía, Legalidad y Control", "Autonomía, Participación y Descentralización"],
-    correct: 0
-  },
-  {
-    q: "Una característica del Régimen Autoritario es...",
-    options: ["La existencia de un único detentador del poder, sin posibilidad real de participación política del pueblo", "La división estricta de poderes", "La participación activa de todos los ciudadanos en la formación de la voluntad estatal", "La ausencia total de ideología"],
-    correct: 0
-  },
-  {
-    q: "Una característica del Régimen Totalitario es...",
-    options: ["La pluralidad de partidos políticos", "La voluntad de modelar la vida en su integridad, con ideología única y excluyente, aparato policial compulsivo y partido único", "La descentralización administrativa", "El respeto irrestricto a las libertades individuales"],
-    correct: 1
-  },
-  {
-    q: "¿Con qué obra y autor se asocia el origen del Estado como forma política moderna?",
-    options: ["'El Contrato Social' de Rousseau", "'El Príncipe' de Maquiavelo", "'La Política' de Aristóteles", "'Leviatán' de Hobbes"],
-    correct: 1
-  },
-  {
-    q: "Según Jellinek, ¿cuáles son las tres perspectivas desde las que se puede definir el Estado?",
-    options: ["Económica, militar y cultural", "Sociológica, política y jurídica", "Territorial, demográfica y financiera", "Histórica, geográfica y lingüística"],
-    correct: 1
-  },
-  {
-    q: "Hans Kelsen define al Estado como...",
-    options: ["Una agrupación humana fijada en un territorio orientada al bien común", "La personificación del orden jurídico que lo constituye y con el cual se identifica", "El titular abstracto y permanente del poder", "Una estructura de dominio renovada por un obrar común"],
-    correct: 1
-  },
-  {
-    q: "Según Georges Burdeau, el Estado es...",
-    options: ["El titular abstracto y permanente del poder, del cual los gobernantes son agentes esencialmente pasajeros", "Un conjunto de tratados internacionales", "Una corporación formada exclusivamente por el territorio", "La suma de los individuos que lo habitan"],
-    correct: 0
-  },
-  {
-    q: "Según la distinción de Jellinek retomada en clases, ¿cuál es la diferencia entre Población y Pueblo?",
-    options: ["Son sinónimos sin diferencia jurídica", "La Población es más abarcadora (titulares de derechos y obligaciones civiles), mientras que el Pueblo es menos abarcador (solo ciudadanos, titulares también de derechos políticos)", "El Pueblo incluye solo a los extranjeros", "La Población se refiere solo al territorio, no a las personas"],
-    correct: 1
-  },
-  {
-    q: "Los elementos constitutivos del Estado mencionados en clase incluyen...",
-    options: ["Territorio, Pueblo, Poder, Orden Jurídico y Finalidad (Bien Común)", "Bandera, Himno y Escudo", "Presidente, Congreso y Tribunales", "Moneda, Idioma y Religión oficial"],
-    correct: 0
-  },
-  {
-    q: "El Territorio del Estado se caracteriza por ser...",
-    options: ["Variable, inclusivo e ilimitado", "Estable, excluyente y limitado", "Temporal, compartido y difuso", "Federal, provisional y abierto"],
-    correct: 1
-  },
-  {
-    q: "Según las características del Poder Estatal estudiadas, la Soberanía implica...",
-    options: ["La ausencia total de límites jurídicos", "Una supremacía interna limitada por el Derecho (Art. 5 inc. 2° CPR)", "La subordinación a otros Estados", "La eliminación de la Constitución"],
-    correct: 1
-  },
-  {
-    q: "¿Cuáles son los cinco principios del Estado de Derecho mencionados en el curso?",
-    options: ["Supremacía constitucional, Principio de juridicidad, Principio de control, Principio de responsabilidad y Principio de separación de poderes", "Centralización, Desconcentración, Descentralización, Autonomía y Participación", "Soberanía, Territorio, Pueblo, Poder y Finalidad", "Monarquía, Aristocracia, Democracia, Oligarquía y Tiranía"],
-    correct: 0
-  },
-  {
-    q: "El Recurso de Amparo (Art. 21 CPR) protege específicamente...",
-    options: ["La propiedad privada y el comercio", "La seguridad individual y la libertad personal", "Los derechos sociales prestacionales", "La libertad de culto exclusivamente"],
-    correct: 1
-  }
+// ════════════════════════════════════════════
+// BANCO DE PREGUNTAS — VERDADERO / FALSO
+// ════════════════════════════════════════════
+const bancoVF = [
+  { text: "El concepto «Estado» fue utilizado por primera vez por Nicolás Maquiavelo, quien empleó la expresión «lo Stato» en su obra «El Príncipe» (siglo XVI).", answer: true,
+    explain: "Correcto: el documento señala expresamente que Maquiavelo fue el primero en utilizar el concepto «lo Stato» para designar el status político." },
+  { text: "El concepto de Estado, como forma de organización política, surgió en la Antigüedad clásica griega.", answer: false,
+    explain: "El concepto de «Estado» surgió a partir del Renacimiento, en Florencia (República Italiana), no en la Antigüedad clásica." },
+  { text: "Según Jellinek, el Estado puede analizarse desde tres puntos de vista: político, social y jurídico.", answer: true,
+    explain: "Correcto: Jellinek aborda el concepto de Estado desde las concepciones sociológica, política y jurídica." },
+  { text: "Para Hans Kelsen, el Estado es la personificación del orden jurídico que lo constituye y con el cual se identifica.", answer: true,
+    explain: "Correcto: esa es exactamente la concepción jurídica de Estado atribuida a Kelsen en el documento." },
+  { text: "Según André Hauriou, el Estado es una agrupación humana fijada en un territorio, orientada al bien común y dotada de poderes de coerción.", answer: true,
+    explain: "Correcto: esta es la definición de Hauriou, calificada en el documento como una de las más completas." },
+  { text: "«Pueblo» y «Población» son, según el documento, conceptos perfectamente sinónimos.", answer: false,
+    explain: "Son conceptos distintos: la Población es un grupo humano más abarcador (todos con derechos y obligaciones civiles), mientras que el Pueblo corresponde solo a los ciudadanos con derecho a voto." },
+  { text: "El territorio del Estado debe ser estable, excluyente y limitado.", answer: true,
+    explain: "Correcto: el documento exige expresamente estas tres condiciones para el territorio estatal." },
+  { text: "Según Kelsen, el territorio es el ámbito espacial de aplicación de las normas y preceptos emanados del Estado.", answer: true,
+    explain: "Correcto: así lo señala el documento al citar a Kelsen sobre la función del territorio." },
+  { text: "La soberanía, tal como se define en el documento, admite la existencia de otro poder de igual o mayor jerarquía que el Estado.", answer: false,
+    explain: "La soberanía implica precisamente lo contrario: es el carácter supremo de un poder que no depende de, ni es igualado por, otro poder." },
+  { text: "El monopolio legítimo de la fuerza implica que el Estado posee la violencia física legítima y puede imponer mandatos con posibilidad de coacción.", answer: true,
+    explain: "Correcto: así se define esta característica del poder estatal en el documento." },
+  { text: "Según el documento, el poder institucionalizado significa que los gobernantes son los titulares del poder, no el Estado.", answer: false,
+    explain: "Es al revés: el Estado es el TITULAR del poder; los gobernantes son solo agentes de su ejercicio." },
+  { text: "El término «Estado de Derecho» (Rechsstaat) se originó en la doctrina publicista alemana del siglo XIX, con Robert von Mohl.", answer: true,
+    explain: "Correcto: el documento atribuye el origen del término a Robert von Mohl en esa tradición doctrinal." },
+  { text: "El principio de juridicidad establece que los órganos del Estado pueden actuar libremente, sin necesidad de autorización del ordenamiento jurídico.", answer: false,
+    explain: "Es lo contrario: el principio de juridicidad establece que los órganos del Estado solo pueden hacer lo que el ordenamiento jurídico les autoriza." },
+  { text: "El fin objetivo del Estado, común a todos los Estados según el documento, es el bien común.", answer: true,
+    explain: "Correcto: el bien común es identificado como el fin objetivo y general de todo Estado." },
+  { text: "El fin subjetivo del Estado es siempre idéntico, sin importar la doctrina política que cada Estado adopte.", answer: false,
+    explain: "El fin subjetivo supone contenidos variables del bien común y depende del Estado y de la doctrina política de que se trate." },
+  { text: "Según la hipótesis naturalista de Aristóteles, la Polis es anterior al individuo.", answer: true,
+    explain: "Correcto: Aristóteles sostiene que «la Polis es por naturaleza anterior al individuo», pues el todo es anterior a la parte." },
+  { text: "Para Aristóteles, el hombre puede vivir en sociedad sin organización política alguna.", answer: false,
+    explain: "Aristóteles sostiene lo contrario: vivir en sociedad presupone vivir políticamente, por lo que no existe una etapa pre-política." },
+  { text: "Según Hobbes, en el estado de naturaleza existe una «guerra de todos contra todos».", answer: true,
+    explain: "Correcto: esa es la condición natural del género humano descrita por Hobbes en el Leviatán." },
+  { text: "Para John Locke, el valor más importante que el Estado debe asegurar es la propiedad.", answer: true,
+    explain: "Correcto: el documento señala que para Locke uno de los valores más importantes a proteger es la propiedad, junto con la vida y la libertad." },
+  { text: "Según Rousseau, el contrato social es un contrato expreso y escrito, formalmente celebrado entre los ciudadanos.", answer: false,
+    explain: "El documento señala que es un contrato HIPOTÉTICO, con cláusulas TÁCITAS, no un documento expreso y escrito." },
+  { text: "El Estado Unitario se caracteriza por tener un solo centro de imputación política y un solo sistema jurídico.", answer: true,
+    explain: "Correcto: esas son características explícitas del Estado Unitario según el documento." },
+  { text: "La descentralización administrativa implica que el órgano creado carece de personalidad jurídica propia y depende jerárquicamente del órgano central.", answer: false,
+    explain: "Eso describe a la DESCONCENTRACIÓN. La descentralización, en cambio, implica personalidad jurídica y patrimonio propio, sin subordinación jerárquica (aunque sujeta a tutela)." },
+  { text: "En el Estado Federal, la soberanía se distribuye entre el Estado federal y los Estados miembros.", answer: false,
+    explain: "El documento indica que la soberanía es indivisible: todas las atribuciones de soberanía corresponden al Estado Federal, que ha absorbido la de los Estados miembros." },
+  { text: "El sistema bicameral, con una cámara proporcional a la población y otra de representación igualitaria de los Estados miembros, es una característica típica del Estado Federal.", answer: true,
+    explain: "Correcto: el documento señala el sistema bicameral como una de las características fundamentales del orden federal." },
 ];
 
-// ============ DATOS: PREGUNTAS DE VERDADERO O FALSO ============
-const vfData = [
-  {
-    s: "La Forma de Gobierno estudia las normas jurídicas (Constitución y leyes) que dan forma y competencias a los órganos estatales.",
-    a: true,
-    exp: "Correcto. La Forma de Gobierno corresponde a la estructura formal de los órganos estatales según la normativa jurídica."
-  },
-  {
-    s: "El Régimen Político y la regulación jurídica de la política (el Derecho) siempre coinciden.",
-    a: false,
-    exp: "Es posible que el Régimen Político no coincida con la regulación jurídica de la política, ya que los órganos estatales pueden no guiarse por el marco jurídico."
-  },
-  {
-    s: "Según Aristóteles, la Aristocracia es el gobierno de 'los mejores' (de más de uno, pero no de todos).",
-    a: true,
-    exp: "Correcto, 'aristoi' significa 'los mejores' y 'cracia' gobierno."
-  },
-  {
-    s: "Según la teoría cíclica de Platón y Aristóteles, la Demagogia da paso, por reacción, a un nuevo ciclo que comienza con la Monarquía.",
-    a: true,
-    exp: "Correcto, así se cierra el ciclo histórico de sucesión de formas de gobierno."
-  },
-  {
-    s: "En la Forma de Gobierno Mixta de Polibio, los Cónsules representaban el elemento Democracia.",
-    a: false,
-    exp: "Los Cónsules representaban el elemento Monarquía; los Comicios representaban la Democracia y el Senado la Aristocracia."
-  },
-  {
-    s: "El Recall permite al cuerpo electoral destituir a un representante antes del término de su mandato.",
-    a: true,
-    exp: "Correcto, es uno de los mecanismos semi-representativos y semi-directos de participación popular."
-  },
-  {
-    s: "En Atenas del siglo V, el 'demos' incluía a toda la población de la polis, incluyendo mujeres y esclavos.",
-    a: false,
-    exp: "El demos ateniense estaba compuesto solo por varones, hijos de padre y madre ateniense, mayores de 18 años, una minoría dentro de la población global."
-  },
-  {
-    s: "El sufragio censitario fue reemplazado por el sufragio universal en las democracias del siglo XX.",
-    a: true,
-    exp: "Correcto, esto significó que grandes masas se sumaron a la ciudadanía activa."
-  },
-  {
-    s: "La parte dogmática de la Constitución regula la estructura, funciones y competencias de los órganos estatales.",
-    a: false,
-    exp: "Eso corresponde a la parte orgánica; la parte dogmática reconoce los derechos fundamentales de las personas."
-  },
-  {
-    s: "El Principio de Bien Común incluye la Paz social, la Justicia y el Bienestar.",
-    a: true,
-    exp: "Correcto, son las tres funciones primordiales que involucra el Bien Común."
-  },
-  {
-    s: "En el Régimen Autoritario existe un único detentador del poder, que puede ser una persona, una asamblea, un comité, una junta o un partido.",
-    a: true,
-    exp: "Correcto, esa es una de sus características principales."
-  },
-  {
-    s: "El Régimen Totalitario se caracteriza por la pluralidad de partidos políticos y la ausencia de ideología oficial.",
-    a: false,
-    exp: "El Régimen Totalitario se caracteriza por partido único e ideología única y excluyente."
-  },
-  {
-    s: "En el Totalitarismo, el Estado absorbe completamente a la sociedad y a los individuos, privando las libertades individuales.",
-    a: true,
-    exp: "Correcto, además impone una ideología como verdad oficial y se sirve de los medios de comunicación."
-  },
-  {
-    s: "Maquiavelo, en 'El Príncipe', es asociado con el origen del Estado como forma política moderna ('lo Stato').",
-    a: true,
-    exp: "Correcto, su obra del siglo XVI se vincula al surgimiento del concepto moderno de Estado."
-  },
-  {
-    s: "Según Jellinek, el Estado puede definirse desde una perspectiva sociológica, política y jurídica.",
-    a: true,
-    exp: "Correcto, son las tres perspectivas que distingue Jellinek."
-  },
-  {
-    s: "Hans Kelsen define al Estado como 'la personificación del orden jurídico que lo constituye y con el cual se identifica'.",
-    a: true,
-    exp: "Correcto, es la definición jurídica de Kelsen citada en los apuntes."
-  },
-  {
-    s: "Para Georges Burdeau, los gobernantes son los titulares permanentes del poder del Estado.",
-    a: false,
-    exp: "Para Burdeau el Estado es el titular abstracto y permanente del poder; los gobernantes son solo agentes esencialmente pasajeros."
-  },
-  {
-    s: "André Hauriou define al Estado como una agrupación humana fijada en un territorio, con un orden social, político y jurídico orientado hacia el bien común.",
-    a: true,
-    exp: "Correcto, esta es descrita como una de las definiciones más completas en los apuntes."
-  },
-  {
-    s: "La Población es un concepto menos abarcador que el Pueblo, ya que el Pueblo incluye a toda persona sin importar su nacionalidad.",
-    a: false,
-    exp: "Es al revés: la Población es más abarcadora (titulares de derechos y obligaciones civiles), mientras que el Pueblo es menos abarcador (solo ciudadanos, con derechos políticos)."
-  },
-  {
-    s: "El Territorio del Estado se caracteriza por ser estable, excluyente y limitado.",
-    a: true,
-    exp: "Correcto, así se describe el territorio como elemento del Estado."
-  },
-  {
-    s: "La Soberanía, como característica del poder estatal, implica una supremacía interna que no tiene ningún límite jurídico.",
-    a: false,
-    exp: "La Soberanía implica una supremacía interna limitada por el Derecho, conforme al Art. 5 inc. 2° de la CPR (derechos esenciales de la naturaleza humana)."
-  },
-  {
-    s: "El 'Poder Temporal' como característica del poder estatal se relaciona con la separación entre el orden espiritual (Iglesia) y el orden temporal (Estado).",
-    a: true,
-    exp: "Correcto, se cita a Max Weber sobre esta separación."
-  },
-  {
-    s: "El Monopolio legítimo de la fuerza significa que solo el Estado puede ejercer la violencia física legítima mediante sanciones.",
-    a: true,
-    exp: "Correcto, esta es una de las características del poder estatal."
-  },
-  {
-    s: "El Poder Institucionalizado implica que el Estado es el titular del poder y los gobernantes son agentes de su ejercicio.",
-    a: true,
-    exp: "Correcto, esto distingue al poder estatal del poder personal de un gobernante."
-  },
-  {
-    s: "Entre los cinco principios del Estado de Derecho se encuentran la Supremacía Constitucional y el Principio de Separación de Poderes.",
-    a: true,
-    exp: "Correcto, junto con el Principio de Juridicidad, el Principio de Control y el Principio de Responsabilidad."
-  },
-  {
-    s: "El Recurso de Amparo (Art. 21 CPR) protege la propiedad privada y los derechos sociales prestacionales.",
-    a: false,
-    exp: "El Recurso de Amparo protege la seguridad individual y la libertad personal; ambos recursos (Amparo y Protección) excluyen los derechos sociales prestacionales."
-  },
-  {
-    s: "Para Hobbes, sin un poder común no existen ni la ley ni la propiedad, y la fuerza y el fraude son consideradas 'virtudes cardinales'.",
-    a: true,
-    exp: "Correcto, en el estado de naturaleza hobbesiano, sin Leviatán no hay ley ni propiedad."
-  },
-  {
-    s: "Para Locke, la propiedad es uno de los derechos naturales más importantes que el Estado debe garantizar, junto con la vida y la libertad.",
-    a: true,
-    exp: "Correcto, según Locke el poder político nace del consentimiento y el Estado garantiza Vida, Libertad y Propiedad."
-  },
-  {
-    s: "Chile es clasificado como un Estado Unitario con un presidencialismo moderado.",
-    a: true,
-    exp: "Correcto, así lo señala el profesor Meléndez citado en los apuntes."
-  },
-  {
-    s: "Según Antonio Carro, el Estado Federal es una unión de Estados en torno a una soberanía común a todos ellos.",
-    a: true,
-    exp: "Correcto, esa es la definición atribuida a Antonio Carro."
-  }
+// ════════════════════════════════════════════
+// BANCO DE PREGUNTAS — SELECCIÓN MÚLTIPLE
+// ════════════════════════════════════════════
+const bancoMC = [
+  { text: "¿Quién utilizó por primera vez el concepto «lo Stato» en el siglo XVI?",
+    options: ["Jean Bodin", "Nicolás Maquiavelo", "Thomas Hobbes", "Max Weber"], correctIndex: 1,
+    explain: "Maquiavelo empleó «lo Stato» en «El Príncipe» para designar el status político, dando origen al concepto moderno de Estado." },
+  { text: "¿Desde qué tres puntos de vista analiza Jellinek el concepto de Estado?",
+    options: ["Económico, social y militar", "Político, social y jurídico", "Histórico, cultural y religioso", "Territorial, demográfico e institucional"], correctIndex: 1,
+    explain: "Jellinek aborda el Estado desde las concepciones sociológica, política y jurídica, atendiendo a las distintas facetas que adopta." },
+  { text: "¿Qué autor define al Estado como «la personificación del orden jurídico que lo constituye»?",
+    options: ["Hermann Heller", "Georges Burdeau", "Hans Kelsen", "André Hauriou"], correctIndex: 2,
+    explain: "Esa es la concepción jurídica de Estado atribuida a Hans Kelsen en el documento." },
+  { text: "En la analogía del «tren» empleada en el documento para explicar al Estado, ¿qué representan los rieles?",
+    options: ["Los gobernantes", "La constitución y las leyes", "El pueblo", "El territorio"], correctIndex: 1,
+    explain: "Los rieles representan la constitución y las leyes, que delimitan el tránsito del Estado hacia el bien común sin desviarse." },
+  { text: "¿Cuáles son las tres condiciones de existencia del Estado señaladas en el documento?",
+    options: ["Pueblo, nación y soberanía", "Grupo humano, territorio y poder", "Gobierno, ley y ejército", "Constitución, tribunales y Congreso"], correctIndex: 1,
+    explain: "El documento identifica como condiciones de existencia del Estado: el grupo humano (pueblo), el territorio y el poder." },
+  { text: "¿Qué concepto representa, según el documento, solo a los ciudadanos con derecho a voto?",
+    options: ["Población", "Nación", "Pueblo", "Comunidad"], correctIndex: 2,
+    explain: "El «Pueblo» es un grupo humano menos abarcador que la población, pues presupone el status jurídico de ciudadano (cuerpo electoral)." },
+  { text: "¿Cómo clasifica el documento el territorio en cuanto espacio geográfico?",
+    options: ["Urbano, rural y fronterizo", "Suelo, subsuelo, espacio aéreo y espacio marítimo", "Continental, insular y marítimo", "Público, privado y fiscal"], correctIndex: 1,
+    explain: "El documento clasifica el territorio en suelo, subsuelo, espacio aéreo y espacio marítimo." },
+  { text: "¿Cuáles son las características del Poder Estatal señaladas en el documento?",
+    options: ["Soberanía, poder temporal, monopolio legítimo de la fuerza y poder institucionalizado", "Legitimidad, eficacia, legalidad y representatividad", "Centralización, descentralización, desconcentración y delegación", "Autonomía, independencia, supremacía y dominación"], correctIndex: 0,
+    explain: "El documento enumera exactamente estas cuatro características del poder estatal." },
+  { text: "La soberanía interna se caracteriza, según el documento, por:",
+    options: ["Independencia", "Supremacía y dominación", "Monopolio de la fuerza", "Participación"], correctIndex: 1,
+    explain: "El esquema del documento ubica «supremacía» y «dominación» bajo la soberanía interna, mientras que la «independencia» corresponde a la soberanía externa." },
+  { text: "¿En qué consiste el «monopolio legítimo de la fuerza» del Estado?",
+    options: ["El Estado posee la violencia física legítima e impone mandatos con posibilidad de coacción", "Solo las Fuerzas Armadas pueden ejercer la fuerza, sin control estatal", "El Estado comparte el uso legítimo de la fuerza con organizaciones privadas", "El poder se ejerce exclusivamente mediante persuasión, sin coacción"], correctIndex: 0,
+    explain: "El monopolio legítimo de la fuerza significa que el Estado posee la violencia física legítima, pudiendo imponer sanciones penales, civiles y administrativas." },
+  { text: "¿Qué autor acuñó el término «Rechsstaat» (Estado de Derecho)?",
+    options: ["Hans Kelsen", "Robert von Mohl", "Cea Egaña", "Lucas Verdú"], correctIndex: 1,
+    explain: "El documento atribuye la acuñación del término «Rechsstaat» a Robert von Mohl, dentro de la doctrina publicista alemana del siglo XIX." },
+  { text: "¿Cuál de las siguientes opciones NO figura entre los elementos del Estado de Derecho señalados en el documento?",
+    options: ["Supremacía constitucional", "Principio de juridicidad", "Principio de control", "Sufragio universal obligatorio"], correctIndex: 3,
+    explain: "Los elementos señalados son: supremacía constitucional, principio de juridicidad, principio de control, principio de responsabilidad y principio de separación de poderes. El sufragio universal obligatorio no se menciona como elemento del Estado de Derecho en este documento." },
+  { text: "El fin objetivo del Estado, común a todos los Estados según el documento, es:",
+    options: ["La seguridad nacional", "El bien común", "El desarrollo económico", "La soberanía popular"], correctIndex: 1,
+    explain: "El bien común es identificado expresamente como el fin objetivo y general de todo Estado." },
+  { text: "El fin subjetivo del Estado depende principalmente de:",
+    options: ["La doctrina política que cada Estado adopte", "El tamaño del territorio", "El número de habitantes", "La forma de gobierno exclusivamente"], correctIndex: 0,
+    explain: "El documento indica que el fin subjetivo supone contenidos variables, y cada doctrina política responde de distinta forma a los medios y al rol del Estado." },
+  { text: "¿Qué autor sostiene la hipótesis naturalista sobre el origen del Estado?",
+    options: ["Thomas Hobbes", "John Locke", "Aristóteles", "Jean-Jacques Rousseau"], correctIndex: 2,
+    explain: "Aristóteles sostiene la hipótesis naturalista, según la cual la Polis es por naturaleza anterior al individuo." },
+  { text: "Según Hobbes, ¿cuáles son las tres causas de la discordia en la naturaleza humana?",
+    options: ["La competencia, la desconfianza y la gloria", "La propiedad, la libertad y la igualdad", "El hambre, la guerra y la enfermedad", "La religión, la raza y la lengua"], correctIndex: 0,
+    explain: "Hobbes identifica la competencia, la desconfianza y la gloria como las tres causas de la discordia en el estado de naturaleza." },
+  { text: "Para John Locke, el Estado es indispensable principalmente para:",
+    options: ["Imponer una religión oficial", "Asegurar la propiedad privada y las libertades individuales", "Organizar ejércitos permanentes", "Centralizar el comercio internacional"], correctIndex: 1,
+    explain: "Locke sostiene que el Estado o Sociedad Civil es indispensable para asegurar la propiedad privada y las libertades individuales (derechos naturales)." },
+  { text: "Según Rousseau, el contrato social busca que cada asociado:",
+    options: ["Renuncie completamente a su libertad", "Permanezca tan libre como antes, obedeciendo solo a la voluntad general", "Se subordine a un monarca absoluto", "Forme alianzas militares con otros pueblos"], correctIndex: 1,
+    explain: "Rousseau busca una forma de asociación en que cada asociado, uniéndose a todos, no obedezca sino a sí mismo y permanezca tan libre como antes, mediante la voluntad general." },
+  { text: "¿Cuál es la diferencia esencial entre «forma de Estado» y «forma de gobierno»?",
+    options: ["No existen diferencias; son sinónimos", "La forma de Estado atiende a la distribución espacial del poder; la forma de gobierno, a su ejercicio y a la designación de los gobernantes", "La forma de Estado se refiere solo a monarquías; la forma de gobierno, a repúblicas", "La forma de gobierno determina el territorio; la forma de Estado, la economía"], correctIndex: 1,
+    explain: "La forma de Estado considera la distribución espacial (territorial) de la actividad del Estado; la forma de gobierno concierne al ejercicio del poder y la designación de los gobernantes." },
+  { text: "¿Cuál de las siguientes es una característica del Estado Federal según el documento?",
+    options: ["Un solo sistema jurídico unificado, sin constituciones locales", "Soberanía dividida entre el centro y los Estados miembros", "Sistema bicameral y Constitución Federal con principio de supremacía", "Centralización absoluta de todas las funciones públicas"], correctIndex: 2,
+    explain: "El Estado Federal se caracteriza, entre otros rasgos, por un sistema bicameral y una Constitución Federal a la que están subordinadas las constituciones locales (principio de supremacía)." },
+  { text: "La descentralización administrativa, a diferencia de la desconcentración, se caracteriza por:",
+    options: ["Carecer de personalidad jurídica propia", "Tener personalidad jurídica y patrimonio propio", "Depender jerárquicamente del órgano central en todas sus decisiones", "No estar sujeta a ningún tipo de control"], correctIndex: 1,
+    explain: "La descentralización confiere personalidad jurídica y patrimonio propio al órgano creado por ley, sin subordinación jerárquica, aunque sujeta a la tutela del poder central." },
 ];
 
-// ============ UTILIDADES ============
-function shuffle(array){
-  const arr = array.slice();
-  for(let i = arr.length - 1; i > 0; i--){
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
+// ════════════════════════════════════════════
+// LÓGICA: aleatorización, render, evaluación
+// ════════════════════════════════════════════
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
   }
-  return arr;
+  return a;
 }
 
-function showTab(tab){
-  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-  document.getElementById(tab).classList.add('active');
-  document.querySelectorAll('.tab-btn')[tab === 'mc' ? 0 : 1].classList.add('active');
+let totalAnswered = 0;
+let totalCorrect = 0;
+
+function updateScore(){
+  document.getElementById('scoreLabel').textContent = `Puntaje: ${totalCorrect} / ${totalAnswered}`;
 }
 
-// ============ OPCIÓN MÚLTIPLE ============
-let mcScore = 0;
-
-function initMC(){
-  mcScore = 0;
-  document.getElementById('mc-score').textContent = '0';
-  document.getElementById('mc-total').textContent = mcData.length;
-  const container = document.getElementById('mc-questions');
+function renderVF(){
+  const data = shuffle(bancoVF);
+  const container = document.getElementById('section-vf');
   container.innerHTML = '';
-
-  const shuffledQuestions = shuffle(mcData);
-
-  shuffledQuestions.forEach((item, idx) => {
-    const correctText = item.options[item.correct];
-    const opts = shuffle(item.options.map((text, i) => ({ text, isCorrect: i === item.correct })));
-
+  data.forEach((q, idx) => {
     const card = document.createElement('div');
-    card.className = 'question-card';
-
-    const title = document.createElement('h3');
-    title.innerHTML = '<span class="q-number">' + (idx + 1) + '</span>' + item.q;
-    card.appendChild(title);
-
-    const optionsWrap = document.createElement('div');
-
-    opts.forEach(opt => {
-      const btn = document.createElement('button');
-      btn.className = 'option';
-      btn.textContent = opt.text;
-      btn.onclick = function(){
-        const allOpts = optionsWrap.querySelectorAll('.option');
-        allOpts.forEach(o => o.classList.add('disabled'));
-        allOpts.forEach(o => o.onclick = null);
-
-        const feedback = document.createElement('div');
-        if(opt.isCorrect){
+    card.className = 'qcard';
+    const orderedOptions = Math.random() < 0.5 ? [true, false] : [false, true];
+    card.innerHTML = `
+      <div class="qnum">Pregunta ${idx+1} de ${data.length}</div>
+      <div class="qtext">${q.text}</div>
+      <div class="options">
+        ${orderedOptions.map(val => `<button class="opt-btn" data-val="${val}">${val ? 'VERDADERO' : 'FALSO'}</button>`).join('')}
+      </div>
+      <div class="feedback"></div>
+    `;
+    const buttons = card.querySelectorAll('.opt-btn');
+    const feedback = card.querySelector('.feedback');
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const chosen = btn.getAttribute('data-val') === 'true';
+        buttons.forEach(b => b.disabled = true);
+        totalAnswered++;
+        if(chosen === q.answer){
           btn.classList.add('correct');
-          feedback.className = 'feedback ok';
-          feedback.textContent = '✅ ¡Correcto!';
-          mcScore++;
+          totalCorrect++;
+          feedback.className = 'feedback show ok';
+          feedback.innerHTML = `<b>¡Correcto!</b> ${q.explain}`;
         } else {
           btn.classList.add('incorrect');
-          feedback.className = 'feedback bad';
-          feedback.innerHTML = '❌ Incorrecto.<div class="answer-line">Respuesta correcta: ' + correctText + '</div>';
-          allOpts.forEach(o => { if(o.textContent === correctText) o.classList.add('correct'); });
+          buttons.forEach(b => { if((b.getAttribute('data-val')==='true') === q.answer) b.classList.add('correct'); });
+          feedback.className = 'feedback show bad';
+          feedback.innerHTML = `<b>Incorrecto.</b> La respuesta correcta es <b>${q.answer ? 'VERDADERO' : 'FALSO'}</b>. ${q.explain}`;
         }
-        card.appendChild(feedback);
-        document.getElementById('mc-score').textContent = mcScore;
-      };
-      optionsWrap.appendChild(btn);
+        updateScore();
+      });
     });
-
-    card.appendChild(optionsWrap);
     container.appendChild(card);
   });
 }
 
-// ============ VERDADERO O FALSO ============
-let vfScore = 0;
-
-function initVF(){
-  vfScore = 0;
-  document.getElementById('vf-score').textContent = '0';
-  document.getElementById('vf-total').textContent = vfData.length;
-  const container = document.getElementById('vf-questions');
+function renderMC(){
+  const data = shuffle(bancoMC);
+  const container = document.getElementById('section-mc');
   container.innerHTML = '';
-
-  const shuffledQuestions = shuffle(vfData);
-
-  shuffledQuestions.forEach((item, idx) => {
+  data.forEach((q, idx) => {
+    const correctText = q.options[q.correctIndex];
+    const shuffledOptions = shuffle(q.options.map((opt, i) => ({ text: opt, isCorrect: i === q.correctIndex })));
     const card = document.createElement('div');
-    card.className = 'question-card';
-
-    const title = document.createElement('h3');
-    title.innerHTML = '<span class="q-number">' + (idx + 1) + '</span>' + item.s;
-    card.appendChild(title);
-
-    const btnWrap = document.createElement('div');
-    btnWrap.className = 'vf-buttons';
-
-    const btnV = document.createElement('button');
-    btnV.className = 'vf-btn';
-    btnV.textContent = 'Verdadero';
-
-    const btnF = document.createElement('button');
-    btnF.className = 'vf-btn';
-    btnF.textContent = 'Falso';
-
-    function answer(choseTrue){
-      btnV.classList.add('disabled');
-      btnF.classList.add('disabled');
-      btnV.onclick = null;
-      btnF.onclick = null;
-
-      const correctBtn = item.a ? btnV : btnF;
-      const chosenBtn = choseTrue ? btnV : btnF;
-      const feedback = document.createElement('div');
-
-      if(choseTrue === item.a){
-        chosenBtn.classList.add('correct');
-        feedback.className = 'feedback ok';
-        feedback.innerHTML = '✅ ¡Correcto! <div class="answer-line">' + item.exp + '</div>';
-        vfScore++;
-      } else {
-        chosenBtn.classList.add('incorrect');
-        correctBtn.classList.add('correct');
-        feedback.className = 'feedback bad';
-        feedback.innerHTML = '❌ Incorrecto. La respuesta correcta es <strong>' + (item.a ? 'Verdadero' : 'Falso') + '</strong>.<div class="answer-line">' + item.exp + '</div>';
-      }
-      card.appendChild(feedback);
-      document.getElementById('vf-score').textContent = vfScore;
-    }
-
-    btnV.onclick = function(){ answer(true); };
-    btnF.onclick = function(){ answer(false); };
-
-    btnWrap.appendChild(btnV);
-    btnWrap.appendChild(btnF);
-    card.appendChild(btnWrap);
+    card.className = 'qcard';
+    card.innerHTML = `
+      <div class="qnum">Pregunta ${idx+1} de ${data.length}</div>
+      <div class="qtext">${q.text}</div>
+      <div class="options">
+        ${shuffledOptions.map((opt, i) => `<button class="opt-btn" data-correct="${opt.isCorrect}">${String.fromCharCode(97+i)}) ${opt.text}</button>`).join('')}
+      </div>
+      <div class="feedback"></div>
+    `;
+    const buttons = card.querySelectorAll('.opt-btn');
+    const feedback = card.querySelector('.feedback');
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const isCorrect = btn.getAttribute('data-correct') === 'true';
+        buttons.forEach(b => b.disabled = true);
+        totalAnswered++;
+        if(isCorrect){
+          btn.classList.add('correct');
+          totalCorrect++;
+          feedback.className = 'feedback show ok';
+          feedback.innerHTML = `<b>¡Correcto!</b> ${q.explain}`;
+        } else {
+          btn.classList.add('incorrect');
+          buttons.forEach(b => { if(b.getAttribute('data-correct')==='true') b.classList.add('correct'); });
+          feedback.className = 'feedback show bad';
+          feedback.innerHTML = `<b>Incorrecto.</b> La respuesta correcta es <b>"${correctText}"</b>. ${q.explain}`;
+        }
+        updateScore();
+      });
+    });
     container.appendChild(card);
   });
 }
 
-// ============ INICIALIZAR ============
-initMC();
-initVF();
-</script>
+function renderAll(){
+  totalAnswered = 0;
+  totalCorrect = 0;
+  updateScore();
+  renderVF();
+  renderMC();
+}
 
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('section-' + btn.dataset.tab).classList.add('active');
+  });
+});
+
+document.getElementById('reshuffleBtn').addEventListener('click', renderAll);
+
+renderAll();
+</script>
 </body>
 </html>
